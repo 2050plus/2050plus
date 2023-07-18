@@ -12,7 +12,9 @@ SPDX-License-Identifier: CC-BY-4.0
 [![Snakemake](https://img.shields.io/badge/snakemake-≥5.0.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 [![REUSE status](https://api.reuse.software/badge/github.com/pypsa/pypsa-eur)](https://api.reuse.software/info/github.com/pypsa/pypsa-eur)
 
-# PyPSA-Eur: A Sector-Coupled Open Optimisation Model of the European Energy System
+# [Fork] PyPSA-Eur: A Sector-Coupled Open Optimisation Model of the European Energy System
+
+Original repository : [https://github.com/PyPSA/pypsa-eur](https://github.com/PyPSA/pypsa-eur)
 
 PyPSA-Eur is an open model dataset of the European energy system at the
 transmission network level that covers the full ENTSO-E area. The model is suitable both for operational studies and generation and transmission expansion planning studies.
