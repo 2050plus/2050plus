@@ -299,6 +299,8 @@ def calculate_energy(n, label, energy):
                     .multiply(n.snapshot_weightings.generators, axis=0)
                     .sum()
                 )
+                if totals.empty:
+                    continue
                 # remove values where bus is missing (bug in nomopyomo)
                 no_bus = c.df.index[c.df["bus" + port] == ""]
                 totals.loc[no_bus] = n.component_attrs[c.name].loc[
