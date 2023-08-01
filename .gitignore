@@ -8,6 +8,8 @@ __pycache__
 *dconf
 gurobi.log
 .vscode
+.idea
+.DS_Store
 
 /bak
 /resources
@@ -21,8 +23,6 @@ gurobi.log
 /cutouts
 
 doc/_build
-
-config.yaml
 
 dconf
 /data/links_p_nom.csv
@@ -60,15 +60,11 @@ publications.jrc.ec.europa.eu/
 
 *.xlsx
 
-config.yaml
-
 doc/_build
 
 *.xls
 
 *.geojson
-
-*.ipynb
 
 data/costs_*
 

@@ -460,6 +460,8 @@ if __name__ == "__main__":
         snakemake = mock_snakemake("cluster_network", simpl="", clusters="5")
     configure_logging(snakemake)
 
+    solver_name = "ipopt"  # snakemake.config["solving"]["solver"]["name"]
+    
     n = pypsa.Network(snakemake.input.network)
 
     focus_weights = snakemake.config.get("focus_weights", None)
@@ -539,7 +541,7 @@ if __name__ == "__main__":
             aggregate_carriers,
             line_length_factor,
             aggregation_strategies,
-            snakemake.config["solving"]["solver"]["name"],
+            solver_name,
             cluster_config.get("algorithm", "hac"),
             cluster_config.get("feature", "solar+onwind-time"),
             hvac_overhead_cost,
