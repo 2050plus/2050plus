@@ -1,0 +1,2027 @@
+INFO:pypsa.io:Imported network elec_s_37_lv1.1_32SEG_24H-T-H-B-I-A_2050.nc has buses, carriers, generators, global_constraints, lines, links, loads, storage_units, stores
+WARNING:__main__:Existing capacities larger than technical potential for Index(['ES4 0 onwind-2050'], dtype='object', name='Generator'),                       adjust technical potential to existing capacities
+WARNING:pypsa.components:The attribute e_min_pu of element AL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element AT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BA1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BE1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BG1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element CH1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element CZ1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DE1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DK2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element EE6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ES1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ES4 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element FI2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element FR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GB0 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GB5 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element HR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element HU1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IE5 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IT3 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LT6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LU1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LV6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ME1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element MK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element NL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element NO2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element PL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element PT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element RO1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element RS1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SE2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SI1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BA1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BE1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BG1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CH1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CZ1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DE1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element EE6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES4 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FI2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB0 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB5 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HU1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IE5 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT3 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LT6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LU1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LV6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ME1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element MK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NO2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RO1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RS1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SE2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SI1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BA1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BE1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BG1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CH1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CZ1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DE1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element EE6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES4 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FI2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB0 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB5 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HU1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IE5 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT3 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LT6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LU1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LV6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ME1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element MK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NO2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RO1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RS1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SE2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SI1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element AL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element AT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BA1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BE1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element BG1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element CH1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element CZ1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DE1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element DK2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element EE6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ES1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ES4 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element FI2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element FR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GB0 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GB5 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element GR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element HR1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element HU1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IE5 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element IT3 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LT6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LU1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element LV6 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element ME1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element MK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element NL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element NO2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element PL1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element PT1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element RO1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element RS1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SE2 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SI1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute e_min_pu of element SK1 0 battery storage of stores has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BA1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BE1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BG1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CH1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CZ1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DE1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element EE6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES4 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FI2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB0 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB5 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HR1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HU1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IE5 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT3 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LT6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LU1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LV6 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ME1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element MK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NO2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PL1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PT1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RO1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RS1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SE2 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SI1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SK1 0 BEV charger of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element AT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BA1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BE1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element BG1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CH1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element CZ1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DE1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element DK2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element EE6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ES4 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FI2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element FR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB0 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GB5 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element GR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HR1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element HU1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IE5 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element IT3 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LT6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LU1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element LV6 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element ME1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element MK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element NO2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PL1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element PT1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RO1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element RS1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SE2 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SI1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+WARNING:pypsa.components:The attribute p_max_pu of element SK1 0 V2G of links has NaN values for the following snapshots:
+DatetimeIndex(['2013-01-02', '2013-01-03', '2013-01-05', '2013-01-06',
+               '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10',
+               '2013-01-11', '2013-01-12',
+               ...
+               '2013-12-12', '2013-12-14', '2013-12-15', '2013-12-16',
+               '2013-12-17', '2013-12-18', '2013-12-19', '2013-12-20',
+               '2013-12-21', '2013-12-22'],
+              dtype='datetime64[ns]', name='snapshot', length=325, freq=None)
+INFO:linopy.model: Solve linear problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs/test-tgi/elec_s_37_lv1.1_32SEG_24H-T-H-B-I-A_2050_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 10
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e9
+ - primal_feasibility_tolerance: 1e-5
+ - dual_feasibility_tolerance: 1e-5
+ - ipm_optimality_tolerance: 1e-4
+ - parallel: on
+ - random_seed: 123
+INFO:linopy.io:Writing objective.
+INFO:linopy.io: Writing time: 10.67s
+INFO:linopy.solvers:Log file at logs/test-tgi/elec_s_37_lv1.1_32SEG_24H-T-H-B-I-A_2050_solver.log.
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 1299423 primals, 2713955 duals
+Objective: 2.71e+13
+Solver model: available
+Solver message: optimal
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Kirchhoff-Voltage-Law were not assigned to the network.
+INFO:pypsa.io:Exported network elec_s_37_lv1.1_32SEG_24H-T-H-B-I-A_2050.nc has lines, generators, stores, links, storage_units, buses, carriers, global_constraints, loads
+INFO:__main__:Maximum memory usage: (3718.984375, 1690300907.924489)

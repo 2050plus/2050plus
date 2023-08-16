@@ -1,0 +1,11 @@
+cluster,37,37,37,37
+ll,v1.1,v1.1,v1.1,v1.1
+opt,32SEG24H-T-H-B-I-A,64SEG24H-T-H-B-I-A,128SEG24H-T-H-B-I-A,1024SEG24H-T-H-B-I-A
+planning_horizon,2050,2050,2050,2050
+electricity,,,,
+heat,,,,
+space heat,,,,
+urban heat,,,,
+space urban heat,,,,
+gas,,,,
+H2,,,,

@@ -1,0 +1,11 @@
+Presolving model
+536916 rows, 553439 cols, 1875108 nonzeros
+536916 rows, 553408 cols, 1875077 nonzeros
+Presolve : Reductions: rows 536916(-645374); columns 553408(-21274); elements 1875077(-672424)
+Solving the presolved LP
+IPX model has 536916 rows, 553408 columns and 1875077 nonzeros
+Ipx: IPM       optimal
+Model   status      : Optimal
+IPM       iterations: 136
+Objective value     :  1.2012977703e+11
+HiGHS run time      :       2967.85

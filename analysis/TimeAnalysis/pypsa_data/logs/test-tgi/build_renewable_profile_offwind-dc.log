@@ -1,0 +1,6 @@
+INFO:__main__:correction_factor is set as 0.8855
+INFO:atlite.convert:Convert and aggregate 'wind'.
+INFO:atlite.convert:Convert and aggregate 'wind'.
+INFO:__main__:Calculating maximal capacity per bus (method 'simple')
+INFO:__main__:Calculate average distances.
+INFO:__main__:Calculate underwater fraction of connections.

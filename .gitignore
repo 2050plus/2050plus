@@ -59,6 +59,7 @@ publications.jrc.ec.europa.eu/
 /pypsa
 
 *.xlsx
+!analysis/*/*.xlsx
 
 doc/_build
 

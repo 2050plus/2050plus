@@ -1,0 +1,29 @@
+INFO:pypsa.io:Imported network elec_s_37_lv1.1__72H_2050.nc has buses, carriers, generators, global_constraints, lines, links, loads, storage_units, stores
+WARNING:__main__:Existing capacities larger than technical potential for Index(['ES4 0 onwind-2050'], dtype='object', name='Generator'),                       adjust technical potential to existing capacities
+INFO:linopy.model: Solve linear problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs/test-tgi/elec_s_37_lv1.1__72H_2050_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 10
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e9
+ - primal_feasibility_tolerance: 1e-5
+ - dual_feasibility_tolerance: 1e-5
+ - ipm_optimality_tolerance: 1e-4
+ - parallel: on
+ - random_seed: 123
+INFO:linopy.io:Writing objective.
+INFO:linopy.io: Writing time: 1.59s
+INFO:linopy.solvers:Log file at logs/test-tgi/elec_s_37_lv1.1__72H_2050_solver.log.
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 192686 primals, 395942 duals
+Objective: 1.07e+11
+Solver model: available
+Solver message: optimal
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Kirchhoff-Voltage-Law were not assigned to the network.
+INFO:pypsa.io:Exported network elec_s_37_lv1.1__72H_2050.nc has stores, lines, global_constraints, storage_units, generators, loads, carriers, buses, links
+INFO:__main__:Maximum memory usage: (1524.84375, 1690436285.447038)
