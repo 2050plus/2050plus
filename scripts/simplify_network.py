@@ -495,7 +495,7 @@ def cluster(
         n_clusters,
         custom_busmap=False,
         aggregation_strategies=aggregation_strategies,
-        solver_name=config["solving"]["solver"]["name"],
+        solver_name="ipopt",  # config["solving"]["solver"]["name"],
         algorithm=algorithm,
         feature=feature,
         focus_weights=focus_weights,
