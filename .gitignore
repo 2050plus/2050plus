@@ -59,6 +59,7 @@ publications.jrc.ec.europa.eu/
 /pypsa
 
 *.xlsx
+!scenario_builder_tool_input.xlsx
 !analysis/*/*.xlsx
 
 doc/_build

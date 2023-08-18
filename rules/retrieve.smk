@@ -158,6 +158,19 @@ rule retrieve_load_data:
         move(input[0], output[0])
 
 
+rule retrieve_load_futur:
+    input:
+        scenario_builder="scenario_builder_tool_input.xlsx"
+    output:
+        directory("data/patex")
+    log:
+        LOGS + "retrieve_load_futur.log",
+    retries: 5
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/retrieve_load_futur.py"
+
 rule retrieve_ship_raster:
     input:
         HTTP.remote(
