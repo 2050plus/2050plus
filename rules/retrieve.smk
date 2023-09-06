@@ -159,17 +159,18 @@ rule retrieve_load_data:
 
 
 rule retrieve_load_futur:
-    input:
-        scenario_builder="scenario_builder_tool_input.xlsx"
-    output:
-        directory("data/patex")
-    log:
-        LOGS + "retrieve_load_futur.log",
-    retries: 5
-    conda:
-        "../envs/environment.yaml"
-    script:
-        "../scripts/retrieve_load_futur.py"
+	input:
+		scenario_builder=ancient("scenario_builder_tool_input.xlsx"),
+		load = RESOURCES + "load.csv",
+	output:
+		"data/patex/scenarios/patex_{planning_horizons}.csv"
+	log:
+		LOGS + "retrieve_load_futur_{planning_horizons}.log",
+	retries: 5
+	conda:
+		"../envs/environment.yaml"
+	script:
+		"../scripts/retrieve_load_futur.py"
 
 rule retrieve_ship_raster:
     input:
