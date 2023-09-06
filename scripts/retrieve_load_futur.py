@@ -10,7 +10,7 @@ Parse scenario builder and compute request to API.
 
 import json
 import logging
-import re
+import re, os
 from pathlib import Path
 
 import pandas as pd
@@ -66,7 +66,7 @@ def load_scenario_builder():
     :return df_scenarios: Dataframe of scenarios
     :return metrics: List of levers
     """
-    return pd.read_excel(snakemake.input.scenario_builder, sheet_name="Levers", header=[0, 1]).iloc[:, 5:], \
+    return pd.read_excel(snakemake.input.scenario_builder, sheet_name="Levers", header=[0, 1]).iloc[:, 4:], \
         list(pd.read_excel(snakemake.input.scenario_builder, sheet_name="Variables")["metrics"])
 
 
@@ -190,7 +190,7 @@ def format_results(results):
     return pd.concat(df_results).reset_index(drop=False)
 
 
-def write_files(df_results):
+def write_files(df_results,historical_load_h):
     """
     Temporary export for PyPSA
     """
@@ -206,11 +206,38 @@ def write_files(df_results):
         "tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]": "TR_bus",
         "tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]": "TR_bus",
         "tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]": "TR_rail",
-        "tra_energy-demand_domestic_electricity_CEV_passenger_rail[TWh]": "TR_rail"
+        "tra_energy-demand_domestic_electricity_CEV_passenger_rail[TWh]": "TR_rail",
+        "bld_energy-demand_non-residential_heating_electricity[TWh]" : "HE_ter_spa",
+        "bld_energy-demand_non-residential_hotwater_electricity[TWh]" : "HE_ter_wat",
+        "bld_energy-demand_residential_heating_electricity[TWh]": "HE_res_spa",
+        "bld_energy-demand_residential_hotwater_electricity[TWh]": 'HE_res_wat',
+        "ind_energy-demand-by-carrier_electricity[TWh]" : "IN_tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]" : "SU_tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]" : "SU_tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_agr[TWh]": "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_bld[TWh]": "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_ind[TWh]": "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_tra[TWh]" : "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-sector[TWh]" : "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-power-prod[TWh]" : "tot" ,
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_efuels[TWh]" : "tot",
+        # "elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-CHP[TWh]" : "tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-only[TWh]" : "tot",
     }
-
+    metric_map_bis = {
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]" :"tot",
+        "elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]" : "tot",
+    }
+    
+    #because supply is used twice
+    df_results_bis = df_results[df_results["metric_id"].isin(metric_map_bis.keys())]
+    df_results_bis.loc[:,"metric_id"] = df_results_bis.loc[:,"metric_id"].replace(metric_map_bis)
+    
     df_results = df_results[df_results["metric_id"].isin(metric_map.keys())]
-    df_results["metric_id"] = df_results["metric_id"].replace(metric_map)
+    df_results.loc[:,"metric_id"] = df_results.loc[:,"metric_id"].replace(metric_map)
+    
+    df_results = pd.concat([df_results,df_results_bis],axis=0)
+    df_results.loc[:,'region'] = df_results.loc[:,'region'].str.replace('EL','GR')
 
 
     # #Manual scaling for non-MS 
@@ -230,6 +257,10 @@ def write_files(df_results):
        values.iloc[:,4:-1] *=  historical_load_h[non_MS].sum()/historical_load_h[MS].sum()
        values.replace({MS:non_MS},inplace=True)
        non_MS_load += [values]
+
+
+    df_results = pd.concat([df_results] + non_MS_load,axis=0)
+
     # Hypothesis : One unique scenario for each country
     df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
     df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
