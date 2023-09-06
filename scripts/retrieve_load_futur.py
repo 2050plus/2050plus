@@ -211,6 +211,25 @@ def write_files(df_results):
 
     df_results = df_results[df_results["metric_id"].isin(metric_map.keys())]
     df_results["metric_id"] = df_results["metric_id"].replace(metric_map)
+
+
+    # #Manual scaling for non-MS 
+    dict_non_MS =   {'AL': 'GR',
+                     'MK': 'GR',
+                     'NO': 'SK',
+                     'CH': 'FR',
+                     'GB': 'FR',
+                     'BA': 'HR',
+                     'KV': 'HU',
+                     'RS': 'HU',
+                     'ME': 'GR' }
+    
+    non_MS_load = []
+    for non_MS, MS in dict_non_MS.items() :
+       values = df_results[df_results["region"]==MS]
+       values.iloc[:,4:-1] *=  historical_load_h[non_MS].sum()/historical_load_h[MS].sum()
+       values.replace({MS:non_MS},inplace=True)
+       non_MS_load += [values]
     # Hypothesis : One unique scenario for each country
     df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
     df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
