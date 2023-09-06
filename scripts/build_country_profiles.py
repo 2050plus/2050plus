@@ -91,6 +91,8 @@ def build_transport_profiles(snapshots, nodes=[]):
             HDV_count = lzg + sat + loa
             HDV_count.to_csv(mobility_fn + "HDV__count")
             traffic = HDV_count["count"]
+            HDV_count = pd.concat([HDV_count.iloc[:2],HDV_count])
+            HDV_count.to_csv(mobility_fn + "HDV__count")          
         else:
             traffic = pd.read_csv(traffic_fn, skiprows=2, usecols=["count"]).squeeze("columns")
 
