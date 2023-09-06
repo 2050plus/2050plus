@@ -194,7 +194,6 @@ def write_files(df_results):
     """
     Temporary export for PyPSA
     """
-    horizons = [2013, 2030, 2040, 2050]
 
     metric_map = {
         "tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]": "TR_hdv",
@@ -215,10 +214,11 @@ def write_files(df_results):
     # Hypothesis : One unique scenario for each country
     df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
     df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
+    df_results_y = df_results.set_index("key")[[int(horizon)]] * 1e6   
+   
 
-    for y in horizons:
-        df_results_y = df_results.set_index("key")[[y]] * 1e6
-        df_results_y.T.to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
+    df_results_y.T.to_csv(snakemake.output[0])    
+
 
 
 if __name__ == "__main__":
@@ -228,7 +228,11 @@ if __name__ == "__main__":
         snakemake = mock_snakemake("retrieve_load_futur")
 
     configure_logging(snakemake)
-
+    
+    #horizons = snakemake.config['scenario']['planning_horizons']
+    horizon = snakemake.wildcards.planning_horizons
+    historical_load_h = pd.read_csv(snakemake.input[1],index_col='utc_timestamp',parse_dates=True)
+    
     # Load configuration
     logging.info("Loading configuration")
     df_scenarios, metrics = load_scenario_builder()
@@ -245,4 +249,4 @@ if __name__ == "__main__":
 
     # Writing data
     logging.info("Writing data")
-    write_files(df_results)
+    write_files(df_results,historical_load_h)
