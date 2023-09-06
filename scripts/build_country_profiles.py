@@ -117,39 +117,43 @@ def build_country_profiles(heat_profiles, transport_profiles, snapshots):
     sectors = set([re.sub(r"^[A-Z]{2}_(.*)$", r"\1", i) for i in load_annual.columns]) - set(["tot", "TR_tot"])
 
     profiles = pd.DataFrame()
+    profiles = []
+    clustered_pop = pd.read_csv(snakemake.input.clustered_pop_layout).set_index("name")
     for country in snakemake.config["countries"]:
         # Use population fraction to weight profiles in each country
         nodes = list(set([i for i, j in heat_profiles.columns if country in i]))
         nodes_fraction = pd.read_csv(snakemake.input.clustered_pop_layout).set_index("name").loc[
             nodes, "fraction"].to_dict()
 
+        nodes_fraction = clustered_pop.loc[nodes, "fraction"].to_dict()
+        
+        heat_profiles_country = (heat_profiles[nodes]
+                                .apply(lambda x: nodes_fraction[x.name[0]] * x)
+                                .groupby(level=["uses"], axis=1)
+                                .sum()
+                                )
+        transport_profiles_country = (transport_profiles[nodes]
+                                    .apply(lambda x: nodes_fraction[x.name[0]] * x)
+                                    .groupby(level=["uses"], axis=1)
+                                    .sum()
+                                    )
         for sector in sectors:
             if "IN" in sector or "SU" in sector:
-                profiles[country + '_' + sector] = np.ones(len(snapshots)) / 8760
+                ind_su_profile = np.ones(len(snapshots)) / 8760
+                profiles += [pd.DataFrame(ind_su_profile,columns=[country + '_' + sector])]
                 logging.debug(f"{'Industry' if 'IND' in sector else 'Supply'} ({sector}) profile sum for {country}"
-                              f": {profiles[country + '_' + sector].sum():.2f}")
+                              f": {ind_su_profile.sum():.2f}")
             elif "HE_" in sector:
-                heat_profile = (
-                    heat_profiles[nodes]
-                    .apply(lambda x: nodes_fraction[x.name[0]] * x)
-                    .groupby(level=["uses"], axis=1)
-                    .sum()
-                    [sector]
-                )
-                profiles[country + '_' + sector] = heat_profile.values
+                heat_profile = heat_profiles_country[sector]
+                profiles += [pd.DataFrame(heat_profile.values,columns=[country + '_' + sector])]
                 logging.debug(f"Heat ({sector}) profile sum for {country}: {heat_profile.sum():.2f}")
 
             elif "TR_" in sector:
-                transport_profile = (
-                    transport_profiles[nodes]
-                    .apply(lambda x: nodes_fraction[x.name[0]] * x)
-                    .groupby(level=["uses"], axis=1)
-                    .sum()
-                    [sector]
-                )
-                profiles[country + '_' + sector] = transport_profile.values
+                transport_profile = transport_profiles_country[sector]  
+                profiles += [pd.DataFrame(transport_profile.values,columns=[country + '_' + sector])]
                 logging.debug(f"Transport ({sector}) profile sum for {country}: {transport_profile.sum():.2f}")
 
+    profiles = pd.concat(profiles,axis=1)
     return profiles.set_index(snapshots)
 
 
