@@ -105,15 +105,28 @@ def _add_land_use_constraint_m(n, config):
             if y < int(snakemake.wildcards.planning_horizons)
         ]
 
-        for p_year in previous_years:
-            ind2 = [
-                i for i in ind if i + " " + carrier + "-" + p_year in existing.index
-            ]
-            sel_current = [i + " " + carrier + "-" + current_horizon for i in ind2]
-            sel_p_year = [i + " " + carrier + "-" + p_year for i in ind2]
-            n.generators.loc[sel_current, "p_nom_max"] -= existing.loc[
-                sel_p_year
-            ].rename(lambda x: x[:-4] + current_horizon)
+    for p_year in previous_years:
+        ind2 = [
+            i for i in ind if i + " " + carrier + "-" + p_year in existing.index
+        ]
+        sel_current = [i + " " + carrier + "-" + current_horizon for i in ind2]
+        sel_p_year = [i + " " + carrier + "-" + p_year for i in ind2]
+        n.generators.loc[sel_current, "p_nom_max"] -= existing.loc[
+            sel_p_year
+        ].rename(lambda x: x[:-4] + current_horizon)
+
+    # check if existing capacities are larger than technical potential
+    existing_large = n.generators[
+        n.generators["p_nom_min"] > n.generators["p_nom_max"]
+    ].index
+    if len(existing_large):
+        logger.warning(
+            f"Existing capacities larger than technical potential for {existing_large},\
+                       adjust technical potential to existing capacities"
+        )
+        n.generators.loc[existing_large, "p_nom_min"] = n.generators.loc[
+            existing_large, "p_nom_max"
+        ]
 
     n.generators.p_nom_max.clip(lower=0, inplace=True)
 
