@@ -22,6 +22,24 @@ from _helpers import configure_logging
 URL_TO_USE = "prod url"
 # URL_TO_USE = "test url"
 
+METRIC_MAP = {
+    "tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]": "TR_hdv",
+    "tra_energy-demand_domestic_electricity_PHEV_freight_HDV[TWh]": "TR_hdv",
+    "tra_energy-demand_domestic_electricity_PHEVCE_freight_HDV[TWh]": "TR_hdv",
+    "tra_energy-demand_domestic_electricity_BEV_freight_LDV[TWh]": "TR_ldv",
+    "tra_energy-demand_domestic_electricity_PHEV_freight_LDV[TWh]": "TR_ldv",
+    "tra_energy-demand_domestic_electricity_BEV_passenger_LDV[TWh]": "TR_cars",
+    "tra_energy-demand_domestic_electricity_PHEV_passenger_LDV[TWh]": "TR_cars",
+    "tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]": "TR_bus",
+    "tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]": "TR_bus",
+    "tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]": "TR_rail",
+    "bld_energy-demand-by-end-use_residential_hotwater[TWh]": "HE_res_wat",  # Dummy
+    "bld_energy-demand-by-end-use_residential_heating[TWh]": "HE_res_spa",  # Dummy
+    "bld_energy-demand-by-end-use_non-residential_hotwater[TWh]": "HE_ter_wat",  # Dummy
+    "bld_energy-demand-by-end-use_non-residential_heating[TWh]": "HE_ter_spa",  # Dummy
+    "ind_energy-demand-by-feedstock_excl-feedstock[TWh]": "IN_tot",  # Dummy
+}
+
 TEMPLATE_REQUEST = """
 {
   "levers":
@@ -42,8 +60,7 @@ API = {
     }
 }
 
-# GLOBAL VARS
-RX_SCENARIO_EU27_SUM = re.compile("^\[([A-z]+)\]\s(.*)$")
+RX_SCENARIO = re.compile("^\[([A-z]+)\]\s(.*)$")
 
 
 def __safely_to_int(f):
@@ -66,8 +83,7 @@ def load_scenario_builder():
     :return df_scenarios: Dataframe of scenarios
     :return metrics: List of levers
     """
-    return pd.read_excel(snakemake.input.scenario_builder, sheet_name="Levers", header=[0, 1]).iloc[:, 5:], \
-        list(pd.read_excel(snakemake.input.scenario_builder, sheet_name="Variables")["metrics"])
+    return pd.read_excel(snakemake.input.scenario_builder, sheet_name="Levers", header=[0, 1]).iloc[:, 4:]
 
 
 def get_eu27_countries():
@@ -78,26 +94,25 @@ def get_eu27_countries():
             "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"]
 
 
-def fill_scenario_list(df_scenarios, eu27_countries):
+def fill_scenario_list(df_scenarios):
     """
     Based on country list and scenario builder,
     create a complete list of scenario.
 
     :param df_scenarios: Defined scenarios and given exception
-    :param eu27_countries: List of countries in EU27
     :return scenarios_list: Complete list of scenarios as
         {
         [(master region 1, scenario name 1)] : {[country 1] : [levers 1],[country 2] : [levers 2]},
         [(master region 2, scenario name 2] : {[country 1] : [levers 3],[country 2] : [levers 4]}
         }
     """
-    scenarios_short_list = [c for c in df_scenarios.columns if not RX_SCENARIO_EU27_SUM.match(c[1])]
+    scenarios_short_list = [c for c in df_scenarios.columns if not RX_SCENARIO.match(c[1])]
 
     scenarios_dict = {}
     for master_region, name in scenarios_short_list:
         scenarios_dict_by_scenario = {}
         if master_region == "EU27 as sum":
-            for eu27_c in eu27_countries:
+            for eu27_c in get_eu27_countries():
                 exception_name = f"[{eu27_c}] {name}"
                 if exception_name in df_scenarios.columns.levels[1]:
                     levers = df_scenarios.loc[:, (master_region, exception_name)]
@@ -140,7 +155,9 @@ def get_results(scenarios_dict, variables_list):
         levers = "{\n"
         for c, l in values.items():
             logging.debug(f"                Getting '{c}'")
-            levers += f'        "{c}":\n        {{\n            "PyClimact":\n            {{\n                "static_levers":\n                {str([__safely_to_int(li) for li in l])},\n                "dynamic_levers":\n                {{}}\n            }}\n        }},\n'
+            levers += f'        "{c}":\n        {{\n            "PyClimact":\n            {{\n                ' \
+                      f'"static_levers":\n                {str([__safely_to_int(li) for li in l])},\n                ' \
+                      f'"dynamic_levers":\n                {{}}\n            }}\n        }},\n'
         levers = levers.rsplit(",\n", 1)[0] + "\n    }"
 
         # Add scenarios in request payload
@@ -166,6 +183,7 @@ def get_results(scenarios_dict, variables_list):
 def format_results(results):
     """
     Format received JSON into dataframe
+    Change unit from TWh to kWh (* 1e6)
 
     :param results: data in JSON format
     :return df_results: data in dataframe
@@ -178,8 +196,8 @@ def format_results(results):
         names = []
         for i in values:
             data.append(i['data'])
-            if RX_SCENARIO_EU27_SUM.match(scenario):
-                region = RX_SCENARIO_EU27_SUM.match(scenario).group(1)
+            if RX_SCENARIO.match(scenario):
+                region = RX_SCENARIO.match(scenario).group(1)
             else:
                 region = master_region
             names.append((scenario, region, i['id'], i['title']))
@@ -187,38 +205,30 @@ def format_results(results):
             pd.DataFrame(data, index=pd.MultiIndex.from_tuples(names, names=['scenario', 'region', 'metric_id',
                                                                              'metric_name']),
                          columns=timeAxis))
-    return pd.concat(df_results).reset_index(drop=False)
+
+    df_results = pd.concat(df_results).reset_index(drop=False)
+
+    df_results = df_results[df_results["metric_id"].isin(METRIC_MAP.keys())]
+    df_results["metric_id"] = df_results["metric_id"].replace(METRIC_MAP)
+    # Hypothesis : One unique scenario for each country
+    df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
+    df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
+    df_results = df_results.set_index("key")
+
+    horizons = [pd.Timestamp(snakemake.config["snapshots"]["start"]).year] + \
+               snakemake.config["scenario"]["planning_horizons"]
+
+    df_results = df_results[horizons] * 1e6
+
+    return df_results
 
 
 def write_files(df_results):
     """
-    Temporary export for PyPSA
+    Export of data
     """
-    horizons = [2013, 2030, 2040, 2050]
-
-    metric_map = {
-        "tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]": "TR_hdv",
-        "tra_energy-demand_domestic_electricity_PHEV_freight_HDV[TWh]": "TR_hdv",
-        "tra_energy-demand_domestic_electricity_PHEVCE_freight_HDV[TWh]": "TR_hdv",
-        "tra_energy-demand_domestic_electricity_BEV_freight_LDV[TWh]": "TR_ldv",
-        "tra_energy-demand_domestic_electricity_PHEV_freight_LDV[TWh]": "TR_ldv",
-        "tra_energy-demand_domestic_electricity_BEV_passenger_LDV[TWh]": "TR_cars",
-        "tra_energy-demand_domestic_electricity_PHEV_passenger_LDV[TWh]": "TR_cars",
-        "tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]": "TR_bus",
-        "tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]": "TR_bus",
-        "tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]": "TR_rail",
-        "tra_energy-demand_domestic_electricity_CEV_passenger_rail[TWh]": "TR_rail"
-    }
-
-    df_results = df_results[df_results["metric_id"].isin(metric_map.keys())]
-    df_results["metric_id"] = df_results["metric_id"].replace(metric_map)
-    # Hypothesis : One unique scenario for each country
-    df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
-    df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
-
-    for y in horizons:
-        df_results_y = df_results.set_index("key")[[y]] * 1e6
-        df_results_y.T.to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
+    for y in df_results.columns:
+        df_results[[y]].T.to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
 
 
 if __name__ == "__main__":
@@ -231,13 +241,12 @@ if __name__ == "__main__":
 
     # Load configuration
     logging.info("Loading configuration")
-    df_scenarios, metrics = load_scenario_builder()
-    eu27_countries = get_eu27_countries()
-    scenarios_dict = fill_scenario_list(df_scenarios, eu27_countries)
+    df_scenarios = load_scenario_builder()
+    scenarios_dict = fill_scenario_list(df_scenarios)
 
     # Getting data from API
     logging.info("Getting data from API")
-    results = get_results(scenarios_dict, metrics)
+    results = get_results(scenarios_dict, METRIC_MAP.keys())
 
     # Formatting data
     logging.info("Formatting data")
