@@ -10,7 +10,7 @@ Parse scenario builder and compute request to API.
 
 import json
 import logging
-import re, os
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -66,6 +66,7 @@ def load_scenario_builder():
     :return df_scenarios: Dataframe of scenarios
     :return metrics: List of levers
     """
+
     return pd.read_excel(snakemake.input.scenario_builder, sheet_name="Levers", header=[0, 1]).iloc[:, 4:], \
         list(pd.read_excel(snakemake.input.scenario_builder, sheet_name="Variables")["metrics"])
 
@@ -270,7 +271,6 @@ def write_files(df_results,historical_load_h):
     df_results_y.T.to_csv(snakemake.output[0])    
 
 
-
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
@@ -282,7 +282,7 @@ if __name__ == "__main__":
     #horizons = snakemake.config['scenario']['planning_horizons']
     horizon = snakemake.wildcards.planning_horizons
     historical_load_h = pd.read_csv(snakemake.input[1],index_col='utc_timestamp',parse_dates=True)
-    
+
     # Load configuration
     logging.info("Loading configuration")
     df_scenarios, metrics = load_scenario_builder()
@@ -300,3 +300,4 @@ if __name__ == "__main__":
     # Writing data
     logging.info("Writing data")
     write_files(df_results,historical_load_h)
+

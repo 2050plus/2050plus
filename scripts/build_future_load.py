@@ -59,7 +59,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
                      .sum(axis=1)
                  )
                  ).mean()
-                * nyears * residual_profile[c].values
+                * residual_profile[c].values
         )
         # ToDo Set tr_losses as option in yaml
         tr_losses = 0.05
@@ -89,8 +89,10 @@ if __name__ == "__main__":
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
 
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True,
-                                    index_col='year') * 1e6
+    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',',index_col=0, parse_dates=True)
+    load_annual_futur.index.names = ["year"]
+    logging.info(load_annual_futur)
+
     profiles = pd.read_csv(snakemake.input.profiles)
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
     transport_map = pd.read_csv(snakemake.input.transport_map).to_dict(orient="index")[0]

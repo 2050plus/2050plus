@@ -93,6 +93,7 @@ def build_transport_profiles(snapshots, nodes=[]):
             traffic = HDV_count["count"]
             HDV_count = pd.concat([HDV_count.iloc[:2],HDV_count])
             HDV_count.to_csv(mobility_fn + "HDV__count")          
+
         else:
             traffic = pd.read_csv(traffic_fn, skiprows=2, usecols=["count"]).squeeze("columns")
 
@@ -119,6 +120,7 @@ def build_country_profiles(heat_profiles, transport_profiles, snapshots):
     profiles = pd.DataFrame()
     profiles = []
     clustered_pop = pd.read_csv(snakemake.input.clustered_pop_layout).set_index("name")
+
     for country in snakemake.config["countries"]:
         # Use population fraction to weight profiles in each country
         nodes = list(set([i for i, j in heat_profiles.columns if country in i]))
@@ -154,6 +156,7 @@ def build_country_profiles(heat_profiles, transport_profiles, snapshots):
                 logging.debug(f"Transport ({sector}) profile sum for {country}: {transport_profile.sum():.2f}")
 
     profiles = pd.concat(profiles,axis=1)
+
     return profiles.set_index(snapshots)
 
 
