@@ -89,7 +89,7 @@ if __name__ == "__main__":
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
 
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',',index_col=0, parse_dates=True)
+    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', index_col=0, parse_dates=True)
     load_annual_futur.index.names = ["year"]
     logging.info(load_annual_futur)
 
