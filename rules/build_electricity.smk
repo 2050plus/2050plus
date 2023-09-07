@@ -56,7 +56,7 @@ rule build_country_profiles:
 rule build_residual_load_profile:
     input:
         load_hourly=RESOURCES + "load.csv",
-        load_annual="data/patex/scenarios/patex_" + config["snapshots"]["start"][:4]+ ".csv",
+        load_annual="data/patex/patex_" + config["snapshots"]["start"][:4]+ ".csv",
         profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
         heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
         transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv"
@@ -78,7 +78,7 @@ rule build_future_load:
         profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
         heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
         transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv",
-        load_annual="data/patex/scenarios/patex_{planning_horizons}.csv",
+        load_annual="data/patex/patex_{planning_horizons}.csv",
     output:
         load_future=RESOURCES + "load_elec_s{simpl}_{clusters}____{planning_horizons}.csv"
     resources:
