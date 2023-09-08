@@ -9,6 +9,7 @@ Creates sub sectors profiles based on desegregated annual values and hourly refe
 
 import logging
 import re
+import datetime
 from itertools import product
 from os.path import exists
 
@@ -89,11 +90,12 @@ def build_transport_profiles(snapshots, nodes=[]):
             lzg = pd.read_csv(mobility_fn + "/Lzg__count", skiprows=2)
             sat = pd.read_csv(mobility_fn + "/Sat__count", skiprows=2)
             HDV_count = lzg + sat + loa
-            HDV_count.to_csv(mobility_fn + "HDV__count")
+            with open(traffic_fn, 'w') as fd:
+                fd.write(
+                    f"File generated for type: HDV_\n"
+                    f"Time of generation:{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                HDV_count.to_csv(fd, index=False)
             traffic = HDV_count["count"]
-            HDV_count = pd.concat([HDV_count.iloc[:2],HDV_count])
-            HDV_count.to_csv(mobility_fn + "HDV__count")          
-
         else:
             traffic = pd.read_csv(traffic_fn, skiprows=2, usecols=["count"]).squeeze("columns")
 
