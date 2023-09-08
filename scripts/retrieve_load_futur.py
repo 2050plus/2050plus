@@ -281,7 +281,7 @@ if __name__ == "__main__":
     
     #horizons = snakemake.config['scenario']['planning_horizons']
     horizon = snakemake.wildcards.planning_horizons
-    historical_load_h = pd.read_csv(snakemake.input[1],index_col='utc_timestamp',parse_dates=True)
+    historical_load_h = pd.read_csv(snakemake.input.load_hourly,index_col='utc_timestamp',parse_dates=True)
 
     # Load configuration
     logging.info("Loading configuration")
