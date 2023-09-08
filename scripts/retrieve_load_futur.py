@@ -265,8 +265,11 @@ def write_files(df_results):
     """
     Export of data
     """
-    for y in df_results.columns:
-        df_results[[y]].T.to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
+    df_results = df_results.T
+    df_results.index = df_results.index.set_names("year")
+
+    for y in df_results.index:
+        df_results.loc[[y]].to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
 
 
 if __name__ == "__main__":
