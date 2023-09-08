@@ -147,7 +147,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
     technology_to_drop = ["Pv", "Storage Technologies"]
 
-    # drop unused fueltyps and technologies
+    # drop unused fueltypes and technologies
     df_agg.drop(df_agg.index[df_agg.Fueltype.isin(fueltype_to_drop)], inplace=True)
     df_agg.drop(df_agg.index[df_agg.Technology.isin(technology_to_drop)], inplace=True)
     df_agg.Fueltype = df_agg.Fueltype.map(rename_fuel)
@@ -164,6 +164,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
     )
     df_agg.loc[biomass_i, "DateOut"] = df_agg.loc[biomass_i, "DateOut"].fillna(dateout)
 
+    # Enforce phasing out of specified carriers
+    exit_techs = snakemake.config["existing_capacities"]["exit_year"]
+    for carrier, year in exit_techs.items():
+        carrier_exit_i = (df_agg.Fueltype == carrier) & (df_agg.DateOut > year)
+        df_agg.loc[carrier_exit_i, "DateOut"] = year
+    
     # drop assets which are already phased out / decommissioned
     phased_out = df_agg[df_agg["DateOut"] < baseyear].index
     df_agg.drop(phased_out, inplace=True)
@@ -268,7 +274,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
                         bus=ind,
                         carrier=generator,
                         p_nom=new_capacity[ind]
-                        / len(inv_ind),  # split among regions in a country
+                        /(len(inv_ind) if len(inv_ind) >= 1 else 1) ,  # split among regions in a country
                         marginal_cost=marginal_cost,
                         capital_cost=capital_cost,
                         efficiency=costs.at[generator, "efficiency"],

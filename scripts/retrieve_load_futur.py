@@ -295,4 +295,4 @@ if __name__ == "__main__":
 
     # Writing data
     logging.info("Writing data")
-    write_files(df_results)
+    write_files(df_results,historical_load_h)

@@ -24,10 +24,6 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
     4. Supply: We use a rule of thumb on total to go from annual to hourly values. Then, assume transmission losses as load.
     5. Compute residual load for each country
     """
-    nyears = len(snapshots) / 8760
-    if nyears != 1:
-        logging.warning(f"Snapshots used to compute profiles are not on one year, which can be hazardous.")
-
     load_annual = load_annual.reindex(index=snapshots, method="ffill")
 
     load_futur = pd.DataFrame([])
@@ -59,7 +55,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
                      .sum(axis=1)
                  )
                  ).mean()
-                * nyears * residual_profile[c].values
+                * residual_profile[c].values
         )
         # ToDo Set tr_losses as option in yaml
         tr_losses = 0.05
@@ -89,8 +85,8 @@ if __name__ == "__main__":
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
 
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True,
-                                    index_col='year') * 1e6
+    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
+
     profiles = pd.read_csv(snakemake.input.profiles)
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
     transport_map = pd.read_csv(snakemake.input.transport_map).to_dict(orient="index")[0]

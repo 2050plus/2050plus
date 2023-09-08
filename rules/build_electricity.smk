@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: : 2023 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
+import pandas as pd
+import snakemake
 
 if config["enable"].get("prepare_links_p_nom", False):
 
@@ -35,8 +37,8 @@ rule build_load_data:
 
 rule build_country_profiles:
     input:
-        load_hourly = RESOURCES + "load.csv",
-        load_annual = "data/patex/patex_2013.csv",
+        load_hourly=RESOURCES + "load.csv",
+        load_annual=f"data/patex/patex_{pd.Timestamp(config['snapshots']['start']).year}.csv",
         mobility_fn="data/emobility/",
         heat_demand_total=RESOURCES + "heat_demand_total_elec_s{simpl}_{clusters}.nc",
         heat_profile="data/heat_load_profile_BDEW.csv",
@@ -56,7 +58,7 @@ rule build_country_profiles:
 rule build_residual_load_profile:
     input:
         load_hourly=RESOURCES + "load.csv",
-        load_annual="data/patex/patex_2013.csv",
+        load_annual=f"data/patex/patex_{pd.Timestamp(config['snapshots']['start']).year}.csv",
         profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
         heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
         transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv"

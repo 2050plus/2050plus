@@ -163,9 +163,9 @@ rule retrieve_load_futur:
         scenario_builder="scenario_builder_tool_input.xlsx",
         load_hourly= RESOURCES + "load.csv"
     output:
-        directory("data/patex")
+        "data/patex/patex_{planning_horizons}.csv"
     log:
-        LOGS + "retrieve_load_futur.log",
+        LOGS + "retrieve_load_futur_{planning_horizons}.log",
     retries: 5
     conda:
         "../envs/environment.yaml"

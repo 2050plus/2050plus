@@ -115,6 +115,19 @@ def _add_land_use_constraint_m(n, config):
                 sel_p_year
             ].rename(lambda x: x[:-4] + current_horizon)
 
+    # check if existing capacities are larger than technical potential
+    existing_large = n.generators[
+        n.generators["p_nom_min"] > n.generators["p_nom_max"]
+    ].index
+    if len(existing_large):
+        logger.warning(
+            f"Existing capacities larger than technical potential for {existing_large},\
+                       adjust technical potential to existing capacities"
+        )
+        n.generators.loc[existing_large, "p_nom_min"] = n.generators.loc[
+            existing_large, "p_nom_max"
+        ]
+
     n.generators.p_nom_max.clip(lower=0, inplace=True)
 
 
