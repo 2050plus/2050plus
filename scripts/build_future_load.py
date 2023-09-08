@@ -85,9 +85,7 @@ if __name__ == "__main__":
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
 
-    # FixMe Rule retrieve_futur_load should define a name for year index column
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', index_col=0, parse_dates=True)
-    load_annual_futur.index.names = ["year"]
+    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
 
     profiles = pd.read_csv(snakemake.input.profiles)
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
