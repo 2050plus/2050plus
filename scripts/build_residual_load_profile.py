@@ -83,8 +83,7 @@ if __name__ == "__main__":
         from _helpers import mock_snakemake
 
         snakemake = mock_snakemake("build_residual_load_profile", simpl="180", planning_horizons="2050",
-                                   clusters="37m",
-                                   configfiles="config.tgi.runner.yaml")
+                                   clusters="37m")
 
     configure_logging(snakemake)
 

@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 import pandas as pd
-import snakemake
 
 if config["enable"].get("prepare_links_p_nom", False):
 

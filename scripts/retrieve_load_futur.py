@@ -10,6 +10,7 @@ Parse scenario builder and compute request to API.
 
 import json
 import logging
+import os
 import re
 from pathlib import Path
 
@@ -268,8 +269,13 @@ def write_files(df_results):
     df_results = df_results.T
     df_results.index = df_results.index.set_names("year")
 
+    path = Path(snakemake.output[0]).parent
     for y in df_results.index:
-        df_results.loc[[y]].to_csv(Path(snakemake.output[0], f"patex_{y}.csv"))
+        try:
+            df_results.loc[[y]].to_csv(Path(path, f"patex_{y}.csv"))
+        except OSError:
+            os.makedirs(path)
+            df_results.loc[[y]].to_csv(Path(path, f"patex_{y}.csv"))
 
 
 if __name__ == "__main__":
@@ -295,4 +301,4 @@ if __name__ == "__main__":
 
     # Writing data
     logging.info("Writing data")
-    write_files(df_results,historical_load_h)
+    write_files(df_results)
