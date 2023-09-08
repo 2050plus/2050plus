@@ -22,23 +22,36 @@ from _helpers import configure_logging
 URL_TO_USE = "prod url"
 # URL_TO_USE = "test url"
 
-METRIC_MAP = {
-    "tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]": "TR_hdv",
-    "tra_energy-demand_domestic_electricity_PHEV_freight_HDV[TWh]": "TR_hdv",
-    "tra_energy-demand_domestic_electricity_PHEVCE_freight_HDV[TWh]": "TR_hdv",
-    "tra_energy-demand_domestic_electricity_BEV_freight_LDV[TWh]": "TR_ldv",
-    "tra_energy-demand_domestic_electricity_PHEV_freight_LDV[TWh]": "TR_ldv",
-    "tra_energy-demand_domestic_electricity_BEV_passenger_LDV[TWh]": "TR_cars",
-    "tra_energy-demand_domestic_electricity_PHEV_passenger_LDV[TWh]": "TR_cars",
-    "tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]": "TR_bus",
-    "tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]": "TR_bus",
-    "tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]": "TR_rail",
-    "bld_energy-demand-by-end-use_residential_hotwater[TWh]": "HE_res_wat",  # Dummy
-    "bld_energy-demand-by-end-use_residential_heating[TWh]": "HE_res_spa",  # Dummy
-    "bld_energy-demand-by-end-use_non-residential_hotwater[TWh]": "HE_ter_wat",  # Dummy
-    "bld_energy-demand-by-end-use_non-residential_heating[TWh]": "HE_ter_spa",  # Dummy
-    "ind_energy-demand-by-feedstock_excl-feedstock[TWh]": "IN_tot",  # Dummy
-}
+METRIC_MAP = pd.DataFrame([
+    ["tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]", "TR_hdv"],
+    ["tra_energy-demand_domestic_electricity_PHEV_freight_HDV[TWh]", "TR_hdv"],
+    ["tra_energy-demand_domestic_electricity_PHEVCE_freight_HDV[TWh]", "TR_hdv"],
+    ["tra_energy-demand_domestic_electricity_BEV_freight_LDV[TWh]", "TR_ldv"],
+    ["tra_energy-demand_domestic_electricity_PHEV_freight_LDV[TWh]", "TR_ldv"],
+    ["tra_energy-demand_domestic_electricity_BEV_passenger_LDV[TWh]", "TR_cars"],
+    ["tra_energy-demand_domestic_electricity_PHEV_passenger_LDV[TWh]", "TR_cars"],
+    ["tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]", "TR_bus"],
+    ["tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]", "TR_bus"],
+    ["tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]", "TR_rail"],
+    ["bld_energy-demand_non-residential_heating_electricity[TWh]", "HE_ter_spa"],
+    ["bld_energy-demand_non-residential_hotwater_electricity[TWh]", "HE_ter_wat"],
+    ["bld_energy-demand_residential_heating_electricity[TWh]", "HE_res_spa"],
+    ["bld_energy-demand_residential_hotwater_electricity[TWh]", 'HE_res_wat'],
+    ["ind_energy-demand-by-carrier_electricity[TWh]", "IN_tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]", "SU_tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]", "SU_tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_agr[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_bld[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_ind[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_tra[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-sector[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-power-prod[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_efuels[TWh]", "tot"],
+    # ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-CHP[TWh]",  "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-only[TWh]", "tot"]
+], columns=["metric_id", "sector"])
 
 TEMPLATE_REQUEST = """
 {
@@ -138,7 +151,7 @@ def get_results(scenarios_dict, variables_list):
     """
     # Load the necessary variables and format them
     variables = "[\n"
-    for var in variables_list:
+    for var in set(variables_list):
         variables += f'"{var}",\n'
     variables = variables.rsplit(",\n", 1)[0] + "\n  ]"
 
@@ -208,17 +221,21 @@ def format_results(results):
 
     df_results = pd.concat(df_results).reset_index(drop=False)
 
-    df_results = df_results[df_results["metric_id"].isin(METRIC_MAP.keys())]
-    df_results["metric_id"] = df_results["metric_id"].replace(METRIC_MAP)
+    df_results = (
+        df_results.set_index("metric_id")
+        .join(METRIC_MAP.set_index("metric_id"))
+        .set_index("sector").reset_index()
+    )
     # Hypothesis : One unique scenario for each country
-    df_results = df_results.groupby(by=["region", "metric_id"]).sum().reset_index()
-    df_results["key"] = df_results["region"] + "_" + df_results["metric_id"]
+    df_results = df_results.groupby(by=["region", "sector"]).sum().reset_index()
+    df_results["key"] = df_results["region"] + "_" + df_results["sector"]
     df_results = df_results.set_index("key")
 
     horizons = [pd.Timestamp(snakemake.config["snapshots"]["start"]).year] + \
                snakemake.config["scenario"]["planning_horizons"]
 
     df_results = df_results[horizons] * 1e6
+    df_results.index = df_results.index.str.replace("EL", "GR")
 
     return df_results
 
@@ -246,7 +263,7 @@ if __name__ == "__main__":
 
     # Getting data from API
     logging.info("Getting data from API")
-    results = get_results(scenarios_dict, METRIC_MAP.keys())
+    results = get_results(scenarios_dict, METRIC_MAP["metric_id"])
 
     # Formatting data
     logging.info("Formatting data")
