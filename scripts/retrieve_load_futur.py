@@ -268,6 +268,7 @@ def write_files(df_results,historical_load_h):
     df_results_y = df_results.set_index("key")[[int(horizon)]] * 1e6   
    
 
+    # FixMe Rule retrieve_futur_load should define a name for year index column
     df_results_y.T.to_csv(snakemake.output[0])    
 
 
