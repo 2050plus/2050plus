@@ -160,7 +160,8 @@ rule retrieve_load_data:
 
 rule retrieve_load_futur:
     input:
-        scenario_builder="scenario_builder_tool_input.xlsx"
+        scenario_builder="scenario_builder_tool_input.xlsx",
+        load_hourly= RESOURCES + "load.csv"
     output:
         directory("data/patex")
     log:

@@ -197,6 +197,7 @@ def format_results(results):
     """
     Format received JSON into dataframe
     Change unit from TWh to kWh (* 1e6)
+    Add non-MS data using proportions
 
     :param results: data in JSON format
     :return df_results: data in dataframe
@@ -236,6 +237,26 @@ def format_results(results):
 
     df_results = df_results[horizons] * 1e6
     df_results.index = df_results.index.str.replace("EL", "GR")
+
+    # Manual scaling for non-MS if missing
+    dict_non_MS = {"AL": "GR",
+                   "MK": "GR",
+                   "NO": "SK",
+                   "CH": "FR",
+                   "GB": "FR",
+                   "BA": "HR",
+                   "KV": "HU",
+                   "RS": "HU",
+                   "ME": "GR"}
+    dict_non_MS = {k: v for k, v in dict_non_MS.items() if not any(df_results.index.str.startswith(k))}
+    historical_load_h = pd.read_csv(snakemake.input.load_hourly, index_col="utc_timestamp", parse_dates=True)
+    missing_load = []
+    for non_MS, MS in dict_non_MS.items():
+        df = df_results[df_results.index.str.startswith(MS)]
+        df *= historical_load_h[non_MS].sum() / historical_load_h[MS].sum()
+        df.index = df.index.str.replace(MS, non_MS)
+        missing_load.append(df)
+    df_results = pd.concat([df_results] + missing_load)
 
     return df_results
 
