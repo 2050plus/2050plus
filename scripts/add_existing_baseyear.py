@@ -173,6 +173,9 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
     for carrier, year in exit_techs.items():
         carrier_exit_i = (df_agg.Fueltype == carrier) & (df_agg.DateOut > year)
         df_agg.loc[carrier_exit_i, "DateOut"] = year
+        df_agg.loc[carrier_exit_i, "lifetime"] = (
+                df_agg.loc[carrier_exit_i, "DateOut"] - df_agg.loc[carrier_exit_i, "DateIn"]
+        )
     
     # drop assets which are already phased out / decommissioned
     phased_out = df_agg[df_agg["DateOut"] < baseyear].index
@@ -278,7 +281,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
                         bus=ind,
                         carrier=generator,
                         p_nom=new_capacity[ind]
-                        /(len(inv_ind) if len(inv_ind) >= 1 else 1) ,  # split among regions in a country
+                        /len(inv_ind),  # split among regions in a country
                         marginal_cost=marginal_cost,
                         capital_cost=capital_cost,
                         efficiency=costs.at[generator, "efficiency"],

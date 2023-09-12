@@ -771,9 +771,11 @@ def add_generation(n, costs, nyears):
         add_carrier_buses(n, carrier, carrier_nodes)
         
         if phase_out.get(generator, {}):
+            if phase_out[generator] <= investment_year:
+                continue
+
             # update fixed costs based on updated lifetime
-            exit_year = phase_out.get(generator)
-            lifetime = (exit_year + 1) - investment_year
+            lifetime = (phase_out[generator] + 1) - investment_year
             if lifetime > 0:
                 costs.at[generator, "lifetime"] = lifetime
 
