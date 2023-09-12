@@ -350,6 +350,9 @@ existing_capacities:
   - coal
   - oil
   - uranium
+  exit_year:
+    gas: 2039
+    coal: 2029
 
 
 sector:

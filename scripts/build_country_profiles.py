@@ -139,7 +139,8 @@ def build_country_profiles(heat_profiles, transport_profiles, snapshots):
 
         for sector in sectors:
             if "IN" in sector or "SU" in sector:
-                profiles.append(pd.DataFrame(industry_supply_profile, columns=[country + '_' + sector]))
+                profiles.append(
+                    pd.DataFrame(industry_supply_profile, columns=[country + '_' + sector], index=snapshots))
                 logging.debug(f"{'Industry' if 'IND' in sector else 'Supply'} ({sector}) profile sum for {country}"
                               f": {industry_supply_profile.sum():.2f}")
             elif "HE_" in sector:

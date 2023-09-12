@@ -50,7 +50,7 @@ METRIC_MAP = pd.DataFrame([
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-sector[TWh]", "tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-power-prod[TWh]", "tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_efuels[TWh]", "tot"],
-    # ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-CHP[TWh]",  "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-CHP[TWh]",  "tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-only[TWh]", "tot"]
 ], columns=["metric_id", "sector"])
 
