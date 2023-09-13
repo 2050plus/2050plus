@@ -350,6 +350,11 @@ existing_capacities:
   - coal
   - oil
   - uranium
+  exit_year:
+    CCGT: 2034
+    OCGT: 2034
+    coal: 2029
+    lignite: 2029
 
 
 sector:

@@ -56,6 +56,9 @@ def _add_land_use_constraint(n, config):
     # warning: this will miss existing offwind which is not classed AC-DC and has carrier 'offwind'
 
     for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc"]:
+        extendable_i = (n.generators.carrier == carrier) & n.generators.p_nom_extendable
+        n.generators.loc[extendable_i, "p_nom_min"] = 0
+
         ext_i = (n.generators.carrier == carrier) & ~n.generators.p_nom_extendable
         existing = (
             n.generators.loc[ext_i, "p_nom"]
@@ -72,7 +75,7 @@ def _add_land_use_constraint(n, config):
     if len(existing_large):
         logger.warning(
             f"Existing capacities larger than technical potential for {existing_large},\
-                       adjust technical potential to existing capacities"
+                        adjust technical potential to existing capacities"
         )
         n.generators.loc[existing_large, "p_nom_max"] = n.generators.loc[
             existing_large, "p_nom_min"
@@ -89,6 +92,9 @@ def _add_land_use_constraint_m(n, config):
     current_horizon = snakemake.wildcards.planning_horizons
 
     for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc"]:
+        extendable_i = (n.generators.carrier == carrier) & n.generators.p_nom_extendable
+        n.generators.loc[extendable_i, "p_nom_min"] = 0
+
         existing = n.generators.loc[n.generators.carrier == carrier, "p_nom"]
         ind = list(
             set(
@@ -124,8 +130,8 @@ def _add_land_use_constraint_m(n, config):
             f"Existing capacities larger than technical potential for {existing_large},\
                        adjust technical potential to existing capacities"
         )
-        n.generators.loc[existing_large, "p_nom_min"] = n.generators.loc[
-            existing_large, "p_nom_max"
+        n.generators.loc[existing_large, "p_nom_max"] = n.generators.loc[
+            existing_large, "p_nom_min"
         ]
 
     n.generators.p_nom_max.clip(lower=0, inplace=True)
