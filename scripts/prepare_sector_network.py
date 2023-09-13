@@ -775,7 +775,7 @@ def add_generation(n, costs, nyears):
                 continue
 
             # update fixed costs based on updated lifetime
-            lifetime = (phase_out[generator] + 1) - investment_year
+            lifetime = phase_out[generator] - investment_year
             if lifetime > 0:
                 costs.at[generator, "lifetime"] = lifetime
 

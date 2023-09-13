@@ -323,11 +323,11 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
             if not new_build.empty:
                 new_capacity = capacity.loc[new_build.str.replace(name_suffix, "")]
 
-                #If the Fueltype must be phased out, modify its lifetime according to the phasing out year
+                # If the Fueltype must be phased out, modify its lifetime according to the phasing out year
                 exit_year = exit_techs.get(generator)
-                if len(lifetime_assets.loc[new_capacity.index])>0 and exit_year:
-                    to_change = ((lifetime_assets.loc[new_capacity.index]+grouping_year)>exit_year).index
-                    lifetime_assets.loc[to_change]= exit_year-grouping_year
+                if exit_year:
+                    to_change = ((grouping_year + lifetime_assets.loc[new_capacity.index]) > exit_year)
+                    lifetime_assets.loc[to_change] = exit_year - grouping_year
 
                 if generator != "urban central solid biomass CHP":
                     n.madd(
