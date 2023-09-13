@@ -163,12 +163,6 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
         + snakemake.config["costs"]["fill_values"]["lifetime"]
     )
     df_agg.loc[biomass_i, "DateOut"] = df_agg.loc[biomass_i, "DateOut"].fillna(dateout)
-
-    # Enforce phasing out of specified carriers
-    exit_techs = snakemake.config["existing_capacities"]["exit_year"]
-    for carrier, year in exit_techs.items():
-        carrier_exit_i = (df_agg.Fueltype == carrier) & (df_agg.DateOut > year)
-        df_agg.loc[carrier_exit_i, "DateOut"] = year
     
     # drop assets which are already phased out / decommissioned
     phased_out = df_agg[df_agg["DateOut"] < baseyear].index
@@ -211,6 +205,9 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
         values="lifetime",
         aggfunc="mean",  # currently taken mean for clustering lifetimes
     )
+
+    # Technologies to phase out
+    exit_techs = snakemake.config["existing_capacities"]["exit_year"]                
 
     carrier = {
         "OCGT": "gas",
@@ -321,6 +318,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
             if not new_build.empty:
                 new_capacity = capacity.loc[new_build.str.replace(name_suffix, "")]
+
+                #If the Fueltype must be phased out, modify its lifetime according to the phasing out year
+                exit_year = exit_techs.get(generator)
+                if len(lifetime_assets.loc[new_capacity.index])>0 and exit_year:
+                    to_change = ((lifetime_assets.loc[new_capacity.index]+grouping_year)>exit_year).index
+                    lifetime_assets.loc[to_change]= exit_year-grouping_year
 
                 if generator != "urban central solid biomass CHP":
                     n.madd(
