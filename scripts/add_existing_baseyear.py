@@ -261,11 +261,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
                     # for offshore the splitting only includes coastal regions
                     inv_ind = [
-                        i for i in inv_ind if (i + name_suffix) in n.generators.index
+                        i for i in inv_ind if (i + name_suffix) in n.generators.index.str
+                        .replace(str(baseyear), str(grouping_year))
                     ]
 
                     p_max_pu = n.generators_t.p_max_pu[
-                        [i + name_suffix for i in inv_ind]
+                        [i + name_suffix.replace(str(grouping_year), str(baseyear)) for i in inv_ind]
                     ]
                     p_max_pu.columns = [i + name_suffix for i in inv_ind]
 
@@ -275,7 +276,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
                         bus=ind,
                         carrier=generator,
                         p_nom=new_capacity[ind]
-                        /len(inv_ind),  # split among regions in a country
+                        / len(inv_ind),  # split among regions in a country
                         marginal_cost=marginal_cost,
                         capital_cost=capital_cost,
                         efficiency=costs.at[generator, "efficiency"],
