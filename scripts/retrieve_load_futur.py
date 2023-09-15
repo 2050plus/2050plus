@@ -4,8 +4,27 @@
 # SPDX-License-Identifier: MIT
 
 """
-Retrieve futur loads from 2050 Pathways Explorer (Climact) model.
-Parse scenario builder and compute request to API.
+This rule downloads yearly electric load data for each european country from the `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_.
+This rule downloads appropriate years using configuration file. Yearly electric load data are definied by per-country
+scenarios.
+
+**Releveant Settings**
+
+.. code:: yaml
+
+    planning_horizons
+
+    snapshots:
+        start:
+
+**Inputs**
+
+- ``scenario_builder_tool_input.xlsx`` Projection scenario definitions for each region of Europe.
+- ``resources/load.csv`` Hourly per-country load profiles.
+
+**Outputs**
+
+- ``data/patex`` Yearly electric load per-country.
 """
 
 import json
