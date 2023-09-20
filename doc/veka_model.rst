@@ -50,18 +50,14 @@ To build the variable electric load for future planning horizons it is necessary
 * To build a reference hourly demand for each sector, based on defined sector profiles and on annual demand ;
 * To build a reference hourly profile for the Residual load sector based on the reference hourly demand and on the hourly sectorial demand ;
 * To build future hourly demands based on defined and built sector profiles and on future annual demands
-	
-
-	
-	
-	
 
 As it appears that PyPSA-Eur uses the residual historical electricity load growth of appliances is not taken into account even though it evolved over time
 
 * 27.5TWh in 2013
 * 25.7TWh in 2022
 * 32.2TWh in 2030
-In Belgium using according to Climact's previsions for Elia 
+
+In Belgium using according to Climact's previsions for Elia.
 
 Heat load
 ===========================

@@ -224,6 +224,15 @@ The included ``.nc`` files are PyPSA network files which can be imported with Py
 
 
 
+.. toctree::
+    :hidden:
+    :maxdepth: 1
+    :caption: Energie Studie 2050+ for VEKA
+
+    veka_overview
+    veka_configurations
+    veka_model
+
 
 .. toctree::
    :hidden:
@@ -235,15 +244,6 @@ The included ``.nc`` files are PyPSA network files which can be imported with Py
    tutorial
    tutorial_sector
 
-
-.. toctree::
-    :hidden:
-    :maxdepth: 1
-    :caption: Energie Studie 2050+ for VEKA
-
-    veka_overview
-    veka_configurations
-    veka_model
 
 .. toctree::
    :hidden:
