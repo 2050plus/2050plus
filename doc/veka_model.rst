@@ -11,16 +11,44 @@ Model modifications
 
 To better match client needs, the model has been modified. To main action points have been implemented :
     - Addition of variable electric load in futur
-    - Addtition of technology phase out capacity
+    - Addition of technology phase out capacity
 
 Electric load
 ===========================
-The historical electric load is disaggregated into historical share for :
-	- Heat sector (where the historical electricity load is an intermediate vector for heat demand)
-	- Industry sector (where the historical load is removed to be considered separately)
-	- Residual electricity (all others sectors and loads)
+By default, PyPSA uses the historical electric load of a reference year for each country for future planning horizons. 
 
-The residual electricity is then dispatched over each country proportional to GDP and population.
+From this historical load, the historical electricity used :
+	- In the heat sector is removed from the total load to let PyPSA optimize the supply of historical heat demand ;
+	- In the industry sector is modified to fit future industry energy demand.
+
+The residual share of electricity is otherwise considered constant over future planning horizons, which however does not take into account the evolution of appliances consumption.
+
+The model has hence been modified to allow the model to take into account an evolution of each sector's consumption. The annual sectorial electric demand projection for future horizons is extracted for each country from Climact's Pathways Explorer.
+
+The variable electric load for future planning horizons is computed based on :
+	- A hourly demand per country for a reference year (from ENTSO-E) ;
+	- An annual demand per sector per country for a reference year (from PatEx) ;
+	- Hourly profiles per sector (representing which percentage if the sectorial annual lood is consumed at each hour) ;
+	- An annual demand per sector per country for future planning horizons (from PatEx).
+	
+The sectors considered by the PatEx annual electricity demand are :
+	- Industry
+	- Heat 
+	- Transport
+	- Power Supply
+	- Residual load (others)
+	
+By definition, the residual load is defined as what is left after substracting to the total load the different sectors, meaning no particular profile is defined for it. 
+
+To build the variable electric load for future planning horizons it is necessary :
+	- To build a reference hourly demand for each sector, based on defined sector profiles and on annual demand ;
+	- To build a reference hourly profile for the Residual load sector based on the reference hourly demand and on the hourly sectorial demand ;
+	- To build future hourly demands based on defined and built sector profiles and on future annual demands
+	
+
+	
+	
+	
 
 As it appears that PyPSA-Eur uses the residual historical electricity load (which does not taken into account growth of appliances, which evolved between 27.5TWh in 2013 to 25.7TWh in 2022 up to  grow to 32.2TWh in 2030 )
 
