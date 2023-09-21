@@ -9,10 +9,10 @@
 Configurations
 ##########################################
 
-PyPSA-Eur is able to provide the energy supply of an energy system  given :
+PyPSA-Eur is able to provide the energy supply of an energy system given :
 
-* The configuration of the system by year-varying parameters (such as carbon budget, primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies, charging power of EVs) ;
-* The technologies used, whose can be (de-)activated ;
+* The configuration of the system by year-varying parameters (such as carbon budget, primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies, charging power of EVs);
+* The list of technologies used;
 * Techno-economic parameters (such as investment costs, efficiency, FOM, VOM, lifetime, discount rate, etc).
 
 The quality of the optimization results depends on the database quality as :
@@ -21,7 +21,7 @@ The quality of the optimization results depends on the database quality as :
 * The addition of a technology might lead to an energy system significantly cheaper throughout the optimization, due to otherwise non-existing or uninteresting interactions between technologies ;
 * Some technologies might not be considered in the cost-optimal system because of too high CAPEX/OPEX, or might be massively installed because of too optimistic costs.
 
-Insights on how each of those topics are tackled are given in the following sections
+The way PyPSA deals with those different topics is depiected in the following sections.
 
 Technological assumptions
 ===========================
@@ -43,12 +43,51 @@ A technology can be used for
   * i.e. AC and DC lines;
   * i.e. Methane pipelines;
   * i.e. CO2 pipelines;
+  
+Some technologies are added to the system only if an energy sector is considered in the optimization. An exhaustive list is given herebelow, sorted by module and with each energy carriers the technology uses.
 
-The exhaustive list of technologies used can be found here :
+Base technologies
+---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/techs_used.csv
+   :file: configtables/Base_techs.csv
+
+Heat technologies
+---------------------------
+
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/Heat_techs.csv
+
+Biomass technologies
+---------------------------
+
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/Biomass_techs.csv
+   
+Biomass and Heat technologies
+---------------------------
+
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/Biomass+Heat_used.csv
+   
+Industry technologies
+---------------------------
+
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/Ind_techs.csv
+   
+Transport technologies
+---------------------------
+
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/Transport_techs.csv
+
 
 Techno-economic parameters
 ===========================
@@ -78,7 +117,7 @@ Some additional parameters can nonetheless be set from a separate configuration 
 
   * i.e. Conventional technologies to consider in future planning horizons;
   * i.e. Use of micro-CHP, solid biomass to liquid, etc;
-  * i.e. Considering distribution electric and/or gas networks.
+  * i.e. Considering distribution electric and/or gas networks;
 
 * Technology parameters : techno-economic parameters that were not set from the cost database or that alter technologies
 
