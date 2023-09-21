@@ -13,7 +13,7 @@ PyPSA-Eur is able to provide the energy supply of an energy system  given :
 
 * The configuration of the system by year-varying parameters (such as carbon budget, primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies, charging power of EVs) ;
 * The technologies used, whose can be (de-)activated ;
-* Techno-economic parameters (such as investment costs,efficiency,FOM,VOM, lifetime, discount rate, etc).
+* Techno-economic parameters (such as investment costs, efficiency, FOM, VOM, lifetime, discount rate, etc).
 
 The quality of the optimization results depends on the database quality as :
 
@@ -45,9 +45,12 @@ A technology can be used for
   * i.e. CO2 pipelines;
 
 The exhaustive list of technologies used can be found here :
-.. csv-table:: configtable/Tech_used.csv
 
-Techno-Economic parameters
+.. csv-table::
+   :header-rows: 1
+   :file: configtables/techs_used.csv
+
+Techno-economic parameters
 ===========================
 
 The definition of the technologies in PyPSA is done by retrieving data from a cost database and formatting it into the metrics used by PyPSA-Eur, namely :
@@ -111,4 +114,4 @@ As mentioned in :cite:`frysztackiStrongEffect2021a`, we need to be especially be
 
 Temporal resolution has also been explored during the preliminary phase of the project. Two resolution techniques were proposed : time aggregation and time segmentation. Time aggregation averages timesteps on a given resolution (e.g.: 3h aggregation). Time segmentation use the `tsam` package (https://github.com/FZJ-IEK3-VSA/tsam). This package looks for typical periods using machine learning algorithms.  While having an impact on the computation time, we preferred a 3h time aggregation to be as close as possible to profiles. This choice eases also the interpretation of results.
 
-More details about the spatial resolution are given in Section :ref:`_spatial_resolution`
+More details about the spatial resolution are given in Section :ref:`spatial_resolution`.
