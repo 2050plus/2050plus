@@ -12,7 +12,7 @@ scenarios.
 
 .. code:: yaml
 
-    planning_horizons
+    planning_horizons:
 
     snapshots:
         start:

@@ -10,7 +10,7 @@ Overview
 ##########################################
 
 
-This chapter aims to give a broad overview of the use of PyPSA in the context of the *Energie Studie 2050+* for the *Flemish Energy and Climate Agency* (VEKA, Belgium).
+This chapter aims to give a broad overview of the use of PyPSA-Eur in the context of the *Energie Studie 2050+* for the *Flemish Energy and Climate Agency* (VEKA, Belgium).
 
 High level description
 ===========================
