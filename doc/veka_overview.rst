@@ -39,7 +39,7 @@ The optimization hence minimizes the annual total cost of the energy system for 
 
 .. math::
 
-    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l,s}{CAPEX_{l,s}} + \sum_{n,s}{OPEX_{n,s,t}}
+    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l,s}{CAPEX_{l,s}} + \sum_{n,s}{w_t \cdot \left(OPEX_{n,s,t}\right)}
 
 where :
 
