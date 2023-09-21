@@ -81,7 +81,7 @@ def build_transport_profiles(snapshots, nodes=[]):
                      "TR_bus": mobility_fn + "/Bus__count",
                      "TR_ldv": mobility_fn + "/Lfw__count",
                      "TR_hdv": mobility_fn + "/HDV__count",
-                     "TR_rail": mobility_fn + "/KFZ__count"}
+                     "TR_rail": mobility_fn + "/KFZ__count"}  # Take total road number
 
     transport_profiles = {}
     for sector, traffic_fn in transport_map.items():

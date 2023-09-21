@@ -35,7 +35,7 @@ To add an hourly future electric load on the network using the yearly `2050 Path
 
 #. Retrieve yearly electric load from 2050 Pathways Explorer using his API.
 #. Build a reference hourly country profiles for each sub-sectors based on intra-days assumptions for heat and weekly for transport. Power supply and industry profiles are considered constants.
-#. Build a reference residual load profile as the left over after subtracting from the total load of the reference year the load of the different sectors for this same year.
+#. Build a reference residual load profile as the left over after subtracting the total load of the reference year to the load of the different sectors for this same year.
 #. Build a futur load using the annual future load and the built profiles (incl. heat, transport, industry, power supply and residual load profiles).
 #. Add this load to the network.
 
@@ -54,30 +54,24 @@ Both have their strength. This is why we used the `2050 Pathways Explorer <https
 Future profiles
 ---------------------------
 
-Annual electricity demands defined by the `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_ are spread into the following sectors:
+Futur annual electricity demand profiles are spread into the following sectors and sub-sectors:
 
-* Heat
-* Transport
-* Industry
-* Power Supply (losses and refineries)
-* Residual load (others)
+* Heat: residential and services for hot water and space heating ;
+* Transport: cars, bus, light duty vehicles, heavy duty vehicles and train ;
+* Industry: no sub-sector considered ;
+* Power Supply: losses (and refineries).
 
-.. figure:: img/profiles.png
-    :width: 70%
-    :align: center
-    :alt: Profiles
+For each one of those sectors, a futur electrical demand profile is determined:
 
+* **Heat** Heat electrical demand profile is calculated similarly to the PyPSA methodology:
 
-Each of those sectors are modeled except the residual load which, by definition, is defined as what is left after subtracting the total load different sectors, meaning no particular profile is defined for it.
+  * An intraday hourly profile is built based on sub-sectors (residential or service), heat types (hot water or space heating) and days of the week (week days or week-ends).
+  * An annual daily profile is used for each sub-sector. The profile is considered as flat for hot water. A daily profile is used for space heating accordingly to the daily average Heating Degree Day (HDD) considering a threshold temperature of 15°C.
+* **Transport** Transport electrical demand profiles are based on hourly profiles available at a week scale provided by the German Federal Highway Research Institute (BASt). Profiles for different types of vehicles are used. As no profile is available for electric rail, the combined profile of all land transport types vehicles is considered as a proxy.
+* **Industry** Industry electrical demand profile is considered to be flat over the whole year.
+* **Power supply** Power supply electrical demand profile (assumed to be losses) is considered to be proportional to the total load at each time. Losses are assumed to represent 5% of the total load (industry, heat, transport and residual load).
 
-* Heat: Heat electrical demand profile is calculated similarly to PyPSA-methodology for space heating and hot water demand:
-
-  * An intraday hourly profile, depending on the sector (residential/service), the heat type (hot water/space heating)and on week days/week-ends
-  * An annual daily profile, considered flat for hot water and spread across the year according the daily average Heating Degree Day considering a threshold temperature of 15°C
-* Transport	: Transport electrical demand profiles are based on hourly profiles available at a week scale provided by the German Federal Highway Research Institute (BASt). Profiles for different types of vehicles are available ; the profile of all land transport types vehicles combined is considered as a proxy for electric rail, as no profile is available.
-* Industry: Industry electrical demand profile is considered to be flat over the whole year.
-* Power supply: Power supply electrical demand profile (assumed to be losses) is considered to be proportional to the total load at each time. Losses are assumed to represent 5% of the total load (industry, heat, transport and residual load).
-
+Each of those sectors are modeled except the residual load which is, by definition, the left over after subtracting the total load of the reference year to the load of the different sectors for this same year. This means that no particular profile is defined for it.
 
 
 Technology phase out
@@ -87,8 +81,8 @@ Some scenarios might want to explore what a future energy system would look like
 
 A new option has been added to phase out before a given year assets of a specified conventional technologies. Two kinds of assets have to be considered:
 
-* Existing assets: Existing asset lifetime are adapted so that they are removed starting from the phase out date.
-* New assets: The lifetime of new assets is adapted to make sure they are removed at their phase out date. When lifetime is reduced, annualized investment costs for new assets are adapted accordingly. This is reflected through a higher annuity in the annualized capital cost calculation.
+* **Existing assets** Existing asset lifetime are adapted so that they are removed starting from the phase out date.
+* **New assets** The lifetime of new assets is adapted to make sure they are removed at their phase out date. When lifetime is reduced, annualized investment costs for new assets are adapted accordingly. This is reflected through a higher annuity in the annualized capital cost calculation.
 
 **Releveant Settings**
 
