@@ -39,9 +39,8 @@ To add an hourly future electric load on the network using the yearly `2050 Path
 #. Build a futur load using the annual future load and the built profiles (incl. heat, transport, industry, power supply and residual load profiles).
 #. Add this load to the network.
 
-This methodology implies that the residual share of electricity is considered constant over future planning horizons. This does not take into account the evolution of appliances consumption. This is a limitation as we know from Climact's projections for ELIA. In this study, we assessed a future demand of 32.2TWh in 2030 for appliances (knowing that we were at 27.5TWh in 2013 and 25.7TWh in 2022).
+This methodology implies that the residual share of electricity is considered constant over future planning horizons. This does not take into account the evolution of appliances consumption. This is a limitation as we know from `Climact's short term projections for ELIA Adequacy working group <https://www.elia.be/fr/users-group/adequacy-working-group/20230825-meeting>` that this share is not constant. In this study, we assessed a future demand of 32.2TWh in 2030 for appliances (knowing that we were at 27.5TWh in 2013 and 25.7TWh in 2022).
 
-    - Lien vers l'étude ELIA # ToDo VLA
 
 Future annual demand
 ---------------------------
@@ -51,8 +50,6 @@ The `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_ is a simula
 PyPSA-Eur is an optimization tool able to tackle and assess more precisely intermittency and fast response phenomena. It explores the impact of the energy transition on transmissions infrastructures. It determines costs for an optimal energy system.
 
 Both have their strength. This is why we used the `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_ to determine transition pathways and derive future annual electric load for sub-sectors and countries. Those loads are then used to determine future load profiles.
-
-PyPSA-Eur considers JRC-IDEES historical load per country on an annual basis for hot water and space heating purpose for residential and services sub-sectors.  SEE DOC FROM ENERGY DEMAND AND SUPPLY
 
 Future profiles
 ---------------------------
