@@ -47,7 +47,6 @@ where :
 * :math:`CAPEX_{l,s}` is the annualized investment cost of infrastructure on line *l* and for transmission asset *s* ;
 * :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*;
 
-    - Update https://climact.sharepoint.com/:p:/r/teams/POWER/Documents%20partages/General/PyPSA-Eur%20for%20starters.pptx?d=w2e4300e324874394b08a561826989c9b&csf=1&web=1&e=bdykjd&nav=eyJzSWQiOjQzNTEsImNJZCI6OTQ1MTg0ODU0fQ # ToDo
 For each planning horizon, the capacity installed in previous planning horizon is taken into account and phased out assets are removed. Hence, the optimization is considered as "myopic" as it does not optimise the energy system over a continuous trajectory but rather planning horizon by planning horizon.
 
 For the spatial and temporal resolution chosen, the use of a commercial solver is required to produce optimize the system within reasonable runtimes. A Gurobi license, which is the standard choice in the global PyPSA community, was selected to produce results.
