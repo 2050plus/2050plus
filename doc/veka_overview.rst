@@ -39,15 +39,18 @@ The optimization hence minimizes the annual total cost of the energy system for 
 
 .. math::
 
-    c = \sum{CAPEX_{n,s}}_{n,s} + \sum{CAPEX_{l,s}}_{l,s} + \sum{OPEX_{n,s,t}}_{n,s}
+    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l,s}{CAPEX_{l,s}} + \sum_{n,s}{OPEX_{n,s,t}}
 
 where :
 
 * :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* and for generator or storage asset *s* ;
 * :math:`CAPEX_{l,s}` is the annualized investment cost of infrastructure on line *l* and for transmission asset *s* ;
-* :math:`OPEX_{n,s,t} is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*;
-	
-For each planning horizon, the capacity installed in previous planning horizon is taken into account and phased out assets are removed. Hence, the optimization is considered as "myopic" as it does not optimise the energy system over a continuous trajectory but rather planning horizon by planning horizon. 
+* :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*;
+
+    - Update https://climact.sharepoint.com/:p:/r/teams/POWER/Documents%20partages/General/PyPSA-Eur%20for%20starters.pptx?d=w2e4300e324874394b08a561826989c9b&csf=1&web=1&e=bdykjd&nav=eyJzSWQiOjQzNTEsImNJZCI6OTQ1MTg0ODU0fQ # ToDo
+For each planning horizon, the capacity installed in previous planning horizon is taken into account and phased out assets are removed. Hence, the optimization is considered as "myopic" as it does not optimise the energy system over a continuous trajectory but rather planning horizon by planning horizon.
+
+    - Expliquer le besoin Gurobi # ToDo
 
 Optimization constraints
 ---------------------------
@@ -56,17 +59,6 @@ The energy system is optimized under :
 * A carbon budget constraint, representing how much CO2 can be emitted over the operation of the energy system for the considered planning horizons
 * A potential constraint, representing the maximal capacity that can be installed per technology and per node. Currently, renewables are the only technologies for which this potential constraint applies.
 
-
-Spatio-temporal specifications
----------------------------
-
-PyPSA is technically able to define the energy supply down to a resolution of 1 hour and down to the spatial resolution of ENTSO-E transmission network. However, practically speaking, such a fine resolution (8760h on one year for ~8800 electrical nodes) is not feasible due to the huge computational burden linked to the optimization of such an energy system.
-
-The system is hence clustered to a smaller number of equivalent electrical nodes  (i.e. clusters), small enough to allow acceptable runtimes but large enough to ensure a detailed representation of the energy system (power demand, renewable power generation, transmission infrastructures, etc).
-
-As mentioned in :cite:`frysztackiStrongEffect2021a`, we need to be especially be aware of the implications of those hypothesis. Model outputs are strongly influenced by network resolution. This is why we chose to take 37 clustered nodes into account while considering 180 renewables generation sites (onshore and offshore wind as well as utility-scale solar PV technologies). This gives a better estimation of the load factors for renewables without significantly increasing the computation time.
-
-Temporal resolution has also been explored during the preliminary phase of the project. Two resolution techniques were proposed : time aggregation and time segmentation. Time aggregation averages timesteps on a given resolution (e.g.: 3h aggregation). Time segmentation use the `tsam` package (https://github.com/FZJ-IEK3-VSA/tsam). This package looks for typical periods using machine learning algorithms.  While having an impact on the computation time, we preferred a 3h time aggregation to be as close as possible to profiles. This choice eases also the interpretation of results.
 
 Main limitations
 ===========================

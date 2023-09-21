@@ -46,6 +46,8 @@ A technology can be used for
 
 The exhaustive list of technologies used can be found in the PyPSA-configuration Excel under the tab Tech used.
 
+    - Ajouter csv # ToDo VLA
+
 Techno-Economic parameters
 ===========================
 
@@ -95,3 +97,16 @@ Some additional parameters can nonetheless be set from a separate configuration 
   * i.e. locations where hydrogen storage is allowed
 
 Those additional parameters default values can be modified to match expert's best estimate
+
+Spatio-temporal specifications
+---------------------------
+
+PyPSA is technically able to define the energy supply down to a resolution of 1 hour and down to the spatial resolution of ENTSO-E transmission network. However, practically speaking, such a fine resolution (8760h on one year for ~8800 electrical nodes) is not feasible due to the huge computational burden linked to the optimization of such an energy system.
+
+The system is hence clustered to a smaller number of equivalent electrical nodes  (i.e. clusters), small enough to allow acceptable runtimes but large enough to ensure a detailed representation of the energy system (power demand, renewable power generation, transmission infrastructures, etc).
+
+As mentioned in :cite:`frysztackiStrongEffect2021a`, we need to be especially be aware of the implications of those hypothesis. Model outputs are strongly influenced by network resolution. This is why we chose to take 37 clustered nodes into account while considering 180 renewables generation sites (onshore and offshore wind as well as utility-scale solar PV technologies). This gives a better estimation of the load factors for renewables without significantly increasing the computation time.
+
+Temporal resolution has also been explored during the preliminary phase of the project. Two resolution techniques were proposed : time aggregation and time segmentation. Time aggregation averages timesteps on a given resolution (e.g.: 3h aggregation). Time segmentation use the `tsam` package (https://github.com/FZJ-IEK3-VSA/tsam). This package looks for typical periods using machine learning algorithms.  While having an impact on the computation time, we preferred a 3h time aggregation to be as close as possible to profiles. This choice eases also the interpretation of results.
+
+    - Ajouter le lien vers doc complète # ToDo TGI

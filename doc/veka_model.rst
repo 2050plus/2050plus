@@ -38,11 +38,16 @@ The variable electric load for future planning horizons is computed based on :
 Annual future demand
 ---------------------------
 
-The Pathways Explorer can provided the electrical annual demand per country according to country-specific scenarios for future years, with a granularity up to subsetcors. 
+The Pathways Explorer can provided the electrical annual demand per country according to country-specific scenarios for future years, with a granularity up to subsetcors.
+
+    - Ajouter description PatEx + Lien vers le site + Slide https://climact.sharepoint.com/:p:/r/teams/POWER/Documents%20partages/General/PyPSA-Eur%20for%20starters.pptx?d=w2e4300e324874394b08a561826989c9b&csf=1&web=1&e=mLpADP&nav=eyJzSWQiOjQzNzgsImNJZCI6NDA1NzMwMzY0MH0 # ToDo
 
 
 Profiles definition
----------------------------	
+---------------------------
+
+    - Graphes ? # ToDo VLA
+
 The sectors considered by the PatEx annual electricity demand are :
 
 * Industry
@@ -55,10 +60,10 @@ Each of those sectors are modeled with the exception of the residual load which,
 
 * Industry 	: Industry electrical demand profile is considered as flat over the whole year
 * Heat 		: Heat electrical demand profile is calculated similarly to PyPSA-methodology for space heating and hotwater demand :
-	* An intraday hourly profile, depending on the sector (residential/service), the heat type (hotwater/space heating)and on week days/week-ends
-	* An annual daily profile, considered flat for hotwater and spread accross the year according the daily average Heating Degree Day considering a threshold temeprature of 15°C
-* Transport	: Transport electrical demand profiles are based on hourly profiles available at a week scale provided by the German Federal Highway Research Institute (BASt).
-Profiles for different types of vehicles are available ; the profile of all land transport types vehicles combined is considered as a proxy for electric rail, as no profile is available.
+
+  * An intraday hourly profile, depending on the sector (residential/service), the heat type (hotwater/space heating)and on week days/week-ends
+  * An annual daily profile, considered flat for hotwater and spread accross the year according the daily average Heating Degree Day considering a threshold temeprature of 15°C
+* Transport	: Transport electrical demand profiles are based on hourly profiles available at a week scale provided by the German Federal Highway Research Institute (BASt). Profiles for different types of vehicles are available ; the profile of all land transport types vehicles combined is considered as a proxy for electric rail, as no profile is available.
 * Power supply : Power supply electrical demand profile (i.e. losses) is considered to be proportional to the total load for each time frame. Losses are assumed to be equal to represent 5% of the total load.
 
 
@@ -78,6 +83,8 @@ As it appears that PyPSA-Eur uses the residual historical electricity load growt
 * 32.2TWh in 2030
 In Belgium using according to Climact's previsions for Elia 
 
+- Lien vers l'étude ELIA # ToDo VLA
+
 Technology phase out 
 ===========================
 Some scenarios might want to explore what a future energy system would look like considering teh phase out of somme due to political choices (e.g. ban on coal powerplants by 2030).
@@ -96,6 +103,8 @@ PyPSA-Eur considers JRC-IDEES historical load per country on an annual basis for
 
 Rules added
 ===========================
+
+    - Update with https://climact.sharepoint.com/:p:/r/sites/PROSPECTIVE/Documents%20partages/VEKA/2022%20ENERGIE%20STUDIE%202050%20+/2022%20Energiestudie%202050%20shared/4.%20Workstream/5.%20PyPSA%20modelling/PyPSA%20modelling.pptx?d=w77e33e38d3714c63bbeefb693bc76110&csf=1&web=1&e=uxTqBd&nav=eyJzSWQiOjIxNDc0NzI0MzMsImNJZCI6MjQ5NjA3ODIxM30 # ToDo
 
 - :mod:`retrieve_load_futur`
 - :mod:`build_country_profiles`
