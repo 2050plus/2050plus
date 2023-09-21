@@ -51,42 +51,42 @@ Base technologies
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Base_techs.csv
+   :file: configtables/base_techs.csv
 
 Heat technologies
 ---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Heat_techs.csv
+   :file: configtables/heat_techs.csv
 
 Biomass technologies
 ---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Biomass_techs.csv
+   :file: configtables/biomass_techs.csv
    
 Biomass and Heat technologies
 ---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Biomass+Heat_used.csv
+   :file: configtables/biomass_heat_used.csv
    
 Industry technologies
 ---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Ind_techs.csv
+   :file: configtables/ind_techs.csv
    
 Transport technologies
 ---------------------------
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/Transport_techs.csv
+   :file: configtables/transport_techs.csv
 
 
 Techno-economic parameters
