@@ -21,7 +21,7 @@ The quality of the optimization results depends on the database quality as :
 * The addition of a technology might lead to an energy system significantly cheaper throughout the optimization, due to otherwise non-existing or uninteresting interactions between technologies ;
 * Some technologies might not be considered in the cost-optimal system because of too high CAPEX/OPEX, or might be massively installed because of too optimistic costs.
 
-The way PyPSA deals with those different topics is depiected in the following sections.
+The way PyPSA deals with those different topics is explained in the following sections.
 
 Technological assumptions
 ===========================
@@ -32,8 +32,8 @@ A technology can be used for
 
 * Generation of energy using energy carrier(s) to produce other energy carrier(s) :
 
-  * i.e. Using coal to produce electricity, atmospheric CO2 and captured CO2 for a coal powerplant with CC ;
-  * i.e. Using Hydrogen and captured CO2 to produce synthetic oil for the Fischer-Tropsh process;
+  * i.e. Using coal to produce electricity, CO2 and captured CO2 for a coal powerplant with CC ;
+  * i.e. Using hydrogen and captured CO2 to produce synthetic oil for the Fischer-Tropsh process;
 * Storage of energy under a specific energy vector:
 
   * i.e. Centralized Thermal Energy Storage;
