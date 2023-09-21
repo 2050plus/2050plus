@@ -21,7 +21,7 @@ The quality of the optimization results depends on the database quality as :
 * The addition of a technology might lead to an energy system significantly cheaper throughout the optimization, due to otherwise non-existing or uninteresting interactions between technologies
 * Some technologies might not be considered in the cost-optimal system because of too high CAPEX/OPEX, or might be massively installed because of too optimistic costs
 
-Insights on how each of those topics are given in the following sections
+Insights on how each of those topics are tackled are given in the following sections
 
 Technological assumptions
 ===========================
@@ -44,9 +44,7 @@ A technology can be used for
   * i.e. Methane pipelines
   * i.e. CO2 pipelines
 
-List of technolgies used
-
-The list of technologies used can be found in the PyPSA-configuration Excel under the tab Tech used
+The exhaustive list of technologies used can be found in the PyPSA-configuration Excel under the tab Tech used.
 
 Techno-Economic parameters
 ===========================
@@ -61,10 +59,9 @@ The definition of the technologies in PyPSA is done by retrieving data from a co
 * Potential 	(MWhmax)
 * Carrier(s)
 
+The cost database has a granularity of up to 5 years and is mostly based on the Danish Energy Agency (DEA) forecasts (March 2018 - August 2023).
 
-The cost database has a granularity of up to 5 years and is mostly based on the Danish Energy Agency (DEA) forecasts (March 2018 - August 2023)
-
-It must be noted nonetheless that for some technologies, some techno-economic parameters are set from the configuration file instead of the cost database
+It must be noted nonetheless that for some technologies, some techno-economic parameters are set from the configuration file instead of the cost database.
 
 Configuration file
 ===========================
@@ -80,12 +77,12 @@ Some additional parameters can nonetheless be set from a separate configuration 
 * Technology parameters : techno-economic parameters that were not set from the cost database or that alter technologies
 
   * i.e. Potentials and correction factors for renewables
-  * i.e.
+  * i.e. Heat pump sink temperature
 
 * Demand-related parameters: share between different energy carriers of a given demand. They can be fixed over the explored time horizons or year-dependent
 
   * i.e. share of primary route in steel production
-  * i.e. share of EV/ICE/FC vehicles for land transport
+  * i.e. share of EV/ICE/FC vehicles for land transport compared to today's demand
   * i.e. share of HVC routes compared to today's demand
   * i.e. year to consider for Eurostat reports
 
