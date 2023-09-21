@@ -1,0 +1,22 @@
+Technology name,Carrier 1,Carrier 2,Carrier 3,Carrier 4
+central air-sourced heat pump,Elec,Heat_buses,-,-
+central gas boiler,Gas,Heat_buses,-,-
+central gas CHP,Gas,Elec,Heat_buses,-
+central gas CHP CC,Gas,Elec,Heat_buses,CO2 CC
+central ground-sourced heat pump,Elec,Heat_buses,-,-
+central resistive heater,Elec,Heat_buses,-,-
+central solar thermal,Heat_buses,-,-,-
+Central solid biomass CHP,Biomass,Elec,Heat,-
+Central solid biomass CHP CC,Biomass,Elec,Heat,CO2 CC
+central water tank storage,Heat storage,-,-,-
+decentral air-sourced heat pump,Elec,Heat_buses,-,-
+decentral gas boiler,Gas,Heat_buses,-,-
+decentral ground-sourced heat pump,Elec,Heat_buses,-,-
+decentral resistive heater,Elec,Heat_buses,-,-
+decentral solar thermal,Heat_buses,-,-,-
+decentral water tank storage,Heat storage,-,-,-
+Direct air capture,CO2,CO2 CC,Elec,Urban heat
+micro CHP,Gas,Elec,Heat,-
+Retrofitting,Retrofitting,Heat_buses,,
+water tank charger,Heat storage,Heat_buses,-,-
+water tank discharger,Heat storage,Heat_buses,-,-
