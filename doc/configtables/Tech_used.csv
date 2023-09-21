@@ -1,0 +1,81 @@
+Technology name,Module needed,Comment,Carrier 1,Carrier 2,Carrier 3,Carrier 4,Settings needed for future years
+AC lines,Base,,Elec,-,-,-,-/
+Allam Power cycle,Base,,Gas,Elec,CO2 stored,-,sector/allam_cycle
+Ammonia Load for Ind,Ind,"If the ammonia option is not selected, Ind does not account for ammonia demand",Ammonia,-,-,-,sector/ammonia
+Ammonia Storage,Base,,NH3,-,-,-,sector/ammonia
+Ammonia cracker,Base,,Elec,NH3,H2,-,sector/ammonia
+Battery storage,Base,,Elec battery,-,-,-,
+biogas,Biomass,,Biogas,-,-,-,-/
+biogas upgrading,Biomass,,Biogas,Gas,-,-,-/
+Biomass boiler,Biomass,,Biomass,Heat,-,-,sector/biomass_boiler
+Biomass for Ind,Ind,Independent from Biomass,Biomass,Biomass for Ind,-,-,-/
+Biomass for Ind CC,Ind,Independent from Biomass,Biomass,Biomass for Ind,CO2 CC,-,-/
+BioSNG,Biomass,,Biomass,Gas,-,-,biomass/biosng
+BioSNG CC,Biomass,,Biomass,Gas,CO2 CC,-,biomass/biosng
+BtL,Biomass,,Biomass,Oil,-,-,biomass/biomass_to_liquid
+BtL CC,Biomass,,Biomass,Oil,CO2 CC,-,biomass/biomass_to_liquid
+CCGT,Base,,Gas,Elec,CO2,-,sector/conventional_carriers
+central air-sourced heat pump,Heat,,Elec,Heat_buses,-,-,-/
+central gas boiler,Heat,,Gas,Heat_buses,-,-,-/
+central gas CHP,Heat,,Gas,Elec,Heat_buses,-,sector/chp
+central gas CHP CC,Heat,,Gas,Elec,Heat_buses,CO2 CC,sector/chp
+central ground-sourced heat pump,Heat,,Elec,Heat_buses,-,-,-/
+central resistive heater,Heat,,Elec,Heat_buses,-,-,sector/boilers
+central solar thermal,Heat,,Heat_buses,-,-,-,sector/solar_thermal
+Central solid biomass CHP,Biomass + Heat,,Biomass,Elec,Heat,-,sector/chp
+Central solid biomass CHP CC,Biomass + Heat,,Biomass,Elec,Heat,CO2 CC,sector/chp
+central water tank storage,Heat,,Heat storage,-,-,-,sector/tes
+CH4 (g) pipeline,Base,,Gas,-,-,-,sector/gas_network
+CO2 pipeline,Base ,,CO2 CC,-,-,-,sector/co2_network
+CO2 sequestration,Base,,CO2 CC,-,-,-,sector/regional_co2_sequestration_potential
+Coal ,Base,,Coal,Elec,CO2 CC,CO2,sector/conventional_carriers
+Coal CC,Base,,Coal,Elec,CO2,-,sector/coal_cc
+DC links,Base,,Elec (DC),Elec,-,-,-/
+decentral air-sourced heat pump,Heat,,Elec,Heat_buses,-,-,-/
+decentral gas boiler,Heat,,Gas,Heat_buses,-,-,sector/boilers
+decentral ground-sourced heat pump,Heat,,Elec,Heat_buses,-,-,-/
+decentral oil boiler,Ind,,Oil,Heat,-,-,sector/oil_boilers
+decentral resistive heater,Heat,,Elec,Heat_buses,-,-,sector/boilers
+decentral solar thermal,Heat,,Heat_buses,-,-,-,sector/solar_thermal
+decentral water tank storage,Heat,,Heat storage,-,-,-,sector/tes
+Direct air capture,Heat,,CO2,CO2 CC,Elec,Urban heat,sector/dac
+Electricity distribution grid,Base,,Elec,Elec (LV),-,-,sector/electricity_distribution_grid
+Electricity grid connection,Base,,Elec,-,-,-,sector/electricity_grid_connection
+Electrolysis,Base,(Central heat if industry and heat module activated),Elec,H2,(Central Heat),-,- / 
+Fischer-Tropsch,Ind,(Central heat if industry and heat module activated),H2,oil,(Central Heat),,-/
+Fuel cell,Base,(Central heat if industry and heat module activated),H2,Elec,(Central Heat),-,sector/hydrogen_fuel_cell
+Gas for Ind,Ind,,Gas,Gas for Ind,-,-,-/
+Gas for Ind CC,Ind,,Gas ,Gas for Ind,CO2 CC,,-/
+H2 (g) pipeline,Base,,H2,-,-,-,sector/H2_network
+H2 (g) pipeline repurposed,Base,,H2,-,-,-,sector/H2_retrofit
+H2 liquefaction,Ind,Allows for H2 liquefaction for ships,H2,H2 liquid,-,-,sector/shipping_hydrogen_liquefaction
+Haber-Bosch,Base,,Elec,H2,NH3,-,sector/ammonia
+Helmeth,Base,,Elec,CH4,CO2,-,sector/helmeth
+Home battery storage,Base,Only if electricity distribution network is configured,Elec battery,-,-,-,sector/electricity_distribution_grid
+Hydro,Base,,Hydro,Elec,-,-,electricity/renewable_carriers
+Hydrogen storage overground,Base,,H2 ,-,-,-,sector/hydrogen_underground_storage
+Hydrogen storage underground,Base,,H2 ,-,-,-,sector/hydrogen_underground_storage
+Lignite,Base,,Lignite,Elec,-,-,electricity/conventional_carriers
+Methanation/Sabatier,Base,,H2,Gas,CO2,-,sector/methanation
+methanolisation,Ind,Only if shipping methanol shares,H2,MeOH,Elec,-,industry/shipping_methanol_share
+micro CHP,Heat,,Gas,Elec,Heat,-,sector/chp ; sector/micro-chp
+Nuclear,Base,,Uranium,Elec,-,-,sector/conventional_carriers
+OCGT,Base,,Gas,Elec,CO2,-,sector/conventional_carriers
+Offwind-AC,Base,,Wind,Elec,-,-,electricity/renewable_carriers
+Offwind-DC,Base,,Wind,Elec,-,-,electricity/renewable_carriers
+oil boilers,Ind,Allows for oil boilers,oil,heat_buses (rural + urban decentral),,,sector/oil_boilers
+Onwind,Base,,Wind,Elec,-,-,electricity/renewable_carriers
+PHS,Base,,Hydro,Elec,-,-,electricity/renewable_carriers
+Process CO2 emissions,Ind,,CO2 process,-,-,-,/
+Process CO2 emissions CC,Ind,,CO2 process,CO2 CC,-,-,/
+Retrofitting,Heat,,Retrofitting,Heat_buses,,,sector/retrofitting/retro_endogen
+RoR,Base,,Hydro,Elec,-,-,electricity/renewable_carriers
+SMR,Base,,Gas,H2,CO2,-,sector/SMR
+SMR CC,Base,,Gas,H2,CO2 CC,CO2,sector/SMR
+Solar utility,Base,,Solar,Elec,-,-,electricity/renewable_carriers
+Solar rooftop ,Base,"Fraction defined by rooftop-share, considered only if electricity distribution network configured",Solar,Elec,-,-,sector/electricity_distribution_grid
+solid Biomass,Biomass,,Biomass,-,-,-,/
+Transport ship MeOH,Ind,,H2,MeOH,Elec,-,industry/shipping_methanol_share
+water tank charger,Heat,,Heat storage,Heat_buses,-,-,sector/tes
+water tank discharger,Heat ,,Heat storage,Heat_buses,-,-,sector/tes
+Oil,Base,Power production,Oil,Elec,CO2,-,sector/conventional_carriers
