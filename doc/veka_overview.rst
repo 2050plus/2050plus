@@ -14,6 +14,7 @@ This chapter aims to give a broad overview of the use of PyPSA-Eur in the contex
 
 High level description
 ===========================
+
 PyPSA-Eur is an open model dataset of the European energy system at the transmission network level that covers the full ENTSO-E area. Written in Python, it optimizes the energy system with high temporal and spatial resolution for a large spectrum of technologies and energy vectors. It covers demand and supply for all energy sectors.
 
 General description

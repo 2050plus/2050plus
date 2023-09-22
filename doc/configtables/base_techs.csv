@@ -1,7 +1,7 @@
 Technology name,Carrier 1,Carrier 2,Carrier 3,Carrier 4
 AC lines,Elec,-,-,-
-Allam Power cycle,Gas,Elec,CO2 CC,-
-Ammonia Storage,NH3,-,-,-
+Allam power cycle,Gas,Elec,CO2 CC,-
+Ammonia storage,NH3,-,-,-
 Ammonia cracker,Elec,NH3,H2,-
 Battery storage,Elec battery,-,-,-
 CCGT,Gas,Elec,CO2,-

@@ -11,7 +11,7 @@ Configurations
 
 PyPSA-Eur is able to provide the energy supply of an energy system given :
 
-* The configuration of the system by year-varying parameters (such as carbon budget, primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies, charging power of EVs);
+* The configuration of the system by year-varying parameters (such as carbon budget or primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies or charging power of EVs);
 * The list of technologies used;
 * Techno-economic parameters (such as investment costs, efficiency, FOM, VOM, lifetime, discount rate, etc).
 
@@ -102,7 +102,7 @@ The definition of the technologies in PyPSA is done by retrieving data from a co
 * Potential 				(MWhmax)
 * Carrier(s)
 
-The cost database (which can be found `here <https://github.com/pypsa/technology-data>`_) has a granularity of up to 5 years and is mostly based on the Danish Energy Agency (DEA) forecasts (March 2018 - August 2023).
+The cost database (https://github.com/pypsa/technology-data) has a granularity of up to 5 years and is mostly based on the Danish Energy Agency (DEA) forecasts (March 2018 - August 2023).
 
 It must be noted nonetheless that for some technologies, some techno-economic parameters are set from the configuration file instead of the cost database.
 
