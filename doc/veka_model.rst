@@ -39,9 +39,8 @@ To add an hourly future electric load on the network using the yearly `2050 Path
 #. Build a future load using the annual future load and the built profiles (incl. heat, transport, industry, power supply and residual load profiles).
 #. Add this load to the network.
 
-This methodology implies that the residual share of electricity is considered constant over future planning horizons. This does not take into account the evolution of appliances consumption, which is a limitation as we know from Climact's projections for ELIA. In this study, we assessed a future demand of 32.2TWh in 2030 for appliances (knowing that we were at 27.5TWh in 2013 and 25.7TWh in 2022).
+This methodology implies that the residual share of electricity is considered constant over future planning horizons. This does not take into account the evolution of appliances consumption. This is a limitation as we know from `Climact's short term projections for ELIA Adequacy working group <https://www.elia.be/fr/users-group/adequacy-working-group/20230825-meeting>`_ that this share is not constant. In this study, we assessed a future demand of 32.2TWh in 2030 for appliances (knowing that we were at 27.5TWh in 2013 and 25.7TWh in 2022).
 
-    - Lien vers l'étude ELIA # ToDo VLA
 
 Future annual demand
 ---------------------------

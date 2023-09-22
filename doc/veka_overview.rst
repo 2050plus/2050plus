@@ -46,7 +46,7 @@ where :
 * :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* for generator or storage asset *s*
 * :math:`CAPEX_{l}` is the annualized investment cost of infrastructure on line *l*
 * :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*
-* :math:`w_{t}` is the weighting of time *t* in the objective function
+* :math:`w_{t}` is the weighting of time *t* in the objective function (e.g. multiple hours)
 * :math:`suc_{n,s,t}` is the start-up cost if generator with unit commitment is started at time :math:`t`
 * :math:`sdc_{n,s,t}` is the shut-down cost if generator with unit commitment is shut down at time :math:`t`
 
@@ -56,7 +56,7 @@ Given the spatial and temporal resolution used, the use of a commercial solver i
 
 Optimization constraints
 ---------------------------
-The energy system is optimized under :
+The energy system is optimized under various constrains, among which :
 
 * A carbon budget constraint, representing how much CO2 can be emitted over the operation of the energy system for the considered planning horizons
 * A potential constraint, representing the maximal capacity that can be installed per technology and per node. Currently, renewables are the only technologies for which this potential constraint applies.
@@ -65,20 +65,20 @@ The energy system is optimized under :
 Main limitations
 ===========================
 
-The current study has been developed on the version v0.8.0 of PyPSA (https://github.com/PyPSA/pypsa-eur/releases/tag/v0.8.0). During the development of the project, the following limitations have been identified :
+The current study has been developed on the version v0.8.0 of PyPSA (https://github.com/PyPSA/pypsa-eur/releases/tag/v0.8.0). Please refer to the `release notes <https://pypsa-eur.readthedocs.io/en/latest/release_notes.html>`_ for further details on fixes and improvements since then. A `limitations <https://pypsa-eur.readthedocs.io/en/latest/limitations.html>`_ list is also maintained by the PyPSA-Eur team. During the development of this project, the following attention points have been identified :
 
 * Hydrogen, CH4 and CO2 pipelines are considered to be lossless and free of electricity consumption.
 
-* Existing conventional generators assets considered for the first planning horizons are extracted from powerplantmatching Python package, which maintained by TUBerlin.
+* Existing conventional generators assets considered for the first planning horizons are extracted from *powerplantmatching* Python package (https://github.com/PyPSA/powerplantmatching), which maintained by TUBerlin.
 
-* Existing renewable generators assets considered for the first planning horizons come from IRENA
+* Existing renewable generators assets considered for the first planning horizons come from `IRENA <http://pxweb.irena.org/pxweb/en/IRENASTAT>`_.
 
 * The following technologies are not yet supported by the model:
 
   * geothermal, and
   * industrial heat.
 
-* Export are not taken into account in the current version of the model.
+* Export are not taken into account in the current version of the model. The only way to model it is exogenous.
 
 * Hydrogen can only be
 
