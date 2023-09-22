@@ -60,6 +60,7 @@ publications.jrc.ec.europa.eu/
 
 *.xlsx
 !analysis/*/*.xlsx
+!scenario_builder_tool_input.xlsx
 
 doc/_build
 

@@ -673,7 +673,7 @@ rule prepare_sector_network:
         **gas_infrastructure,
         **build_sequestration_potentials_output,
         overrides="data/override_component_attrs",
-        network=RESOURCES + "networks/elec_s{simpl}_{clusters}_ec_l{ll}_{opts}.nc",
+        network=RESOURCES + "networks/elec_s{simpl}_{clusters}_ec_l{ll}_{opts}_{planning_horizons}.nc",
         energy_totals_name=RESOURCES + "energy_totals.csv",
         eurostat=input_eurostat,
         pop_weighted_energy_totals=RESOURCES

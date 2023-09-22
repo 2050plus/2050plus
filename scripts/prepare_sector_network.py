@@ -756,19 +756,35 @@ def prepare_costs(cost_file, config, nyears):
     return costs
 
 
-def add_generation(n, costs):
+def add_generation(n, costs, nyears):
     logger.info("Adding electricity generation")
 
     nodes = pop_layout.index
 
     fallback = {"OCGT": "gas"}
     conventionals = options.get("conventional_generation", fallback)
-
+    phase_out = snakemake.config["existing_capacities"].get("exit_year",{})
+    
     for generator, carrier in conventionals.items():
         carrier_nodes = vars(spatial)[carrier].nodes
 
         add_carrier_buses(n, carrier, carrier_nodes)
+        
+        if phase_out.get(generator, {}):
+            if phase_out[generator] <= investment_year:
+                continue
 
+            # update fixed costs based on updated lifetime
+            lifetime = phase_out[generator] - investment_year
+            if lifetime > 0:
+                costs.at[generator, "lifetime"] = lifetime
+
+                def annuity_factor(v):
+                    return annuity(v["lifetime"], v["discount rate"]) + v["FOM"] / 100
+
+                v = costs.loc[generator]
+                costs.at[generator, "fixed"] = annuity_factor(v) * v["investment"] * nyears
+                        
         n.madd(
             "Link",
             nodes + " " + generator,
@@ -3289,7 +3305,7 @@ if __name__ == "__main__":
 
     add_co2_tracking(n, options)
 
-    add_generation(n, costs)
+    add_generation(n, costs, nyears)
 
     add_storage_and_grids(n, costs)
 

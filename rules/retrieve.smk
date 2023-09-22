@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+import pandas as pd
+
 if config["enable"].get("retrieve_databundle", True):
     datafiles = [
         "ch_cantons.csv",
@@ -157,6 +159,21 @@ rule retrieve_load_data:
     run:
         move(input[0], output[0])
 
+
+rule retrieve_load_futur:
+    input:
+        scenario_builder="scenario_builder_tool_input.xlsx",
+        load_hourly= RESOURCES + "load.csv"
+    output:
+        expand("data/patex/patex_{y}.csv", y=[pd.Timestamp(config["snapshots"]["start"]).year] +
+                                             config["scenario"]["planning_horizons"])
+    log:
+        LOGS + "retrieve_load_futur.log",
+    retries: 5
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/retrieve_load_futur.py"
 
 rule retrieve_ship_raster:
     input:
