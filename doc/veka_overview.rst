@@ -21,8 +21,8 @@ General description
 
 PyPSA-Eur optimizes energy systems with
 
-- a temporal granularity up to 1 hour (which represents a maximum of 8760 time steps each year),
-- a spatial granularity up to ENTSO-E transmission lines (which represents a maximum of 8800 electrical buses), and
+- a temporal granularity up to 1 hour (which represents a maximum of 8760 time steps each year) ;
+- a spatial granularity up to ENTSO-E transmission lines (which represents a maximum of 8800 electrical buses) ;
 - a technology list reaching up to 80 different technologies (see :ref:`Technological assumptions`).
 
 PyPSA-Eur allows connecting different energy vectors (referred to as energy carriers in PyPSA-Eur) and technologies using them, hence allowing to tackle inter-sectorial and inter-carriers connections.
@@ -43,8 +43,8 @@ The optimization hence minimizes the annual total cost of the energy system for 
 
 where :
 
-* :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* for generator or storage asset *s*
-* :math:`CAPEX_{l}` is the annualized investment cost of infrastructure on line *l*
+* :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* for generator or storage asset *s* 
+* :math:`CAPEX_{l}` is the annualized investment cost of infrastructure on line *l* 
 * :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*
 * :math:`w_{t}` is the weighting of time *t* in the objective function (e.g. multiple hours)
 
@@ -56,7 +56,7 @@ Optimization constraints
 ---------------------------
 The energy system is optimized under various constrains, among which :
 
-* A carbon budget constraint, representing how much CO2 can be emitted over the operation of the energy system for the considered planning horizons
+* A carbon budget constraint, representing how much CO2 can be emitted over the operation of the energy system for the considered planning horizons ;
 * A potential constraint, representing the maximal capacity that can be installed per technology and per node. Currently, renewables are the only technologies for which this potential constraint applies.
 
 
@@ -65,18 +65,31 @@ Main limitations
 
 The current study has been developed on the version v0.8.0 of PyPSA (https://github.com/PyPSA/pypsa-eur/releases/tag/v0.8.0). Please refer to the `release notes <https://pypsa-eur.readthedocs.io/en/latest/release_notes.html>`_ for further details on fixes and improvements since then. A `limitations <https://pypsa-eur.readthedocs.io/en/latest/limitations.html>`_ list is also maintained by the PyPSA-Eur team. During the development of this project, the following attention points have been identified :
 
-* Hydrogen, CH4 and CO2 pipelines are considered to be lossless and free of electricity consumption.
+* For industry, the production of different materials per country is assumed to remain constant and no industry demand elasticity is included in the modelled. Hence, no Demand Side Management is modeled for the industry.
 
-* The following technologies are not yet supported by the model:
+* Energy carrier transmission/transport:
 
-  * geothermal, and # Sure ?
-  * industrial heat.
+  * Hydrogen and electricity are by default regionalized (i.e. considered at for each nodes) and transmission infrastructure are modeled. Those infrastructures are considered as perfect (no energy is needed to transport those vectors). 
+  * Methane and CO2 are by default regionalized without transport infrastructures. We recommend to include them.
+  * Solid biomass is by default modeled as a single equivalent EU node. The energy vector can be regionalized with or without transport between nodes. Transport of solid biomass between nodes does not include capital costs but only marginal costs and maximum nominal power between two nodes.
+  * Heat is regionalized but excluding district heating, heat is not transported.
+  * Ammonia is by default modeled as a single equivalent EU node, but can be regionalized (thus no transport between nodes). 
+  * Coal, lignite, oil, uranium and methanol are not regionalized and are a single equivalent EU node is considered.
+  
+* Some technologies are not yet supported by the model, including:
 
+  * Geothermal energy for heat or electricity production ;
+  * Industrial heat pumps ;
+  * Low TRL storage technologies (Flow batteries, Compressed Air Energy Storage, gravitary storage system, Pumped Thermal Energy Storage, etc) ;
+  
 * Exports are not taken into account in the current version of the model. The only way to model them is exogenous.
 
-* Hydrogen can only be
+* Hydrogen can be:
 
-  * used as a feedstock/energy carrier for industry and as an energy carrier for different,
-  * produced and is not imported, or
-  * transported in a gaseous form through pipelines, or
+  * used as a feedstock/energy carrier for industry and as an energy carrier for different ;
+  * produced and is not imported ;
+  * transported in a gaseous form through pipelines ; 
   * used as liquefied hydrogen or hydrogen for shipping demand.
+  
+  
+ 
