@@ -41,7 +41,7 @@ the features from PyPSA-Eur-Sec, which is now deprecated.
 Energie Studie 2050+ for VEKA
 =============================
 
-This version of PyPSA-Eur is an extended version designed by Climact for *Flemish Energy and Climate Agency* (VEKA, Belgium) in the context of *Energie Studie 2050+* (see :ref:`Energie Studie 2050+ for VEKA<Overview>` for further details).
+This version of PyPSA-Eur is an extended version designed by Climact for the *Flemish Energy and Climate Agency* (VEKA, Belgium) in the context of the *Energie Studie 2050+* (see :ref:`Energie Studie 2050+ for VEKA<Overview>` for further details).
 
 Electricity System
 ==================

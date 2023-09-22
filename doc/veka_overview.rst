@@ -21,11 +21,11 @@ General description
 
 PyPSA-Eur optimizes energy systems with
 
-- a temporal granularity up to 1 hour (which represents a maximum of 8760 timesteps each year),
+- a temporal granularity up to 1 hour (which represents a maximum of 8760 time steps each year),
 - a spatial granularity up to ENTSO-E transmission lines (which represents a maximum of 8800 electrical buses), and
-- a technology list reaching up to 80 different technologies.
+- a technology list reaching up to 80 different technologies (see :ref:`Technological assumptions`).
 
-PyPSA-Eur allows to connect different energy vectors (referred to as energy carriers in PyPSA-Eur) and technologies using them, hence allowing to tackle inter-sectorial and inter-carriers connections.
+PyPSA-Eur allows connecting different energy vectors (referred to as energy carriers in PyPSA-Eur) and technologies using them, hence allowing to tackle inter-sectorial and inter-carriers connections.
 
 The system is optimized over the energy system cost (including OPEX and annualized CAPEX), for different consecutive planning horizons. The optimization is done over the sizing and dispatch of energy production and storage units and of transmission infrastructures to meet an inelastic demand for each of the time frames and geographical locations considered.
 
@@ -33,23 +33,26 @@ The cost optimization of the energy system for a given year is performed under d
 
 Optimization details
 ---------------------------
-For each planning horizon, PyPSA-Eur provides the cost optimal energy dispacth of each asset at each node and for each time frame given an hourly demand at each node of each energy carrier, as well as the cost optimal sizing of production, storage and transmission units needed for such dispatch.
+For each planning horizon, PyPSA-Eur provides the cost optimal energy dispatch of each asset at each node and for each time frame given an hourly demand at each node of each energy carrier, as well as the cost optimal sizing of production, storage and transmission units needed for such dispatch (see `Power System Optimization <https://pypsa.readthedocs.io/en/latest/optimal_power_flow.html#power-system-optimization>`_)
 
 The optimization hence minimizes the annual total cost of the energy system for each planning horizon, which is defined as :
 
 .. math::
 
-    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l,s}{CAPEX_{l,s}} + \sum_{n,s}{w_t \cdot \left(OPEX_{n,s,t}\right)}
+    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l}{CAPEX_{l}} + \sum_{t}{w_t \cdot \left( \sum_{n,s}OPEX_{n,s,t}\right)} + \sum_{t} \left[suc_{n,s,t} + sdc_{n,s,t} \right]
 
 where :
 
-* :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* and for generator or storage asset *s* ;
-* :math:`CAPEX_{l,s}` is the annualized investment cost of infrastructure on line *l* and for transmission asset *s* ;
-* :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*;
+* :math:`CAPEX_{n,s}` is the annualized investment cost of units at node *n* for generator or storage asset *s*
+* :math:`CAPEX_{l}` is the annualized investment cost of infrastructure on line *l*
+* :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*
+* :math:`w_{t}` is the weighting of time *t* in the objective function
+* :math:`suc_{n,s,t}` is the start-up cost if generator with unit commitment is started at time :math:`t`
+* :math:`sdc_{n,s,t}` is the shut-down cost if generator with unit commitment is shut down at time :math:`t`
 
-For each planning horizon, the capacity installed in previous planning horizon is taken into account and phased out assets are removed. Hence, the optimization is considered as "myopic" as it does not optimise the energy system over a continuous trajectory but rather planning horizon by planning horizon.
+If *myopic* optimization is configured, the solver does not optimize the energy system over a continuous trajectory but rather planning horizon by planning horizon. For each planning horizon, the capacity installed in the previous planning horizon is taken into account and phased out assets are removed.
 
-For the spatial and temporal resolution chosen, the use of a commercial solver is required to produce optimize the system within reasonable runtimes. A Gurobi license, which is the standard choice in the global PyPSA community, was selected to produce results.
+Given the spatial and temporal resolution used, the use of a commercial solver is required to compute the solution in a reasonable amount of time. Therefore, a `Gurobi <https://www.gurobi.com/>`_ license, which is the standard choice in the PyPSA community, has been bought.
 
 Optimization constraints
 ---------------------------

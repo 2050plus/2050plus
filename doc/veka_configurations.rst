@@ -72,7 +72,7 @@ Biomass and Heat technologies
 
 .. csv-table::
    :header-rows: 1
-   :file: configtables/biomass_heat_used.csv
+   :file: configtables/biomass_heat_techs.csv
    
 Industry technologies
 ---------------------------
