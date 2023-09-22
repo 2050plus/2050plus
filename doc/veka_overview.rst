@@ -39,7 +39,7 @@ The optimization hence minimizes the annual total cost of the energy system for 
 
 .. math::
 
-    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l}{CAPEX_{l}} + \sum_{t}{w_t \cdot \left( \sum_{n,s}OPEX_{n,s,t}\right)} + \sum_{t} \left[suc_{n,s,t} + sdc_{n,s,t} \right]
+    c = \sum_{n,s}{CAPEX_{n,s}} + \sum_{l}{CAPEX_{l}} + \sum_{t}{w_t \cdot \left( \sum_{n,s}OPEX_{n,s,t}\right)}
 
 where :
 
@@ -47,8 +47,6 @@ where :
 * :math:`CAPEX_{l}` is the annualized investment cost of infrastructure on line *l*
 * :math:`OPEX_{n,s,t}` is the operational cost of units at node *n*, for generator or storage asset *s* at time frame *t*
 * :math:`w_{t}` is the weighting of time *t* in the objective function (e.g. multiple hours)
-* :math:`suc_{n,s,t}` is the start-up cost if generator with unit commitment is started at time :math:`t`
-* :math:`sdc_{n,s,t}` is the shut-down cost if generator with unit commitment is shut down at time :math:`t`
 
 If *myopic* optimization is configured, the solver does not optimize the energy system over a continuous trajectory but rather planning horizon by planning horizon. For each planning horizon, the capacity installed in the previous planning horizon is taken into account and phased out assets are removed.
 
@@ -69,16 +67,12 @@ The current study has been developed on the version v0.8.0 of PyPSA (https://git
 
 * Hydrogen, CH4 and CO2 pipelines are considered to be lossless and free of electricity consumption.
 
-* Existing conventional generators assets considered for the first planning horizons are extracted from *powerplantmatching* Python package (https://github.com/PyPSA/powerplantmatching), which maintained by TUBerlin.
-
-* Existing renewable generators assets considered for the first planning horizons come from `IRENA <http://pxweb.irena.org/pxweb/en/IRENASTAT>`_.
-
 * The following technologies are not yet supported by the model:
 
-  * geothermal, and
+  * geothermal, and # Sure ?
   * industrial heat.
 
-* Export are not taken into account in the current version of the model. The only way to model it is exogenous.
+* Exports are not taken into account in the current version of the model. The only way to model them is exogenous.
 
 * Hydrogen can only be
 
