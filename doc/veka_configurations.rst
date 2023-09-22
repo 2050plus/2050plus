@@ -11,13 +11,13 @@ Configurations
 
 PyPSA-Eur is able to provide the energy supply of an energy system given :
 
-* The configuration of the system by year-varying parameters (such as carbon budget or primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies or charging power of EVs);
-* The list of technologies used;
-* Techno-economic parameters (such as investment costs, efficiency, FOM, VOM, lifetime, discount rate, etc).
+* The configuration of the system by year-varying parameters (such as carbon budget or primary route share in steel production) and fixed parameters (such as maximum potential per renewable technologies or charging power of EVs) ;
+* The list of technologies used ;
+* Techno-economic parameters (such as investment costs, efficiency, FOM, VOM, lifetime, discount rate, etc.).
 
-The quality of the optimization results depends on the database quality as :
+The quality of the optimization results depends on the database quality, as :
 
-* The evolution trajectory of year-dependent parameters has an impact on the energy demand for some parameters (by dispatching the total demand over different vectors) and fixed parameters have an impact on some technologies (through potential, minimum capacity factor, etc) ;
+* The evolution trajectory of year-dependent parameters has an impact on the energy demand for some parameters (by dispatching the total demand over different vectors). Fixed parameters have an impact on some technologies (through potential, minimum capacity factor, etc.) ;
 * The addition of a technology might lead to an energy system significantly cheaper throughout the optimization, due to otherwise non-existing or uninteresting interactions between technologies ;
 * Some technologies might not be considered in the cost-optimal system because of too high CAPEX/OPEX, or might be massively installed because of too optimistic costs.
 
@@ -44,7 +44,7 @@ A technology can be used for
   * i.e. Methane pipelines;
   * i.e. CO2 pipelines;
   
-Some technologies are added to the system only if an energy sector is considered in the optimization. An exhaustive list is given herebelow, sorted by module and with each energy carriers the technology uses.
+Some technologies are added to the system only if an energy sector is considered in the optimization. An exhaustive list is given here below, sorted by module and with each energy carriers the technology uses.
 
 Base technologies
 ---------------------------
@@ -116,7 +116,7 @@ Some additional parameters can nonetheless be set from a separate configuration 
 * On/off technology use : Levers (de)activating some technologies in PyPSA optimization
 
   * i.e. Conventional technologies to consider in future planning horizons;
-  * i.e. Use of micro-CHP, solid biomass to liquid, etc;
+  * i.e. Use of micro-CHP, solid biomass to liquid, etc.;
   * i.e. Considering distribution electric and/or gas networks;
 
 * Technology parameters : techno-economic parameters that were not set from the cost database or that alter technologies
@@ -134,10 +134,10 @@ Some additional parameters can nonetheless be set from a separate configuration 
 * Simulation parameters : parameters impacting the optimization constraints and energy system definition
 
   * i.e. Temporal scale for the system optimization
-  * i.e. Carbon budget per year (how much CO2 can be emitted annualy);
+  * i.e. Carbon budget per year (how much CO2 can be emitted annually);
   * i.e. Authorized expansion of AC/DC transmission lines (in terms of cost or transmission capacity);
   * i.e. Regionalized/copperplated ammonia at EU scale;
-  * i.e. Emission pricing and sequestration costsper tCO2;
+  * i.e. Emission pricing and sequestration costs per tCO2;
   * i.e. Locations where hydrogen storage is allowed;
 
 Those additional parameters default values can be modified to match expert's best estimate.
@@ -147,10 +147,10 @@ Spatio-temporal specifications
 
 PyPSA is technically able to define the energy supply down to a resolution of 1 hour and down to the spatial resolution of ENTSO-E transmission network. However, practically speaking, such a fine resolution (8760h on one year for ~8800 electrical nodes) is not feasible due to the huge computational burden linked to the optimization of such an energy system.
 
-The system is hence clustered to a smaller number of equivalent electrical nodes  (i.e. clusters), small enough to allow acceptable runtimes but large enough to ensure a detailed representation of the energy system (power demand, renewable power generation, transmission infrastructures, etc).
+The system is hence clustered to a smaller number of equivalent electrical nodes  (i.e. clusters), small enough to allow acceptable runtimes but large enough to ensure a detailed representation of the energy system (power demand, renewable power generation, transmission infrastructures, etc.).
 
-As mentioned in :cite:`frysztackiStrongEffect2021a`, we need to be especially be aware of the implications of those hypothesis. Model outputs are strongly influenced by network resolution. This is why we chose to take 37 clustered nodes into account while considering 180 renewables generation sites (onshore and offshore wind as well as utility-scale solar PV technologies). This gives a better estimation of the load factors for renewables without significantly increasing the computation time.
+As mentioned in :cite:`frysztackiStrongEffect2021a`, we need to be especially be aware of the implications of those hypotheses. Model outputs are strongly influenced by network resolution. This is why we chose to take 37 clustered nodes into account while considering 180 renewables generation sites (onshore and offshore wind as well as utility-scale solar PV technologies). This gives a better estimation of the load factors for renewables without significantly increasing the computation time.
 
-Temporal resolution has also been explored during the preliminary phase of the project. Two resolution techniques were proposed : time aggregation and time segmentation. Time aggregation averages timesteps on a given resolution (e.g.: 3h aggregation). Time segmentation use the `tsam` package (https://github.com/FZJ-IEK3-VSA/tsam). This package looks for typical periods using machine learning algorithms.  While having an impact on the computation time, we preferred a 3h time aggregation to be as close as possible to profiles. This choice eases also the interpretation of results.
+Temporal resolution has also been explored during the preliminary phase of the project. Two resolution techniques were proposed : time aggregation and time segmentation. Time aggregation averages timesteps on a given resolution (e.g.: 3h aggregation). Time segmentation use the `tsam` package (https://github.com/FZJ-IEK3-VSA/tsam). This package looks for typical periods using machine learning algorithms.  While having an impact on the computation time, we preferred a 3h time aggregation to be as close as possible to profiles. This choice also eases the interpretation of results.
 
 More details about the spatial resolution are given in Section :ref:`spatial_resolution`.

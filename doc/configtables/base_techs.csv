@@ -8,8 +8,8 @@ CCGT,Gas,Elec,CO2,-
 CH4 (g) pipeline,Gas,-,-,-
 CO2 pipeline,CO2 CC,-,-,-
 CO2 sequestration,CO2 CC,-,-,-
-Coal ,Coal,Elec,CO2 CC,CO2
-Coal CC,Coal,Elec,CO2,-
+Coal,Coal,Elec,CO2,-
+Coal CC,Coal,Elec,CO2 CC,CO2
 DC links,Elec (DC),Elec,-,-
 Electricity distribution grid,Elec,Elec (LV),-,-
 Electricity grid connection,Elec,-,-,-
