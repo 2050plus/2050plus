@@ -34,7 +34,7 @@ Methodology
 To add an hourly future electric load on the network using the yearly `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_ data, different steps are required:
 
 #. Retrieve yearly electric load from 2050 Pathways Explorer using its API ;
-#. Build a reference hourly country profile for each sub-sectors based on intra-days assumptions for heat and weekly assumptions for transport. Industry profiles are considered constant and power supply profiles are considered to be proportional to the total load ;
+#. Build a reference hourly country profile for each sub-sectors based on intra-days assumptions for heat and weekly assumptions for transport. Industry profile is considered constant and power supply profile is considered to be proportional to the total load ;
 #. Build a reference residual load profile as the left over after subtracting the total load of the reference year to the load of the different sectors for this same year ;
 #. Build a future load using the annual future load and the built profiles (incl. heat, transport, industry, power supply and residual load profiles) ;
 #. Add this load to the network.
