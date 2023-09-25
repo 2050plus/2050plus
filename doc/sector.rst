@@ -155,6 +155,34 @@ Rule ``cluster_gas_network``
 
 .. automodule:: cluster_gas_network
 
+.. _build_country_profiles:
+
+Rule ``build_country_profiles``
+=============================
+
+.. automodule:: build_country_profiles
+
+.. _build_residual_load_profile:
+
+Rule ``build_residual_load_profile``
+=============================
+
+.. automodule:: build_residual_load_profile
+
+.. _build_future_load:
+
+Rule ``build_future_load``
+=============================
+
+.. automodule:: build_future_load
+
+.. _electricity_tomorrow:
+
+Rule ``add_electricity_tomorrow``
+=============================
+
+.. automodule:: add_electricity_tomorrow
+
 Rule ``copy_config``
 ==============================================================================
 

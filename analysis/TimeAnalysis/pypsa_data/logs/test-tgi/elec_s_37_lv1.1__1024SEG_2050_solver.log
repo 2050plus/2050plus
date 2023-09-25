@@ -1,0 +1,16 @@
+Presolving model
+1485640 rows, 1507008 cols, 5175928 nonzeros
+1485640 rows, 1507008 cols, 5175928 nonzeros
+Presolve : Reductions: rows 1485640(-1829174); columns 1507008(-103622); elements 5175928(-1948990)
+Solving the presolved LP
+IPX model has 1485640 rows, 1507008 columns and 5175928 nonzeros
+WARNING: Ipx: Stopped
+WARNING: Ipx: IPM       no progress
+WARNING: No progress: primal objective value       =   1.683e+11
+WARNING: No progress: max absolute primal residual =   4.351e-06
+WARNING: No progress: max absolute   dual residual =   6.952e-05
+WARNING: Unwelcome IPX status of Unknown: basis is not valid; solution is valid; run_crossover is "off"
+Model   status      : Unknown
+IPM       iterations: 104
+Objective value     :  1.3216605036e+11
+HiGHS run time      :      20959.49

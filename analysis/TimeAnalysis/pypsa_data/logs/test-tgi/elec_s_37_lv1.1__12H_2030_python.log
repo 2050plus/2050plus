@@ -1,0 +1,114 @@
+WARNING:pypsa.io:The following Link have buses which are not defined:
+Index(['DE1 0 urban central solid biomass CHP-2005',
+       'GB0 0 urban central solid biomass CHP-2005',
+       'CH1 0 urban central solid biomass CHP-2010',
+       'CZ1 0 urban central solid biomass CHP-2010',
+       'DE1 0 urban central solid biomass CHP-2010',
+       'FR1 0 urban central solid biomass CHP-2010',
+       'GB0 0 urban central solid biomass CHP-2010',
+       'CH1 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2015',
+       'FR1 0 urban central solid biomass CHP-2015',
+       'GB0 0 urban central solid biomass CHP-2015',
+       'GB5 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2020',
+       'FR1 0 urban central solid biomass CHP-2020',
+       'GB0 0 urban central solid biomass CHP-2020'],
+      dtype='object', name='name')
+INFO:pypsa.io:Imported network elec_s_37_lv1.1__12H_2030.nc has buses, carriers, generators, global_constraints, lines, links, loads, storage_units, stores
+WARNING:__main__:Existing capacities larger than technical potential for Index(['ES4 0 onwind-2030'], dtype='object', name='Generator'),                       adjust technical potential to existing capacities
+WARNING:pypsa.components:The following links have bus0 which are not defined:
+Index(['DE1 0 urban central solid biomass CHP-2005',
+       'GB0 0 urban central solid biomass CHP-2005',
+       'CH1 0 urban central solid biomass CHP-2010',
+       'CZ1 0 urban central solid biomass CHP-2010',
+       'DE1 0 urban central solid biomass CHP-2010',
+       'FR1 0 urban central solid biomass CHP-2010',
+       'GB0 0 urban central solid biomass CHP-2010',
+       'CH1 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2015',
+       'FR1 0 urban central solid biomass CHP-2015',
+       'GB0 0 urban central solid biomass CHP-2015',
+       'GB5 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2020',
+       'FR1 0 urban central solid biomass CHP-2020',
+       'GB0 0 urban central solid biomass CHP-2020'],
+      dtype='object', name='Link')
+WARNING:pypsa.components:The following links have bus2 which are not defined:
+Index(['DE1 0 urban central solid biomass CHP-2005',
+       'GB0 0 urban central solid biomass CHP-2005',
+       'CH1 0 urban central solid biomass CHP-2010',
+       'CZ1 0 urban central solid biomass CHP-2010',
+       'DE1 0 urban central solid biomass CHP-2010',
+       'FR1 0 urban central solid biomass CHP-2010',
+       'GB0 0 urban central solid biomass CHP-2010',
+       'CH1 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2015',
+       'FR1 0 urban central solid biomass CHP-2015',
+       'GB0 0 urban central solid biomass CHP-2015',
+       'GB5 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2020',
+       'FR1 0 urban central solid biomass CHP-2020',
+       'GB0 0 urban central solid biomass CHP-2020'],
+      dtype='object', name='Link')
+WARNING:pypsa.components:The following links have bus0 which are not defined:
+Index(['DE1 0 urban central solid biomass CHP-2005',
+       'GB0 0 urban central solid biomass CHP-2005',
+       'CH1 0 urban central solid biomass CHP-2010',
+       'CZ1 0 urban central solid biomass CHP-2010',
+       'DE1 0 urban central solid biomass CHP-2010',
+       'FR1 0 urban central solid biomass CHP-2010',
+       'GB0 0 urban central solid biomass CHP-2010',
+       'CH1 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2015',
+       'FR1 0 urban central solid biomass CHP-2015',
+       'GB0 0 urban central solid biomass CHP-2015',
+       'GB5 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2020',
+       'FR1 0 urban central solid biomass CHP-2020',
+       'GB0 0 urban central solid biomass CHP-2020'],
+      dtype='object', name='Link')
+WARNING:pypsa.components:The following links have bus2 which are not defined:
+Index(['DE1 0 urban central solid biomass CHP-2005',
+       'GB0 0 urban central solid biomass CHP-2005',
+       'CH1 0 urban central solid biomass CHP-2010',
+       'CZ1 0 urban central solid biomass CHP-2010',
+       'DE1 0 urban central solid biomass CHP-2010',
+       'FR1 0 urban central solid biomass CHP-2010',
+       'GB0 0 urban central solid biomass CHP-2010',
+       'CH1 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2015',
+       'FR1 0 urban central solid biomass CHP-2015',
+       'GB0 0 urban central solid biomass CHP-2015',
+       'GB5 0 urban central solid biomass CHP-2015',
+       'DE1 0 urban central solid biomass CHP-2020',
+       'FR1 0 urban central solid biomass CHP-2020',
+       'GB0 0 urban central solid biomass CHP-2020'],
+      dtype='object', name='Link')
+INFO:linopy.model: Solve linear problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs/test-tgi/elec_s_37_lv1.1__12H_2030_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 10
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e9
+ - primal_feasibility_tolerance: 1e-5
+ - dual_feasibility_tolerance: 1e-5
+ - ipm_optimality_tolerance: 1e-4
+ - parallel: on
+ - random_seed: 123
+INFO:linopy.io:Writing objective.
+INFO:linopy.io: Writing time: 0.27s
+INFO:linopy.solvers:Log file at logs/test-tgi/elec_s_37_lv1.1__12H_2030_solver.log.
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 25318 primals, 51270 duals
+Objective: 1.27e+09
+Solver model: available
+Solver message: optimal
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Kirchhoff-Voltage-Law were not assigned to the network.
+INFO:pypsa.io:Exported network elec_s_37_lv1.1__12H_2030.nc has lines, storage_units, generators, global_constraints, buses, stores, links, loads, carriers
+INFO:__main__:Maximum memory usage: (605.734375, 1689876587.4450848)

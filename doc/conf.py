@@ -68,11 +68,13 @@ source_suffix = ".rst"
 
 # The master toctree document.
 master_doc = "index"
+master_doc_pdf = "index_pdf"
 
 # General information about the project.
 project = "PyPSA-Eur"
 copyright = "2017-2023 Tom Brown (KIT, TUB, FIAS), Jonas Hoersch (KIT, FIAS), Fabian Hofmann (TUB, FIAS), Fabian Neumann (TUB, KIT), Marta Victoria (Aarhus University), Lisa Zeyen (KIT, TUB)"
-author = "Tom Brown (KIT, TUB, FIAS), Jonas Hoersch (KIT, FIAS), Fabian Hofmann (TUB, FIAS), Fabian Neumann (TUB, KIT), Marta Victoria (Aarhus University), Lisa Zeyen (KIT, TUB)"
+author = "Tom Brown (KIT, TUB, FIAS), Jonas Hoersch (KIT, FIAS), Fabian Hofmann (TUB, FIAS), Fabian Neumann (TUB, KIT), Marta Victoria (Aarhus University), Lisa Zeyen (KIT, TUB), Vincent Laguna (Climact), Thomas Gilon (Climact), Dimitri Krings (Climact), Benoît Martin (Climact)"
+author_pdf = "Tom Brown (KIT, TUB, FIAS), Jonas Hoersch (KIT, FIAS), \\\\ Fabian Hofmann (TUB, FIAS), Fabian Neumann (TUB, KIT), \\\\ Marta Victoria (Aarhus University), Lisa Zeyen (KIT, TUB), \\\\ Vincent Laguna (Climact), Thomas Gilon (Climact), \\\\ Dimitri Krings (Climact), Benoît Martin (Climact)"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -250,17 +252,17 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "PyPSA-Eur.tex", "PyPSA-Eur Documentation", "author", "manual"),
+    (master_doc_pdf, "PyPSA-Eur.tex", "PyPSA-Eur Documentation for VEKA", author_pdf, "manual"),
 ]
 
 
 # Added for rinoh http://www.mos6581.org/rinohtype/quickstart.html
 rinoh_documents = [
     (
-        master_doc,  # top-level file (index.rst)
+        master_doc_pdf,  # top-level file (index.rst)
         "PyPSA-Eur",  # output (target.pdf)
-        "PyPSA-Eur Documentation",  # document title
-        "author",
+        "PyPSA-Eur Documentation for VEKA",  # document title
+        author_pdf,
     )
 ]  # document author
 

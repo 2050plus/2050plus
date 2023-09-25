@@ -134,7 +134,7 @@ import pyomo.environ as po
 import pypsa
 import seaborn as sns
 from _helpers import configure_logging, get_aggregation_strategies, update_p_nom_max
-from pypsa.networkclustering import (
+from pypsa.clustering.spatial import (
     busmap_by_greedy_modularity,
     busmap_by_hac,
     busmap_by_kmeans,
@@ -424,7 +424,10 @@ def clustering_for_n_clusters(
             n.links.eval("underwater_fraction * length").div(nc.links.length).dropna()
         )
         nc.links["capital_cost"] = nc.links["capital_cost"].add(
-            (nc.links.length - n.links.length).clip(lower=0).mul(extended_link_costs),
+            (nc.links.length - n.links.length)
+            .clip(lower=0)
+            .mul(extended_link_costs)
+            .dropna(),
             fill_value=0,
         )
 
