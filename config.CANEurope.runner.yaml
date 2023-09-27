@@ -350,6 +350,7 @@ existing_capacities:
   - coal
   - oil
   - uranium
+  - biomass
   exit_year:
     CCGT: 2034
     OCGT: 2034
@@ -470,6 +471,7 @@ sector:
   dac: true
   co2_vent: false
   allam_cycle: true
+  allam_marginal_cost: "gas"  # can be number (EUR/MWh_th), "gas" (use gas price)
   SMR: true
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential

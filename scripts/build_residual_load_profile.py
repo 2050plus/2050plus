@@ -91,7 +91,6 @@ if __name__ == "__main__":
     load_annual = (
             pd.read_csv(snakemake.input.load_annual, parse_dates=True, index_col=0)
             .filter(regex='|'.join([f"^{c}.*" for c in countries]))
-            * 1e6
     )
     load_hourly = (
         pd.read_csv(snakemake.input.load_hourly, parse_dates=True, index_col="utc_timestamp")

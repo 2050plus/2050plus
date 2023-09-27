@@ -216,7 +216,7 @@ def get_results(scenarios_dict, variables_list):
 def format_results(results):
     """
     Format received JSON into dataframe
-    Change unit from TWh to kWh (* 1e6)
+    Change unit from TWh to MWh (* 1e6)
     Add non-MS data using proportions
 
     :param results: data in JSON format
