@@ -638,7 +638,8 @@ def add_allam(n, costs):
         p_nom_extendable=True,
         # TODO: add costs to technology-data
         capital_cost=0.6 * 1.5e6 * 0.1,  # efficiency * EUR/MW * annuity
-        marginal_cost=2,
+        marginal_cost=costs.at["gas", "fuel"]/0.6  # Fuel cost of gas * efficiency (MWth to MWe)
+        if options["allam_marginal_cost"] == "gas" else options["allam_marginal_cost"],
         efficiency=0.6,
         efficiency2=costs.at["gas", "CO2 intensity"],
         lifetime=30.0,
@@ -771,7 +772,7 @@ def add_generation(n, costs, nyears):
         add_carrier_buses(n, carrier, carrier_nodes)
         
         if phase_out.get(generator, {}):
-            if phase_out[generator] <= investment_year:
+            if phase_out[generator] < investment_year:
                 continue
 
             # update fixed costs based on updated lifetime
@@ -2084,6 +2085,7 @@ def create_nodes_for_heat_sector():
 
 def add_biomass(n, costs):
     logger.info("Add biomass")
+    logger.error("Please check that biomass is not declared as existing_capacities > conventional_carriers")
 
     biomass_potentials = pd.read_csv(snakemake.input.biomass_potentials, index_col=0)
 
