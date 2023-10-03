@@ -471,6 +471,7 @@ sector:
   co2_vent: false
   allam_cycle: false
   SMR: true
+  SMR_cc: false
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential
     attribute: 'conservative estimate Mt'
