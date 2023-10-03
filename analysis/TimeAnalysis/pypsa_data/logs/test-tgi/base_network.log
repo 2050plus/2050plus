@@ -1,7 +1,0 @@
-INFO:__main__:Removing buses with voltages Index([132.0, 500.0, 750.0], dtype='float64')
-INFO:__main__:TYNDP links already in the dataset (skipping): Italy-Montenegro, NordLink, COBRA cable, Anglo-Scottish -1, ALEGrO, North Sea Link, ElecLink, Estlink 1
-INFO:__main__:Adding the following TYNDP links: Biscay Gulf, Italy-France, IFA2, Thames Estuary Cluster (NEMO-Link), HVDC SuedOstLink, HVDC Line A-North, France-Alderney-Britain, Viking DKW-GB, Greenconnector, Hansa PowerBridge I, NorthConnect, HVDC SuedLink, AQUIND Interconnector, HVDC Ultranet, Gridlink, NeuConnect, NordBalt, Greenlink, Celtic Interconnector
-INFO:__main__:Removing 59 unconnected network components with less than 4 buses. In total 92 buses.
-WARNING:__main__:31 buses are not in any country or offshore shape, 21 have been assigned from the tag of the entsoe map, the rest from the next bus in terms of pathlength.
-INFO:__main__:Replacing B2B converter `6342` together with bus `5544` and line `14746` by an HVDC tie-line LT-PL
-INFO:pypsa.io:Exported network base.nc has links, lines, buses, transformers
