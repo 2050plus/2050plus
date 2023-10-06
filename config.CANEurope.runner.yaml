@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "CANEurope" # use this to keep track of runs with different settings
+  name: "CANEurope_allam_false_nuc_phase_out_costs_up_v1_5_no_dac_irena" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -69,6 +69,7 @@ enable:
   retrieve_sector_databundle: false
   retrieve_cost_data: false
   build_cutout: false
+  retrieve_irena: false
   retrieve_cutout: false
   build_natura_raster: true
   retrieve_natura_raster: false
