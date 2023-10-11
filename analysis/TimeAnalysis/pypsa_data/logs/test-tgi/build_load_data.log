@@ -1,3 +1,0 @@
-INFO:__main__:Retrieving load data from 'data/load_raw.csv'.
-INFO:__main__:Linearly interpolate gaps of size 3 and less.
-INFO:__main__:Filling larger gaps by copying time-slices of period '1w'.

@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "CANEurope" # use this to keep track of runs with different settings
+  name: "CANEurope_allam_false_nuc_phase_out_costs_up_v1_5_no_dac_irena" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -20,15 +20,15 @@ foresight: myopic # options are overnight, myopic, perfect (perfect is not yet i
 
 scenario:
   simpl:
-  - 180
+  - 181
   ll:  # allowed transmission line volume expansion, can be any float >= 1.0 with a prefix v|c (today) or "copt"
-  - copt
+  - v1.5
   clusters:  # number of nodes in Europe, any integer between 37 (1 node per country-zone) and several hundred
   - 37m
   opts: # only relevant for PyPSA-Eur
   - ''
   sector_opts: # this is where the main scenario settings are
-  - 400H
+  - 3H
   # to really understand the options here, look in scripts/prepare_sector_network.py
   # Co2Lx specifies the CO2 target in x% of the 1990 values; default will give default (5%);
   # Co2L0p25 will give 25% CO2 emissions; Co2Lm0p05 will give 5% negative emissions
@@ -69,6 +69,7 @@ enable:
   retrieve_sector_databundle: false
   retrieve_cost_data: false
   build_cutout: false
+  retrieve_irena: false
   retrieve_cutout: false
   build_natura_raster: true
   retrieve_natura_raster: false
@@ -356,6 +357,7 @@ existing_capacities:
     OCGT: 2034
     coal: 2029
     lignite: 2029
+    nuclear: 2039
 
 sector:
   district_heating:
@@ -467,12 +469,13 @@ sector:
   marginal_cost_storage: 0. #1e-4
   methanation: true
   helmeth: true
-  coal_cc: true
-  dac: true
+  coal_cc: false
+  dac: false
   co2_vent: false
-  allam_cycle: true
+  allam_cycle: false
   allam_marginal_cost: "gas"  # can be number (EUR/MWh_th), "gas" (use gas price)
   SMR: true
+  SMR_cc: false
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential
     attribute: 'conservative estimate Mt'
@@ -490,7 +493,7 @@ sector:
     # - onshore  # more than 50 km from sea
   - nearshore    # within 50 km of sea
     # - offshore
-  ammonia: true # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
+  ammonia: "regional" # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
   min_part_load_fischer_tropsch: 0.9 # p_min_pu
   min_part_load_methanolisation: 0.5 # p_min_pu
   use_fischer_tropsch_waste_heat: true

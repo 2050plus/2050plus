@@ -72,6 +72,7 @@ enable:
   retrieve_sector_databundle: true
   retrieve_cost_data: true
   build_cutout: false
+  retrieve_irena: false
   retrieve_cutout: true
   build_natura_raster: false
   retrieve_natura_raster: true
@@ -471,6 +472,7 @@ sector:
   co2_vent: false
   allam_cycle: false
   SMR: true
+  SMR_cc: false
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential
     attribute: 'conservative estimate Mt'

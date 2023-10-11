@@ -5,7 +5,7 @@
 
 """
 This rule downloads yearly electric load data for each european country from the `2050 Pathways Explorer <https://pathwaysexplorer.climact.com>`_.
-This rule downloads appropriate years using configuration file. Yearly electric load data are definied by per-country
+This rule downloads appropriate years using configuration file. Yearly electric load data are defined by per-country
 scenarios.
 
 **Releveant Settings**
