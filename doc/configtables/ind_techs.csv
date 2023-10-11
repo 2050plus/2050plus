@@ -1,0 +1,14 @@
+Technology name,Carrier 1,Carrier 2,Carrier 3,Carrier 4
+Ammonia load for ind,Ammonia,-,-,-
+Biomass for ind,Biomass,Biomass for Ind,-,-
+Biomass for ind CC,Biomass,Biomass for Ind,CO2 CC,-
+Decentral oil boiler,Oil,Heat,-,-
+Fischer-Tropsch,H2,Oil,(Central Heat),
+Gas for ind,Gas,Gas for Ind,-,-
+Gas for ind CC,Gas ,Gas for Ind,CO2 CC,
+H2 liquefaction,H2,H2 liquid,-,-
+Methanolisation,H2,MeOH,Elec,-
+Oil boilers,oil,heat_buses (rural + urban decentral),,
+Process CO2 emissions,CO2 process,-,-,-
+Process CO2 emissions CC,CO2 process,CO2 CC,-,-
+Transport ship MeOH,H2,MeOH,Elec,-

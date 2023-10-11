@@ -324,7 +324,7 @@ def plot_h2_map(network, regions):
             h2_retro = (
                 group_pipes(h2_retro, drop_direction=True)
                 .reindex(h2_new.index)
-                .fillna(0)
+                .fillna({"p_nom_opt": 0, "bus0": '0', "bus1": '0'})
             )
 
     if not h2_retro.empty:

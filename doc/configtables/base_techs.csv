@@ -1,0 +1,39 @@
+Technology name,Carrier 1,Carrier 2,Carrier 3,Carrier 4
+AC lines,Elec,-,-,-
+Allam power cycle,Gas,Elec,CO2 CC,-
+Ammonia storage,NH3,-,-,-
+Ammonia cracker,Elec,NH3,H2,-
+Battery storage,Elec battery,-,-,-
+CCGT,Gas,Elec,CO2,-
+CH4 (g) pipeline,Gas,-,-,-
+CO2 pipeline,CO2 CC,-,-,-
+CO2 sequestration,CO2 CC,-,-,-
+Coal,Coal,Elec,CO2,-
+Coal CC,Coal,Elec,CO2 CC,CO2
+DC links,Elec (DC),Elec,-,-
+Electricity distribution grid,Elec,Elec (LV),-,-
+Electricity grid connection,Elec,-,-,-
+Electrolysis,Elec,H2,(Central Heat),-
+Fuel cell,H2,Elec,(Central Heat),-
+H2 (g) pipeline,H2,-,-,-
+H2 (g) pipeline repurposed,H2,-,-,-
+Haber-Bosch,Elec,H2,NH3,-
+Helmeth,Elec,CH4,CO2,-
+Home battery storage,Elec battery,-,-,-
+Hydro,Hydro,Elec,-,-
+Hydrogen storage overground,H2 ,-,-,-
+Hydrogen storage underground,H2 ,-,-,-
+Lignite,Lignite,Elec,-,-
+Methanation/Sabatier,H2,Gas,CO2,-
+Nuclear,Uranium,Elec,-,-
+OCGT,Gas,Elec,CO2,-
+Offwind-AC,Wind,Elec,-,-
+Offwind-DC,Wind,Elec,-,-
+Onwind,Wind,Elec,-,-
+PHS,Hydro,Elec,-,-
+RoR,Hydro,Elec,-,-
+SMR,Gas,H2,CO2,-
+SMR CC,Gas,H2,CO2 CC,CO2
+Solar utility,Solar,Elec,-,-
+Solar rooftop ,Solar,Elec,-,-
+Oil,Oil,Elec,CO2,-

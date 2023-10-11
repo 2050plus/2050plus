@@ -638,7 +638,8 @@ def add_allam(n, costs):
         p_nom_extendable=True,
         # TODO: add costs to technology-data
         capital_cost=0.6 * 1.5e6 * 0.1,  # efficiency * EUR/MW * annuity
-        marginal_cost=2,
+        marginal_cost=costs.at["gas", "fuel"]/0.6  # Fuel cost of gas * efficiency (MWth to MWe)
+        if options["allam_marginal_cost"] == "gas" else options["allam_marginal_cost"],
         efficiency=0.6,
         efficiency2=costs.at["gas", "CO2 intensity"],
         lifetime=30.0,
@@ -756,19 +757,35 @@ def prepare_costs(cost_file, config, nyears):
     return costs
 
 
-def add_generation(n, costs):
+def add_generation(n, costs, nyears):
     logger.info("Adding electricity generation")
 
     nodes = pop_layout.index
 
     fallback = {"OCGT": "gas"}
     conventionals = options.get("conventional_generation", fallback)
-
+    phase_out = snakemake.config["existing_capacities"].get("exit_year",{})
+    
     for generator, carrier in conventionals.items():
         carrier_nodes = vars(spatial)[carrier].nodes
 
         add_carrier_buses(n, carrier, carrier_nodes)
+        
+        if phase_out.get(generator, {}):
+            if phase_out[generator] < investment_year:
+                continue
 
+            # update fixed costs based on updated lifetime
+            lifetime = phase_out[generator] - investment_year
+            if lifetime > 0:
+                costs.at[generator, "lifetime"] = lifetime
+
+                def annuity_factor(v):
+                    return annuity(v["lifetime"], v["discount rate"]) + v["FOM"] / 100
+
+                v = costs.loc[generator]
+                costs.at[generator, "fixed"] = annuity_factor(v) * v["investment"] * nyears
+                        
         n.madd(
             "Link",
             nodes + " " + generator,
@@ -1372,7 +1389,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["coal", "lifetime"],
         )
 
-    if options["SMR"]:
+    if options["SMR_cc"]:
         n.madd(
             "Link",
             spatial.nodes,
@@ -1390,6 +1407,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["SMR CC", "lifetime"],
         )
 
+    if options["SMR"]:
         n.madd(
             "Link",
             nodes + " SMR",
@@ -2068,6 +2086,7 @@ def create_nodes_for_heat_sector():
 
 def add_biomass(n, costs):
     logger.info("Add biomass")
+    logger.error("Please check that biomass is not declared as existing_capacities > conventional_carriers")
 
     biomass_potentials = pd.read_csv(snakemake.input.biomass_potentials, index_col=0)
 
@@ -3289,7 +3308,7 @@ if __name__ == "__main__":
 
     add_co2_tracking(n, options)
 
-    add_generation(n, costs)
+    add_generation(n, costs, nyears)
 
     add_storage_and_grids(n, costs)
 
