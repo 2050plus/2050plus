@@ -352,11 +352,12 @@ existing_capacities:
   - oil
   - uranium
   - biomass
-  exit_year:
-    CCGT: 2034
-    OCGT: 2034
+  exit_year:  # assuming phase out at the end of the year
     coal: 2029
     lignite: 2029
+    CCGT: 2034
+    OCGT: 2034
+    oil: 2034
     nuclear: 2039
 
 sector:
