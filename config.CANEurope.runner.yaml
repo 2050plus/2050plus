@@ -357,6 +357,8 @@ existing_capacities:
     lignite: 2029
     CCGT: 2034
     OCGT: 2034
+    SMR: 2034
+    SMR_cc: 2034
     oil: 2034
     nuclear: 2039
 

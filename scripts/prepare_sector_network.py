@@ -1389,7 +1389,11 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["coal", "lifetime"],
         )
 
+    phase_out = snakemake.config["existing_capacities"].get("exit_year", {})
     if options["SMR_cc"]:
+        lifetime = costs.at["SMR CC", "lifetime"]
+        if phase_out.get("SMR_cc") and investment_year + lifetime > phase_out["SMR_cc"]:
+            lifetime = phase_out["SMR_cc"] - investment_year
         n.madd(
             "Link",
             spatial.nodes,
@@ -1404,10 +1408,13 @@ def add_storage_and_grids(n, costs):
             efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
             efficiency3=costs.at["gas", "CO2 intensity"] * options["cc_fraction"],
             capital_cost=costs.at["SMR CC", "fixed"],
-            lifetime=costs.at["SMR CC", "lifetime"],
+            lifetime=lifetime,
         )
 
     if options["SMR"]:
+        lifetime = costs.at["SMR", "lifetime"]
+        if phase_out.get("SMR") and investment_year + lifetime > phase_out["SMR"]:
+            lifetime = phase_out["SMR"] - investment_year
         n.madd(
             "Link",
             nodes + " SMR",
@@ -1419,7 +1426,7 @@ def add_storage_and_grids(n, costs):
             efficiency=costs.at["SMR", "efficiency"],
             efficiency2=costs.at["gas", "CO2 intensity"],
             capital_cost=costs.at["SMR", "fixed"],
-            lifetime=costs.at["SMR", "lifetime"],
+            lifetime=lifetime,
         )
 
 
