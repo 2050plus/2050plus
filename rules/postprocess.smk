@@ -19,6 +19,8 @@ rule plot_network:
         + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-costs-all_{planning_horizons}.pdf",
         today=RESULTS
         + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}_{planning_horizons}-today.pdf",
+        capacities=RESULTS
+        + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-capacities-all_{planning_horizons}.pdf",
     threads: 2
     resources:
         mem_mb=10000,
