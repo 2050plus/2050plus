@@ -589,9 +589,9 @@ costs:
     "CO2 intensity": 0
     "discount rate": 0.07
   # Marginal and capital costs can be overwritten
-  # capital_cost:
+  capital_cost: []
   #   onwind: 500
-  # marginal_cost:
+  marginal_cost: []
     # solar: 0.01
     # onwind: 0.015
     # offwind: 0.015
