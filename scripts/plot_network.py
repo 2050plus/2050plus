@@ -1009,8 +1009,8 @@ def plot_series(network, carrier="AC", name="test"):
     # 14-21.2 for flaute
     # 19-26.1 for flaute
 
-    start = "2013-02-19"
-    stop = "2013-02-26"
+    start = "2013-01-01"
+    stop = "2014-01-01"
 
     threshold = 10e3
 
@@ -1100,18 +1100,7 @@ def plot_series(network, carrier="AC", name="test"):
     ax.set_ylabel("Power [GW]")
     fig.tight_layout()
 
-    fig.savefig(
-        "{}/{RDIR}maps/series-{}-{}-{}-{}-{}.pdf".format(
-            "results",
-            snakemake.params.RDIR,
-            snakemake.wildcards["ll"],
-            carrier,
-            start,
-            stop,
-            name,
-        ),
-        transparent=True,
-    )
+    fig.savefig(snakemake.output.series, transparent=True)
 
 
 if __name__ == "__main__":
