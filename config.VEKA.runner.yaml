@@ -363,74 +363,72 @@ existing_capacities:
     nuclear: 2039
 
 sector:
-  technologies:
-   # Base module
     electrolysis: true
-    fuel_cell: true
-    SMR: true
-    SMR_cc: false
-    coal_cc: false
-    solar_rooftop: true # only valid if distribution_grid is True
-    methanation: true
-    helmeth: true
-    co2_vent: false
-    allam_cycle: false
-    gas_distribution_grid: true
-    electricity_grid_connection: true  # only applies to onshore wind and utility PV   
-    electricity_distribution_grid: true
-    conventional_generation: # generator : carrier
-      OCGT: gas
-    ammonia: "regional" # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
-    haber_bosch: true
-    ammonia_cracker: true
-    ammonia_store: true
-   # Networks and storage
-    H2_network: true
-    gas_network: true
-    H2_retrofit: true  # if set to True existing gas pipes can be retrofitted to H2 pipes
-    co2_spatial: true
-    co2network: true
-    hydrogen_underground_storage: true
-    hydrogen_overground_storage: true
-    battery : true
-    home_battery: true # only valid if distribution_grid is True
-   # Transport
-    v2g: true #allows feed-in to grid from EV battery
-    bev_dsm: true #turns on EV battery
-   # Heat module
-    solar_thermal: true
-    heat_pumps: true
-    cluster_heat_buses: false # cluster residential and service heat buses to one to save memory
-    tes: true
-    resistive_heater: true
-    gas_boiler: true
-    chp: true 
-    chp_cc: true
-    micro_chp: false
-    dac: false #only valid if heat module is activated
-   # Industry module
-    biomass_industry_cc: true
-    gas_industry_cc: true
-    shipping_hydrogen_liquefaction: true # whether to consider liquefaction costs for shipping H2 demands 
-    #methanolisation for shipping is considered to be turned off by setting the demand to 0
-    oil_boilers: true
-    fischer_tropsch: true
-    process_emissions_cc: true
-   # Waste-Heat module
-    use_fischer_tropsch_waste_heat: true
-    use_fuel_cell_waste_heat: true
-    use_electrolysis_waste_heat: true
-   # Biomass
-    biomass_spatial: true  # regionally resolve biomass (e.g. potentials)
-    biomass_transport: true  # allow transport of solid biomass between nodes
-    biogas_upgrading: true
-    biomass_chp: true
-    biomass_chp_cc: true
-    biomass_boiler: true
-    biomass_to_liquid: true
-    biomass_to_liquid_cc: true
-    biosng: true
-    biosng_cc: true
+  fuel_cell: true
+  SMR: true
+  SMR_cc: false
+  coal_cc: false
+  solar_rooftop: true # only valid if distribution_grid is True
+  methanation: true
+  helmeth: true
+  co2_vent: false
+  allam_cycle: false
+  gas_distribution_grid: true
+  electricity_grid_connection: true  # only applies to onshore wind and utility PV   
+  electricity_distribution_grid: true
+  conventional_generation: # generator : carrier
+    OCGT: gas
+  ammonia: "regional" # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
+  haber_bosch: true
+  ammonia_cracker: true
+  ammonia_store: true
+  # Networks and storage
+  H2_network: true
+  gas_network: true
+  H2_retrofit: true  # if set to True existing gas pipes can be retrofitted to H2 pipes
+  co2_spatial: true
+  co2network: true
+  hydrogen_underground_storage: true
+  hydrogen_overground_storage: true
+  battery : true
+  home_battery: true # only valid if distribution_grid is True
+  # Transport
+  v2g: true #allows feed-in to grid from EV battery
+  bev_dsm: true #turns on EV battery
+  # Heat module
+  solar_thermal: true
+  heat_pumps: true
+  cluster_heat_buses: false # cluster residential and service heat buses to one to save memory
+  tes: true
+  resistive_heater: true
+  gas_boiler: true
+  chp: true 
+  chp_cc: true
+  micro_chp: false
+  dac: false #only valid if heat module is activated
+  # Industry module
+  biomass_industry_cc: true
+  gas_industry_cc: true
+  shipping_hydrogen_liquefaction: true # whether to consider liquefaction costs for shipping H2 demands 
+  #methanolisation for shipping is considered to be turned off by setting the demand to 0
+  oil_boilers: true
+  fischer_tropsch: true
+  process_emissions_cc: true
+  # Waste-Heat module
+  use_fischer_tropsch_waste_heat: true
+  use_fuel_cell_waste_heat: true
+  use_electrolysis_waste_heat: true
+  # Biomass
+  biomass_spatial: true  # regionally resolve biomass (e.g. potentials)
+  biomass_transport: true  # allow transport of solid biomass between nodes
+  biogas_upgrading: true
+  biomass_chp: true
+  biomass_chp_cc: true
+  biomass_boiler: true
+  biomass_to_liquid: true
+  biomass_to_liquid_cc: true
+  biosng: true
+  biosng_cc: true
   district_heating:
     potential: 0.6  # maximum fraction of urban demand which can be supplied by district heating
      # increase of today's district heating demand to potential maximum district heating share
