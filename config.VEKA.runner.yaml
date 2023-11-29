@@ -351,8 +351,7 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  - biomass
-  exit_year:  # assuming phase out at the end of the year
+  # - biomass  exit_year:  # assuming phase out at the end of the year
     coal: 2029
     lignite: 2029
     CCGT: 2034
@@ -363,7 +362,7 @@ existing_capacities:
     nuclear: 2039
 
 sector:
-    electrolysis: true
+  electrolysis: true
   fuel_cell: true
   SMR: true
   SMR_cc: false
@@ -429,6 +428,7 @@ sector:
   biomass_to_liquid_cc: true
   biosng: true
   biosng_cc: true
+  #Other parameters
   district_heating:
     potential: 0.6  # maximum fraction of urban demand which can be supplied by district heating
      # increase of today's district heating demand to potential maximum district heating share

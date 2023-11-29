@@ -60,7 +60,7 @@ def define_spatial(nodes, options):
 
     spatial.biomass = SimpleNamespace()
 
-    if techs.get("biomass_spatial", techs["biomass_transport"]):
+    if options.get("biomass_spatial", options["biomass_transport"]):
         spatial.biomass.nodes = nodes + " solid biomass"
         spatial.biomass.locations = nodes
         spatial.biomass.industry = nodes + " solid biomass for industry"
@@ -77,7 +77,7 @@ def define_spatial(nodes, options):
 
     spatial.co2 = SimpleNamespace()
 
-    if techs["co2_spatial"]:
+    if options["co2_spatial"]:
         spatial.co2.nodes = nodes + " co2 stored"
         spatial.co2.locations = nodes
         spatial.co2.vents = nodes + " co2 vent"
@@ -94,7 +94,7 @@ def define_spatial(nodes, options):
 
     spatial.gas = SimpleNamespace()
 
-    if techs["gas_network"]:
+    if options["gas_network"]:
         spatial.gas.nodes = nodes + " gas"
         spatial.gas.locations = nodes
         spatial.gas.biogas = nodes + " biogas"
@@ -107,7 +107,7 @@ def define_spatial(nodes, options):
         spatial.gas.biogas = ["EU biogas"]
         spatial.gas.industry = ["gas for industry"]
         spatial.gas.biogas_to_gas = ["EU biogas to gas"]
-        if techs.get("co2_spatial", options["co2network"]):
+        if options.get("co2_spatial", options["co2network"]):
             spatial.gas.industry_cc = nodes + " gas for industry CC"
         else:
             spatial.gas.industry_cc = ["gas for industry CC"]
@@ -116,9 +116,9 @@ def define_spatial(nodes, options):
 
     # ammonia
 
-    if techs.get("ammonia"):
+    if options.get("ammonia"):
         spatial.ammonia = SimpleNamespace()
-        if techs.get("ammonia") == "regional":
+        if options.get("ammonia") == "regional":
             spatial.ammonia.nodes = nodes + " NH3"
             spatial.ammonia.locations = nodes
         else:
@@ -481,7 +481,7 @@ def add_carrier_buses(n, carrier, nodes=None):
 
 
 # TODO: PyPSA-Eur merge issue
-def remove_elec_base_techs(n):
+def remove_elec_base_options(n):
     """
     Remove conventional generators (e.g. OCGT) and storage units (e.g.
     batteries and H2) from base electricity-only network, since they're added
@@ -511,7 +511,7 @@ def remove_non_electric_buses(n):
 
 
 def patch_electricity_network(n):
-    remove_elec_base_techs(n)
+    remove_elec_base_options(n)
     remove_non_electric_buses(n)
     update_wind_solar_costs(n, costs)
     n.loads["carrier"] = "electricity"
@@ -817,7 +817,7 @@ def add_ammonia(n, costs):
         "Bus", spatial.ammonia.nodes, location=spatial.ammonia.locations, carrier="NH3"
     )
 
-    if techs["haber_bosch"]:
+    if options["haber_bosch"]:
         n.madd(
             "Link",
             nodes,
@@ -837,7 +837,7 @@ def add_ammonia(n, costs):
             capital_cost=costs.at["Haber-Bosch", "fixed"],
             lifetime=costs.at["Haber-Bosch", "lifetime"],
         )
-    if techs["ammonia_cracker"]:
+    if options["ammonia_cracker"]:
         n.madd(
             "Link",
             nodes,
@@ -851,7 +851,7 @@ def add_ammonia(n, costs):
             / cf_industry["MWh_NH3_per_MWh_H2_cracker"],  # given per MW_H2
             lifetime=costs.at["Ammonia cracker", "lifetime"],
         )
-    if techs["ammonia_store"]:
+    if options["ammonia_store"]:
         # Ammonia Storage
         n.madd(
             "Store",
@@ -971,7 +971,7 @@ def insert_electricity_distribution_grid(n, costs):
     else:
         pop_solar = pop_layout.total.rename(index=lambda x: x + " solar")
 
-    if techs["solar_rooftop"]:
+    if options["solar_rooftop"]:
         # add max solar rooftop potential assuming 0.1 kW/m2 and 10 m2/person,
         # i.e. 1 kW/person (population data is in thousands of people) so we get MW
         potential = 0.1 * 10 * pop_solar
@@ -990,7 +990,7 @@ def insert_electricity_distribution_grid(n, costs):
             p_max_pu=n.generators_t.p_max_pu[solar],
             lifetime=costs.at["solar-rooftop", "lifetime"],
         )
-    if techs["home_battery"]:
+    if options["home_battery"]:
         n.add("Carrier", "home battery")
     
         n.madd(
@@ -1072,7 +1072,7 @@ def add_electricity_grid_connection(n, costs):
 
 def add_storage_and_grids(n, costs):
     #Hydrogen base technologies
-    if techs["hydrogen_underground_storage"] or techs["hydrogen_overground_storage"]:
+    if options["hydrogen_underground_storage"] or options["hydrogen_overground_storage"]:
         logger.info("Add hydrogen storage")
 
     nodes = pop_layout.index
@@ -1081,7 +1081,7 @@ def add_storage_and_grids(n, costs):
 
     n.madd("Bus", nodes + " H2", location=nodes, carrier="H2", unit="MWh_LHV")
 
-    if techs["electrolysis"]:
+    if options["electrolysis"]:
         n.madd(
             "Link",
             nodes + " H2 Electrolysis",
@@ -1094,7 +1094,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["electrolysis", "lifetime"],
         )
         
-    if techs['fuel_cell']:
+    if options['fuel_cell']:
         n.madd(
             "Link",
             nodes + " H2 Fuel Cell",
@@ -1125,7 +1125,7 @@ def add_storage_and_grids(n, costs):
 
         logger.info("Add hydrogen underground storage")
 
-        if techs["hydrogen_underground_storage"]:
+        if options["hydrogen_underground_storage"]:
             h2_capital_cost = costs.at["hydrogen storage underground", "fixed"]
     
             n.madd(
@@ -1140,7 +1140,7 @@ def add_storage_and_grids(n, costs):
                 lifetime=costs.at["hydrogen storage underground", "lifetime"],
             )
 
-        if techs['hydrogen_overground_storage']:
+        if options['hydrogen_overground_storage']:
             # hydrogen stored overground (where not already underground)
             h2_capital_cost = costs.at[
                 "hydrogen storage tank type 1 including compressor", "fixed"
@@ -1157,11 +1157,11 @@ def add_storage_and_grids(n, costs):
                 capital_cost=h2_capital_cost,
             )
 
-    if techs["gas_network"] or techs["H2_retrofit"]:
+    if options["gas_network"] or options["H2_retrofit"]:
         fn = snakemake.input.clustered_gas_network
         gas_pipes = pd.read_csv(fn, index_col=0)
 
-    if techs["gas_network"]:
+    if options["gas_network"]:
         logger.info(
             "Add natural gas infrastructure, incl. LNG terminals, production and entry-points."
         )
@@ -1255,7 +1255,7 @@ def add_storage_and_grids(n, costs):
                 lifetime=costs.at["CH4 (g) pipeline", "lifetime"],
             )
 
-    if techs["H2_retrofit"]:
+    if options["H2_retrofit"]:
         logger.info("Add retrofitting options of existing CH4 pipes to H2 pipes.")
 
         fr = "gas pipeline"
@@ -1278,7 +1278,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["H2 (g) pipeline repurposed", "lifetime"],
         )
 
-    if techs.get("H2_network", True):
+    if options.get("H2_network", True):
         logger.info("Add options for new hydrogen pipelines.")
 
         h2_pipes = create_network_topology(
@@ -1299,7 +1299,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["H2 (g) pipeline", "lifetime"],
         )
         
-    if techs['battery']:
+    if options['battery']:
         logger.info("Adding batteries")
         n.add("Carrier", "battery")
     
@@ -1340,7 +1340,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["battery inverter", "lifetime"],
         )
 
-    if techs["methanation"]:
+    if options["methanation"]:
         n.madd(
             "Link",
             spatial.nodes,
@@ -1358,7 +1358,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["methanation", "lifetime"],
         )
 
-    if techs["helmeth"]:
+    if options["helmeth"]:
         n.madd(
             "Link",
             spatial.nodes,
@@ -1375,7 +1375,7 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["helmeth", "lifetime"],
         )
 
-    if techs.get("coal_cc"):
+    if options.get("coal_cc"):
         n.madd(
             "Link",
             spatial.nodes,
@@ -1526,7 +1526,7 @@ def add_land_transport(n, costs):
             # capital_cost=1e6,  #i.e. so high it only gets built where necessary
         )
 
-    if electric_share > 0 and techs["v2g"]:
+    if electric_share > 0 and options["v2g"]:
         n.madd(
             "Link",
             nodes,
@@ -1539,7 +1539,7 @@ def add_land_transport(n, costs):
             efficiency=options.get("bev_charge_efficiency", 0.9),
         )
 
-    if electric_share > 0 and techs["bev_dsm"]:
+    if electric_share > 0 and options["bev_dsm"]:
         e_nom = (
             number_cars
             * options.get("bev_energy", 0.05)
@@ -1682,7 +1682,7 @@ def add_heat(n, costs):
         .reindex(index=n.snapshots),
     }
 
-    if techs["solar_thermal"]:
+    if options["solar_thermal"]:
         solar_thermal = (
             xr.open_dataarray(snakemake.input.solar_thermal_total)
             .to_pandas()
@@ -1746,7 +1746,7 @@ def add_heat(n, costs):
         )
 
         ## Add heat pumps
-        if techs["heat_pumps"]:
+        if options["heat_pumps"]:
             heat_pump_type = "air" if "urban" in name else "ground"
     
             costs_name = f"{name_type} {heat_pump_type}-sourced heat pump"
@@ -1770,7 +1770,7 @@ def add_heat(n, costs):
                 lifetime=costs.at[costs_name, "lifetime"],
             )
 
-        if techs["tes"]:
+        if options["tes"]:
             n.add("Carrier", name + " water tanks")
 
             n.madd(
@@ -1824,7 +1824,7 @@ def add_heat(n, costs):
                 lifetime=costs.at[name_type + " water tank storage", "lifetime"],
             )
 
-        if techs["resistive heater"]:
+        if options["resistive_heater"]:
             key = f"{name_type} resistive heater"
 
             n.madd(
@@ -1839,7 +1839,7 @@ def add_heat(n, costs):
                 lifetime=costs.at[key, "lifetime"],
             )
 
-        if techs["gas boiler"]:
+        if options["gas_boiler"]:
             key = f"{name_type} gas boiler"
 
             n.madd(
@@ -1856,7 +1856,7 @@ def add_heat(n, costs):
                 lifetime=costs.at[key, "lifetime"],
             )
 
-        if techs["solar_thermal"]:
+        if options["solar_thermal"]:
             n.add("Carrier", name + " solar thermal")
 
             n.madd(
@@ -1871,7 +1871,7 @@ def add_heat(n, costs):
                 lifetime=costs.at[name_type + " solar thermal", "lifetime"],
             )
 
-        if techs["chp"] and name == "urban central":
+        if options["chp"] and name == "urban central":
             # add gas CHP; biomass CHP is added in biomass section
             n.madd(
                 "Link",
@@ -1892,7 +1892,7 @@ def add_heat(n, costs):
                 lifetime=costs.at["central gas CHP", "lifetime"],
             )
 
-        if techs["chp_cc"] and name == "urban central":
+        if options["chp_cc"] and name == "urban central":
             n.madd(
                 "Link",
                 nodes[name] + " urban central gas CHP CC",
@@ -1929,7 +1929,7 @@ def add_heat(n, costs):
                 lifetime=costs.at["central gas CHP", "lifetime"],
             )
 
-        if techs["micro_chp"] and name != "urban central":
+        if options["micro_chp"] and name != "urban central":
             n.madd(
                 "Link",
                 nodes[name] + f" {name} micro gas CHP",
@@ -2100,14 +2100,14 @@ def add_biomass(n, costs):
     biomass_potentials = pd.read_csv(snakemake.input.biomass_potentials, index_col=0)
 
     # need to aggregate potentials if gas not nodally resolved
-    if techs["gas_network"]:
+    if options["gas_network"]:
         biogas_potentials_spatial = biomass_potentials["biogas"].rename(
             index=lambda x: x + " biogas"
         )
     else:
         biogas_potentials_spatial = biomass_potentials["biogas"].sum()
 
-    if techs.get("biomass_spatial", techs["biomass_transport"]):
+    if options.get("biomass_spatial", options["biomass_transport"]):
         solid_biomass_potentials_spatial = biomass_potentials["solid biomass"].rename(
             index=lambda x: x + " solid biomass"
         )
@@ -2153,7 +2153,7 @@ def add_biomass(n, costs):
         e_initial=solid_biomass_potentials_spatial,
     )
 
-    if techs["biogas_upgrading"]:
+    if options["biogas_upgrading"]:
         n.madd(
             "Link",
             spatial.gas.biogas_to_gas,
@@ -2167,7 +2167,7 @@ def add_biomass(n, costs):
             p_nom_extendable=True,
         )
 
-    if techs["biomass_transport"]:
+    if options["biomass_transport"]:
         transport_costs = pd.read_csv(
             snakemake.input.biomass_transport_costs,
             index_col=0,
@@ -2199,7 +2199,7 @@ def add_biomass(n, costs):
 
     # AC buses with district heating
     urban_central = n.buses.index[n.buses.carrier == "urban central heat"]
-    if not urban_central.empty and techs["biomass_chp"]:
+    if not urban_central.empty and options["biomass_chp"]:
         urban_central = urban_central.str[: -len(" urban central heat")]
 
         key = "central solid biomass CHP"
@@ -2219,7 +2219,7 @@ def add_biomass(n, costs):
             lifetime=costs.at[key, "lifetime"],
         )
         
-    if not urban_central.empty and techs["biomass_chp_cc"]:
+    if not urban_central.empty and options["biomass_chp_cc"]:
         urban_central = urban_central.str[: -len(" urban central heat")]
 
         key = "central solid biomass CHP"
@@ -2257,7 +2257,7 @@ def add_biomass(n, costs):
             lifetime=costs.at[key, "lifetime"],
         )
 
-    if techs["biomass_boiler"]:
+    if options["biomass_boiler"]:
         # TODO: Add surcharge for pellets
         nodes_heat = create_nodes_for_heat_sector()[0]
         for name in [
@@ -2280,7 +2280,7 @@ def add_biomass(n, costs):
             )
 
     # Solid biomass to liquid fuel
-    if techs["biomass_to_liquid"]:
+    if options["biomass_to_liquid"]:
         n.madd(
             "Link",
             spatial.biomass.nodes,
@@ -2298,7 +2298,7 @@ def add_biomass(n, costs):
             marginal_cost=costs.at["BtL", "efficiency"] * costs.loc["BtL", "VOM"],
         )
         
-    if techs["biomass_to_liquid_cc"]:
+    if options["biomass_to_liquid_cc"]:
         # TODO: Update with energy penalty
         n.madd(
             "Link",
@@ -2321,7 +2321,7 @@ def add_biomass(n, costs):
         )
 
     # BioSNG from solid biomass
-    if techs["biosng"]:
+    if options["biosng"]:
         n.madd(
             "Link",
             spatial.biomass.nodes,
@@ -2339,7 +2339,7 @@ def add_biomass(n, costs):
             marginal_cost=costs.at["BioSNG", "efficiency"] * costs.loc["BioSNG", "VOM"],
         )
         
-    if techs["biosng_cc"]:
+    if options["biosng_cc"]:
         # TODO: Update with energy penalty for CC
         n.madd(
             "Link",
@@ -2385,7 +2385,7 @@ def add_industry(n, costs):
         unit="MWh_LHV",
     )
 
-    if techs.get("biomass_spatial", techs["biomass_transport"]):
+    if options.get("biomass_spatial", options["biomass_transport"]):
         p_set = (
             industrial_demand.loc[spatial.biomass.locations, "solid biomass"].rename(
                 index=lambda x: x + " solid biomass for industry"
@@ -2413,7 +2413,7 @@ def add_industry(n, costs):
         efficiency=1.0,
     )
 
-    if techs["biomass_industry_cc"]:
+    if options["biomass_industry_cc"]:
         n.madd(
             "Link",
             spatial.biomass.industry_cc,
@@ -2443,7 +2443,7 @@ def add_industry(n, costs):
 
     gas_demand = industrial_demand.loc[nodes, "methane"] / nhours
 
-    if techs["gas_network"]:
+    if options["gas_network"]:
         spatial_gas_demand = gas_demand.rename(index=lambda x: x + " gas for industry")
     else:
         spatial_gas_demand = gas_demand.sum()
@@ -2468,7 +2468,7 @@ def add_industry(n, costs):
         efficiency2=costs.at["gas", "CO2 intensity"],
     )
 
-    if techs["gas_industry_cc"]:
+    if options["gas_industry_cc"]:
         n.madd(
             "Link",
             spatial.gas.industry_cc,
@@ -2525,7 +2525,7 @@ def add_industry(n, costs):
             options["shipping_hydrogen_share"], investment_year
         )
 
-        if techs["shipping_hydrogen_liquefaction"]:
+        if options["shipping_hydrogen_liquefaction"]:
             n.madd(
                 "Bus",
                 nodes,
@@ -2679,7 +2679,7 @@ def add_industry(n, costs):
             marginal_cost=costs.at["oil", "fuel"],
         )
 
-    if techs["oil_boilers"]:
+    if options["oil_boilers"]:
         nodes_heat = create_nodes_for_heat_sector()[0]
 
         for name in [
@@ -2703,7 +2703,7 @@ def add_industry(n, costs):
                 lifetime=costs.at["decentral oil boiler", "lifetime"],
             )
             
-    if techs["fischer_tropsch"]:
+    if options["fischer_tropsch"]:
         n.madd(
             "Link",
             nodes + " Fischer-Tropsch",
@@ -2803,7 +2803,7 @@ def add_industry(n, costs):
     )
 
     sel = ["process emission", "process emission from feedstock"]
-    if techs["co2_spatial"] or techs["co2network"]:
+    if options["co2_spatial"] or options["co2network"]:
         p_set = (
             -industrial_demand.loc[nodes, sel]
             .sum(axis=1)
@@ -2833,7 +2833,7 @@ def add_industry(n, costs):
         efficiency=1.0,
     )
 
-    if techs["process_emissions_cc"]:
+    if options["process_emissions_cc"]:
         # assume enough local waste heat for CC
         n.madd(
             "Link",
@@ -2850,8 +2850,8 @@ def add_industry(n, costs):
             lifetime=costs.at["cement capture", "lifetime"],
         )
 
-    if techs.get("ammonia"):
-        if techs["ammonia"] == "regional":
+    if options.get("ammonia"):
+        if options["ammonia"] == "regional":
             p_set = (
                 industrial_demand.loc[spatial.ammonia.locations, "ammonia"].rename(
                     index=lambda x: x + " NH3"
@@ -2881,7 +2881,7 @@ def add_waste_heat(n):
         urban_central = urban_central.str[: -len(" urban central heat")]
 
         # TODO what is the 0.95 and should it be a config option?
-        if techs["fischer_tropsch"] and techs["use_fischer_tropsch_waste_heat"]:
+        if options["fischer_tropsch"] and options["use_fischer_tropsch_waste_heat"]:
             n.links.loc[urban_central + " Fischer-Tropsch", "bus3"] = (
                 urban_central + " urban central heat"
             )
@@ -2890,7 +2890,7 @@ def add_waste_heat(n):
             )
 
         # TODO integrate usable waste heat efficiency into technology-data from DEA
-        if techs["electrolysis"] and techs.get("use_electrolysis_waste_heat", False):
+        if options["electrolysis"] and options.get("use_electrolysis_waste_heat", False):
             n.links.loc[urban_central + " H2 Electrolysis", "bus2"] = (
                 urban_central + " urban central heat"
             )
@@ -2898,7 +2898,7 @@ def add_waste_heat(n):
                 0.84 - n.links.loc[urban_central + " H2 Electrolysis", "efficiency"]
             )
 
-        if techs["fuel_cell"] and techs["use_fuel_cell_waste_heat"]:
+        if options["fuel_cell"] and options["use_fuel_cell_waste_heat"]:
             n.links.loc[urban_central + " H2 Fuel Cell", "bus2"] = (
                 urban_central + " urban central heat"
             )
@@ -3277,7 +3277,6 @@ if __name__ == "__main__":
     update_config_with_sector_opts(snakemake.config, snakemake.wildcards.sector_opts)
 
     options = snakemake.config["sector"]
-    techs = options["technologies"]
 
     opts = snakemake.wildcards.sector_opts.split("-")
 
@@ -3326,12 +3325,12 @@ if __name__ == "__main__":
             )
             add_wave(n, wave_cost_factor)
         if o[:4] == "dist":
-            techs["electricity_distribution_grid"] = True
+            options["electricity_distribution_grid"] = True
             options["electricity_distribution_grid_cost_factor"] = float(
                 o[4:].replace("p", ".").replace("m", "-")
             )
         if o == "biomasstransport":
-            techs["biomass_transport"] = True
+            options["biomass_transport"] = True
 
     if "nodistrict" in opts:
         options["district_heating"]["progress"] = 0.0
@@ -3345,7 +3344,7 @@ if __name__ == "__main__":
     if "B" in opts:
         add_biomass(n, costs)
 
-    if techs["ammonia"]:
+    if options["ammonia"]:
         add_ammonia(n, costs)
 
     if "I" in opts:
@@ -3357,7 +3356,7 @@ if __name__ == "__main__":
     if "A" in opts:  # requires H and I
         add_agriculture(n, costs)
 
-    if techs["dac"]:
+    if options["dac"]:
         add_dac(n, costs)
 
     if "decentral" in opts:
@@ -3366,10 +3365,10 @@ if __name__ == "__main__":
     if "noH2network" in opts:
         remove_h2_network(n)
 
-    if techs["co2network"]:
+    if options["co2network"]:
         add_co2_network(n, costs)
 
-    if techs["allam_cycle"]:
+    if options["allam_cycle"]:
         add_allam(n, costs)
 
     solver_name = snakemake.config["solving"]["solver"]["name"]
@@ -3408,22 +3407,22 @@ if __name__ == "__main__":
         limit_individual_line_extension(n, maxext)
         break
 
-    if techs["electricity_distribution_grid"]:
+    if options["electricity_distribution_grid"]:
         insert_electricity_distribution_grid(n, costs)
 
     maybe_adjust_costs_and_potentials(n, opts)
 
-    if techs["gas_distribution_grid"]:
+    if options["gas_distribution_grid"]:
         insert_gas_distribution_costs(n, costs)
 
-    if techs["electricity_grid_connection"]:
+    if options["electricity_grid_connection"]:
         add_electricity_grid_connection(n, costs)
 
     first_year_myopic = (snakemake.config["foresight"] == "myopic") and (
         snakemake.config["scenario"]["planning_horizons"][0] == investment_year
     )
 
-    if techs.get("cluster_heat_buses", False) and not first_year_myopic:
+    if options.get("cluster_heat_buses", False) and not first_year_myopic:
         cluster_heat_buses(n)
 
     n.meta = dict(snakemake.config, **dict(wildcards=dict(snakemake.wildcards)))
