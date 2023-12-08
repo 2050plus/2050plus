@@ -62,7 +62,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         supply = (industry + heat + transport + residual) * tr_losses
 
         # Futur load
-        opts = snakemake.wildcards.sector_opts.split("-")
+        opts = snakemake.config["scenario"]["sector_opts"][0].split("-")
         load_futur[c] = supply + residual
         
         if not ("I" in opts):
