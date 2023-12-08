@@ -90,7 +90,7 @@ def add_existing_renewables(df_agg):
             ]
             cfs = n.generators_t.p_max_pu[gens].mean()
             cfs_key = cfs / cfs.sum()
-            nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.values
+            nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.groupby(n.generators.loc[gens, "bus"]).sum()
 
         nodal_df = df.loc[n.buses.loc[elec_buses, "country"]]
         nodal_df.index = elec_buses
@@ -167,6 +167,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
         + snakemake.config["costs"]["fill_values"]["lifetime"]
     )
     df_agg.loc[biomass_i, "DateOut"] = df_agg.loc[biomass_i, "DateOut"].fillna(dateout)
+
+    # Enforce phasing out of specified carriers
+    exit_techs = snakemake.config["existing_capacities"]["exit_year"]
+    for carrier, year in exit_techs.items():
+        carrier_exit_i = (df_agg.Fueltype == carrier) & (df_agg.DateOut > year)
+        df_agg.loc[carrier_exit_i, "DateOut"] = year
     
     # drop assets which are already phased out / decommissioned
     phased_out = df_agg[df_agg["DateOut"] < baseyear].index

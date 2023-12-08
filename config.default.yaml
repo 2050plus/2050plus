@@ -354,7 +354,7 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  exit_year:
+  exit_year:  # assuming phase out at the end of the year
 
 
 sector:

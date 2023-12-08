@@ -1389,38 +1389,47 @@ def add_storage_and_grids(n, costs):
             lifetime=costs.at["coal", "lifetime"],
         )
 
+    phase_out = snakemake.config["existing_capacities"].get("exit_year", {})
     if options["SMR_cc"]:
-        n.madd(
-            "Link",
-            spatial.nodes,
-            suffix=" SMR CC",
-            bus0=spatial.gas.nodes,
-            bus1=nodes + " H2",
-            bus2="co2 atmosphere",
-            bus3=spatial.co2.nodes,
-            p_nom_extendable=True,
-            carrier="SMR CC",
-            efficiency=costs.at["SMR CC", "efficiency"],
-            efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
-            efficiency3=costs.at["gas", "CO2 intensity"] * options["cc_fraction"],
-            capital_cost=costs.at["SMR CC", "fixed"],
-            lifetime=costs.at["SMR CC", "lifetime"],
-        )
+        lifetime = costs.at["SMR CC", "lifetime"]
+        if phase_out.get("SMR_cc") and investment_year + lifetime > phase_out["SMR_cc"]:
+            lifetime = phase_out["SMR_cc"] - investment_year
+        if lifetime > 0:
+            n.madd(
+                "Link",
+                spatial.nodes,
+                suffix=" SMR CC",
+                bus0=spatial.gas.nodes,
+                bus1=nodes + " H2",
+                bus2="co2 atmosphere",
+                bus3=spatial.co2.nodes,
+                p_nom_extendable=True,
+                carrier="SMR CC",
+                efficiency=costs.at["SMR CC", "efficiency"],
+                efficiency2=costs.at["gas", "CO2 intensity"] * (1 - options["cc_fraction"]),
+                efficiency3=costs.at["gas", "CO2 intensity"] * options["cc_fraction"],
+                capital_cost=costs.at["SMR CC", "fixed"],
+                lifetime=lifetime,
+            )
 
     if options["SMR"]:
-        n.madd(
-            "Link",
-            nodes + " SMR",
-            bus0=spatial.gas.nodes,
-            bus1=nodes + " H2",
-            bus2="co2 atmosphere",
-            p_nom_extendable=True,
-            carrier="SMR",
-            efficiency=costs.at["SMR", "efficiency"],
-            efficiency2=costs.at["gas", "CO2 intensity"],
-            capital_cost=costs.at["SMR", "fixed"],
-            lifetime=costs.at["SMR", "lifetime"],
-        )
+        lifetime = costs.at["SMR", "lifetime"]
+        if phase_out.get("SMR") and investment_year + lifetime > phase_out["SMR"]:
+            lifetime = phase_out["SMR"] - investment_year
+        if lifetime > 0:
+            n.madd(
+                "Link",
+                nodes + " SMR",
+                bus0=spatial.gas.nodes,
+                bus1=nodes + " H2",
+                bus2="co2 atmosphere",
+                p_nom_extendable=True,
+                carrier="SMR",
+                efficiency=costs.at["SMR", "efficiency"],
+                efficiency2=costs.at["gas", "CO2 intensity"],
+                capital_cost=costs.at["SMR", "fixed"],
+                lifetime=lifetime,
+            )
 
 
 def add_land_transport(n, costs):
