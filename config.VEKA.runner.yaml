@@ -22,7 +22,7 @@ scenario:
   simpl:
   - 181
   ll:  # allowed transmission line volume expansion, can be any float >= 1.0 with a prefix v|c (today) or "copt"
-  - v1.5
+  - v3.0
   clusters:  # number of nodes in Europe, any integer between 37 (1 node per country-zone) and several hundred
   - 37m
   opts: # only relevant for PyPSA-Eur
@@ -81,8 +81,8 @@ enable:
 co2_budget:
   2020: 0.70100
   2025: 0.52575
-  2030: 0.35050
-  2035: 0.17525
+  2030: 0.20244
+  2035: 0.10122
   2040: 0.000
   2045: 0.000
   2050: 0.000
@@ -168,7 +168,7 @@ renewable:
     resource:
       method: wind
       turbine: Vestas_V112_3MW
-    capacity_per_sqkm: 3 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
+    capacity_per_sqkm: 0.5 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
     # area is available for installation of wind generators due to competing land use and likely public
     # acceptance issues.
     # correction_factor: 0.93
@@ -230,7 +230,7 @@ renewable:
       orientation:
         slope: 35.
         azimuth: 180.
-    capacity_per_sqkm: 1.7 # ScholzPhd Tab 4.3.1: 170 MW/km^2 and assuming 1% of the area can be used for solar PV panels
+    capacity_per_sqkm: 0.5 # ScholzPhd Tab 4.3.1: 170 MW/km^2 and assuming 1% of the area can be used for solar PV panels
     # Correction factor determined by comparing uncorrected area-weighted full-load hours to those
     # published in Supplementary Data to
     # Pietzcker, Robert Carl, et al. "Using the sun to decarbonize the power
@@ -263,7 +263,7 @@ lines:
   s_max_pu: 0.7
   s_nom_max: .inf
   length_factor: 1.25
-  under_construction: 'keep' # 'zero': set capacity to zero, 'remove': remove, 'keep': with full capacity
+  under_construction: 'zero' # 'zero': set capacity to zero, 'remove': remove, 'keep': with full capacity
 
 links:
   p_max_pu: 1.0
@@ -352,11 +352,14 @@ existing_capacities:
   - oil
   - uranium
   - biomass
-  exit_year:
-    CCGT: 2034
-    OCGT: 2034
+  exit_year:  # assuming phase out at the end of the year
     coal: 2029
     lignite: 2029
+    CCGT: 2034
+    OCGT: 2034
+    SMR: 2034
+    SMR_cc: 2034
+    oil: 2034
     nuclear: 2039
 
 sector:
