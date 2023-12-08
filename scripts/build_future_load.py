@@ -63,10 +63,10 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
 
         # Futur load
         opts = snakemake.wildcards.sector_opts.split("-")
-        load_futur[c] =  supply + residual
+        load_futur[c] = supply + residual
         
         if not ("I" in opts):
-            load_futur[c] += industry 
+            load_futur[c] += industry
         if not ("H" in opts):
             load_futur[c] += heat
         if not ("T" in opts):
