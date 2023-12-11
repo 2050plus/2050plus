@@ -901,6 +901,7 @@ plotting:
     H2 liquefaction: '#d647bd'
     hydrogen storage: '#bf13a0'
     H2 storage: '#bf13a0'
+    H2 Store: '#bf13a0'
     land transport fuel cell: '#6b3161'
     H2 pipeline: '#f081dc'
     H2 pipeline retrofitted: '#ba99b5'
