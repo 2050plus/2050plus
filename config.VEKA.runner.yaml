@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_CAN_Based" # use this to keep track of runs with different settings
+  name: "VEKA" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -22,7 +22,7 @@ scenario:
   simpl:
   - 181
   ll:  # allowed transmission line volume expansion, can be any float >= 1.0 with a prefix v|c (today) or "copt"
-  - v3.0
+  - v10.0
   clusters:  # number of nodes in Europe, any integer between 37 (1 node per country-zone) and several hundred
   - 37m
   opts: # only relevant for PyPSA-Eur
@@ -74,6 +74,7 @@ enable:
   build_natura_raster: true
   retrieve_natura_raster: false
   custom_busmap: false
+  retrieve_load_future: false
 
 # CO2 budget as a fraction of 1990 emissions
 # this is over-ridden if CO2Lx is set in sector_opts
@@ -81,11 +82,11 @@ enable:
 co2_budget:
   2020: 0.70100
   2025: 0.52575
-  2030: 0.20244
-  2035: 0.10122
-  2040: 0.000
-  2045: 0.000
-  2050: 0.000
+  2030: 0.45
+  2035: 0.375
+  2040: 0.3
+  2045: 0.225
+  2050: 0.15
   
 electricity:
   voltages: [220., 300., 380.]
@@ -137,7 +138,7 @@ electricity:
 
 atlite:
   default_cutout: europe-2013-era5
-  nprocesses: 3
+  nprocesses: 4
   show_progress: true # false saves time
   cutouts:
     # use 'base' to determine geographical bounds and time span from config
@@ -168,7 +169,7 @@ renewable:
     resource:
       method: wind
       turbine: Vestas_V112_3MW
-    capacity_per_sqkm: 0.5 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
+    capacity_per_sqkm: 3 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
     # area is available for installation of wind generators due to competing land use and likely public
     # acceptance issues.
     # correction_factor: 0.93
@@ -230,7 +231,7 @@ renewable:
       orientation:
         slope: 35.
         azimuth: 180.
-    capacity_per_sqkm: 0.5 # ScholzPhd Tab 4.3.1: 170 MW/km^2 and assuming 1% of the area can be used for solar PV panels
+    capacity_per_sqkm: 1.7 # ScholzPhd Tab 4.3.1: 170 MW/km^2 and assuming 1% of the area can be used for solar PV panels
     # Correction factor determined by comparing uncorrected area-weighted full-load hours to those
     # published in Supplementary Data to
     # Pietzcker, Robert Carl, et al. "Using the sun to decarbonize the power
@@ -351,23 +352,15 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  exit_year:  # assuming phase out at the end of the year
-    coal: 2029
-    lignite: 2029
-    CCGT: 2034
-    OCGT: 2034
-    SMR: 2034
-    SMR_cc: 2034
-    oil: 2034
-    nuclear: 2039
+  exit_year: { } # assuming phase out at the end of the year
 
 sector:
   # Technologies
   electrolysis: true
   fuel_cell: true
   SMR: true
-  SMR_cc: false
-  coal_cc: false
+  SMR_cc: true
+  coal_cc: true
   solar_rooftop: true # only valid if distribution_grid is True
   methanation: true
   helmeth: true
@@ -404,8 +397,8 @@ sector:
   gas_boiler: true
   chp: true 
   chp_cc: true
-  micro_chp: false
-  dac: false #only valid if heat module is activated
+  micro_chp: true
+  dac: true #only valid if heat module is activated
   # Industry module
   biomass_industry_cc: true
   gas_industry_cc: true
@@ -460,7 +453,7 @@ sector:
   land_transport_fuel_cell_share:
     2020: 0
     2030: 0.05
-    2035: 0.75
+    2035: 0.075
     2040: 0.1
     2050: 0.15
   land_transport_electric_share:
