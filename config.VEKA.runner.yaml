@@ -437,6 +437,7 @@ sector:
     progress:
       2020: 0.0
       2030: 0.3
+      2035: 0.45
       2040: 0.6
       2050: 1.0
     district_heating_loss: 0.15
@@ -459,16 +460,19 @@ sector:
   land_transport_fuel_cell_share:
     2020: 0
     2030: 0.05
+    2035: 0.75
     2040: 0.1
     2050: 0.15
   land_transport_electric_share:
     2020: 0
     2030: 0.25
+    2035: 0.425
     2040: 0.6
     2050: 0.85
   land_transport_ice_share:
     2020: 1
     2030: 0.7
+    2035: 0.5
     2040: 0.3
     2050: 0
   transport_fuel_cell_efficiency: 0.5
@@ -483,16 +487,19 @@ sector:
   shipping_hydrogen_share:
     2020: 0
     2030: 0
+    2035: 0
     2040: 0
     2050: 0
   shipping_methanol_share:
     2020: 0
     2030: 0.3
+    2035: 0.5
     2040: 0.7
     2050: 1
   shipping_oil_share:
     2020: 1
     2030: 0.7
+    2035: 0.5
     2040: 0.3
     2050: 0
   shipping_methanol_efficiency: 0.46 # 10-15% higher https://www.iea-amf.org/app/webroot/files/file/Annex%20Reports/AMF_Annex_56.pdf, https://users.ugent.be/~lsileghe/documents/extended_abstract.pdf
