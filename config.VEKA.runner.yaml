@@ -351,7 +351,8 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  # - biomass  exit_year:  # assuming phase out at the end of the year
+  # - biomass
+  exit_year:  # assuming phase out at the end of the year
     coal: 2029
     lignite: 2029
     CCGT: 2034
@@ -362,6 +363,7 @@ existing_capacities:
     nuclear: 2039
 
 sector:
+  # Technologies
   electrolysis: true
   fuel_cell: true
   SMR: true
