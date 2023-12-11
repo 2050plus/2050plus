@@ -2197,9 +2197,9 @@ def add_biomass(n, costs):
         )
 
     # AC buses with district heating
-    urban_central = n.buses.index[n.buses.carrier == "urban central heat"]
-    if not urban_central.empty and options["biomass_chp"]:
-        urban_central = urban_central.str[: -len(" urban central heat")]
+    urban_central_buses = n.buses.index[n.buses.carrier == "urban central heat"]
+    if not urban_central_buses.empty and options["biomass_chp"]:
+        urban_central = urban_central_buses.str[: -len(" urban central heat")]
 
         key = "central solid biomass CHP"
 
@@ -2218,8 +2218,8 @@ def add_biomass(n, costs):
             lifetime=costs.at[key, "lifetime"],
         )
         
-    if not urban_central.empty and options["biomass_chp_cc"]:
-        urban_central = urban_central.str[: -len(" urban central heat")]
+    if not urban_central_buses.empty and options["biomass_chp_cc"]:
+        urban_central = urban_central_buses.str[: -len(" urban central heat")]
 
         key = "central solid biomass CHP"
         n.madd(
