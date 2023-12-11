@@ -2095,7 +2095,6 @@ def create_nodes_for_heat_sector():
 
 def add_biomass(n, costs):
     logger.info("Add biomass")
-    logger.error("Please check that biomass is not declared as existing_capacities > conventional_carriers")
 
     biomass_potentials = pd.read_csv(snakemake.input.biomass_potentials, index_col=0)
 

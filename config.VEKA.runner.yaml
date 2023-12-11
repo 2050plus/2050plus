@@ -351,7 +351,6 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  # - biomass
   exit_year:  # assuming phase out at the end of the year
     coal: 2029
     lignite: 2029
