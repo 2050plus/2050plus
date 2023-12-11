@@ -481,7 +481,7 @@ def add_carrier_buses(n, carrier, nodes=None):
 
 
 # TODO: PyPSA-Eur merge issue
-def remove_elec_base_options(n):
+def remove_elec_base_techs(n):
     """
     Remove conventional generators (e.g. OCGT) and storage units (e.g.
     batteries and H2) from base electricity-only network, since they're added
@@ -511,7 +511,7 @@ def remove_non_electric_buses(n):
 
 
 def patch_electricity_network(n):
-    remove_elec_base_options(n)
+    remove_elec_base_techs(n)
     remove_non_electric_buses(n)
     update_wind_solar_costs(n, costs)
     n.loads["carrier"] = "electricity"
