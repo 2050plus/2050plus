@@ -301,7 +301,7 @@ if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
 
-        snakemake = mock_snakemake("retrieve_load_futur")
+        snakemake = mock_snakemake("retrieve_load_future")
 
     configure_logging(snakemake)
 

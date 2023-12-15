@@ -74,6 +74,7 @@ enable:
   build_natura_raster: true
   retrieve_natura_raster: false
   custom_busmap: false
+  retrieve_load_future: false
 
 # CO2 budget as a fraction of 1990 emissions
 # this is over-ridden if CO2Lx is set in sector_opts
