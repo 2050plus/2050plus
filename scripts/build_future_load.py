@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-Creates futur load profiles.
+Creates future load profiles.
 """
 
 import logging
@@ -17,7 +17,7 @@ from _helpers import configure_logging
 
 def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transport_map, snapshots):
     """
-    Apply defined profiles to futur sub sector annual load.
+    Apply defined profiles to future sub sector annual load.
     1. Heat: Compute load profile for each country and sub sector as fraction of annual demand
     2. Transport: Compute load profile for each country and sub sector as fraction of annual demand
     3. Industry: Compute total profile for each country
@@ -26,7 +26,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
     """
     load_annual = load_annual.reindex(index=snapshots, method="ffill")
 
-    load_futur = pd.DataFrame([])
+    load_future = pd.DataFrame([])
     for c in countries:
         # Heat
         heat = {}
@@ -61,11 +61,11 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         tr_losses = 0.05
         supply = (industry + heat + transport + residual) * tr_losses
 
-        # Futur load
-        load_futur[c] = industry + heat + transport + supply + residual
-        logger.info(f"Build total load for {c} is {load_futur[c].sum() / 1e6:.2f} TWh")
+        # Future load
+        load_future[c] = industry + heat + transport + supply + residual
+        logger.info(f"Build total load for {c} is {load_future[c].sum() / 1e6:.2f} TWh")
 
-    return load_futur.set_index(snapshots)
+    return load_future.set_index(snapshots)
 
 
 if __name__ == "__main__":
@@ -78,20 +78,20 @@ if __name__ == "__main__":
     configure_logging(snakemake)
 
     horizon = snakemake.wildcards.planning_horizons
-    logger.info(f"Building futur load for year {horizon}")
+    logger.info(f"Building future load for year {horizon}")
 
     # ToDo What if leap year (e.g.: 2040)
     # ToDo Adjust weekly pattern to new year
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
 
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
+    load_annual_future = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
 
     profiles = pd.read_csv(snakemake.input.profiles)
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
     transport_map = pd.read_csv(snakemake.input.transport_map).to_dict(orient="index")[0]
 
-    load_future = apply_profiles_tomorrow(load_annual_futur, snakemake.config["countries"], profiles, heat_map,
+    load_future = apply_profiles_tomorrow(load_annual_future, snakemake.config["countries"], profiles, heat_map,
                                           transport_map, snapshots)
 
     # ToDo check wildcards pour la création de wild card en output

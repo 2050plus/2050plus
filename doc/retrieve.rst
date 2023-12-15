@@ -94,12 +94,12 @@ None.
 - ``data/load_raw.csv``
 
 
-.._retrieve_load_futur
+.._retrieve_load_future
 
-Rule ``retrieve_load_futur``
+Rule ``retrieve_load_future``
 ================================
 
-.. automodule:: retrieve_load_futur
+.. automodule:: retrieve_load_future
 
 Rule ``retrieve_cost_data``
 ================================
