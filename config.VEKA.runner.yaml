@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA" # use this to keep track of runs with different settings
+  name: "VEKA_lv3_net2040" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -22,7 +22,7 @@ scenario:
   simpl:
   - 181
   ll:  # allowed transmission line volume expansion, can be any float >= 1.0 with a prefix v|c (today) or "copt"
-  - v10.0
+  - v3.0
   clusters:  # number of nodes in Europe, any integer between 37 (1 node per country-zone) and several hundred
   - 37m
   opts: # only relevant for PyPSA-Eur
@@ -82,11 +82,11 @@ enable:
 co2_budget:
   2020: 0.70100
   2025: 0.52575
-  2030: 0.45
-  2035: 0.375
-  2040: 0.3
-  2045: 0.225
-  2050: 0.15
+  2030: 0.20244
+  2035: 0.10122
+  2040: 0.000
+  2045: 0.000
+  2050: 0.000
   
 electricity:
   voltages: [220., 300., 380.]
@@ -371,6 +371,7 @@ sector:
   electricity_distribution_grid: true
   conventional_generation: # generator : carrier
     OCGT: gas
+    CCGT: gas
   ammonia: "regional" # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
   haber_bosch: true
   ammonia_cracker: true
