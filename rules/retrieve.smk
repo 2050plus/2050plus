@@ -74,7 +74,7 @@ if config["enable"].get("retrieve_cutout", True):
             move(input[0], output[0])
 
 
-if config["enable"].get("retrieve_cost_data", True):
+if False:  # config["enable"].get("retrieve_cost_data", True):
 
     rule retrieve_cost_data:
         input:
