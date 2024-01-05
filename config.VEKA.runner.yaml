@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_lv3_net2040" # use this to keep track of runs with different settings
+  name: "VEKA_lv3_net2040_load_residual" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -47,7 +47,6 @@ scenario:
   # decay with initial growth rate 0
   planning_horizons: # investment years for myopic and perfect; for overnight, year of cost assumptions can be different and is defined under 'costs'
   - 2030
-  - 2035
   - 2040
   - 2050
   # for example, set to
@@ -81,13 +80,20 @@ enable:
 # this is over-ridden if CO2Lx is set in sector_opts
 # this is also over-ridden if cb is set in sector_opts
 co2_budget:
-  2020: 0.7010
-  2025: 0.6092
-  2030: 0.5173
-  2035: 0.4255
-  2040: 0.3337
-  2045: 0.2418
-  2050: 0.1500
+  2020: 0.70100
+  2025: 0.52575
+  2030: 0.20244
+  2035: 0.10122
+  2040: 0.000
+  2045: 0.000
+  2050: 0.000
+#  2020: 0.7010
+#  2025: 0.6092
+#  2030: 0.5173
+#  2035: 0.4255
+#  2040: 0.3337
+#  2045: 0.2418
+#  2050: 0.1500
   
 electricity:
   voltages: [220., 300., 380.]
