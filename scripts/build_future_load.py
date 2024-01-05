@@ -77,6 +77,13 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
             load_futur[c] += transport
             
         logger.info(f"Build total load for {c} is {load_futur[c].sum() / 1e6:.2f} TWh")
+        logging.debug(f"Residual contribution from {c}: {(residual.sum().sum()) /  (load_futur[c].sum()) * 100:.2f}%")
+        logging.debug(f"Residual load from {c}: {residual.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Supply from {c}: {supply.sum() / 1e6:.2f}TWh")
+        logging.debug(f"Industry from {c}: {industry.sum() / 1e6:.2f}TWh")
+        logging.debug(f"Heat from {c}: {heat.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Transport from {c}: {transport.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Total from {c}: {(industry + heat + transport + residual).sum().sum() / 1e6:.2f}TWh")
 
     return load_futur
 
