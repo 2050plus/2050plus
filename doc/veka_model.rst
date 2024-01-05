@@ -97,7 +97,7 @@ Rules added
 
 Here is the list of rules added for the project. The documentation related to them has been added into the PyPSA-Eur documentation itself.
 
-- :mod:`retrieve_load_futur`
+- :mod:`retrieve_load_future`
 - :mod:`retrieve_irena`
 - :mod:`build_country_profiles`
 - :mod:`build_residual_load_profile`

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-Creates futur load profiles.
+Creates future load profiles.
 """
 
 import logging
@@ -17,7 +17,7 @@ from _helpers import configure_logging
 
 def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transport_map, snapshots):
     """
-    Apply defined profiles to futur sub sector annual load.
+    Apply defined profiles to future sub sector annual load.
     1. Heat: Compute load profile for each country and sub sector as fraction of annual demand
     2. Transport: Compute load profile for each country and sub sector as fraction of annual demand
     3. Industry: Compute total profile for each country
@@ -26,7 +26,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
     """
     load_annual = load_annual.reindex(index=snapshots, method="ffill")
 
-    load_futur = pd.DataFrame([])
+    load_future = pd.DataFrame([])
     for c in countries:
         # Heat
         heat = {}
@@ -65,19 +65,19 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         tr_losses = 0.05
         supply = (industry + heat + transport + residual) * tr_losses
 
-        # Futur load
+        # Future load
         opts = snakemake.config["scenario"]["sector_opts"][0].split("-")
-        load_futur[c] = supply + residual
+        load_future[c] = supply + residual
         
         if not ("I" in opts):
-            load_futur[c] += industry
+            load_future[c] += industry
         if not ("H" in opts):
-            load_futur[c] += heat
+            load_future[c] += heat
         if not ("T" in opts):
-            load_futur[c] += transport
+            load_future[c] += transport
             
-        logger.info(f"Build total load for {c} is {load_futur[c].sum() / 1e6:.2f} TWh")
-        logging.debug(f"Residual contribution from {c}: {(residual.sum().sum()) /  (load_futur[c].sum()) * 100:.2f}%")
+        logger.info(f"Build total load for {c} is {load_future[c].sum() / 1e6:.2f} TWh")
+        logging.debug(f"Residual contribution from {c}: {(residual.sum().sum()) /  (load_future[c].sum()) * 100:.2f}%")
         logging.debug(f"Residual load from {c}: {residual.sum().sum() / 1e6:.2f}TWh")
         logging.debug(f"Supply from {c}: {supply.sum() / 1e6:.2f}TWh")
         logging.debug(f"Industry from {c}: {industry.sum() / 1e6:.2f}TWh")
@@ -85,7 +85,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         logging.debug(f"Transport from {c}: {transport.sum().sum() / 1e6:.2f}TWh")
         logging.debug(f"Total from {c}: {(industry + heat + transport + residual).sum().sum() / 1e6:.2f}TWh")
 
-    return load_futur
+    return load_future
 
 
 if __name__ == "__main__":
@@ -99,20 +99,20 @@ if __name__ == "__main__":
     configure_logging(snakemake)
 
     horizon = snakemake.wildcards.planning_horizons
-    logger.info(f"Building futur load for year {horizon}")
+    logger.info(f"Building future load for year {horizon}")
 
     # ToDo What if leap year (e.g.: 2040)
     # ToDo Adjust weekly pattern to new year
     snapshots_hist = pd.date_range(freq="h", **snakemake.config["snapshots"])
     snapshots = pd.DatetimeIndex([pd.to_datetime(i.replace(year=int(horizon))) for i in snapshots_hist.to_list()])
 
-    load_annual_futur = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
+    load_annual_future = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
 
     profiles = pd.read_csv(snakemake.input.profiles, index_col=0, parse_dates=True).loc[snapshots_hist]
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
     transport_map = pd.read_csv(snakemake.input.transport_map).to_dict(orient="index")[0]
 
-    load_future = apply_profiles_tomorrow(load_annual_futur, snakemake.config["countries"], profiles, heat_map,
+    load_future = apply_profiles_tomorrow(load_annual_future, snakemake.config["countries"], profiles, heat_map,
                                           transport_map, snapshots)
 
     # ToDo check wildcards pour la création de wild card en output
