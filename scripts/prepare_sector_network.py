@@ -1649,12 +1649,13 @@ def build_heat_demand(n):
     heat_demand = pd.concat(heat_demand, axis=1)
     electric_heat_supply = pd.concat(electric_heat_supply, axis=1)
 
-    # subtract from electricity load since heat demand already in heat_demand
-    electric_nodes = n.loads.index[n.loads.carrier == "electricity"]
-    n.loads_t.p_set[electric_nodes] = (
-        n.loads_t.p_set[electric_nodes]
-        - electric_heat_supply.groupby(level=1, axis=1).sum()[electric_nodes]
-    )
+    if not snakemake.config["enable"].get("modify_residual_load", False):
+        # subtract from electricity load since heat demand already in heat_demand
+        electric_nodes = n.loads.index[n.loads.carrier == "electricity"]
+        n.loads_t.p_set[electric_nodes] = (
+            n.loads_t.p_set[electric_nodes]
+            - electric_heat_supply.groupby(level=1, axis=1).sum()[electric_nodes]
+        )
 
     return heat_demand
 
@@ -2796,21 +2797,22 @@ def add_industry(n, costs):
         p_set=industrial_demand.loc[nodes, "low-temperature heat"] / nhours,
     )
 
-    # remove today's industrial electricity demand by scaling down total electricity demand
-    for ct in n.buses.country.dropna().unique():
-        # TODO map onto n.bus.country
+    if not snakemake.config["enable"].get("modify_residual_load", False):
+        # remove today's industrial electricity demand by scaling down total electricity demand
+        for ct in n.buses.country.dropna().unique():
+            # TODO map onto n.bus.country
 
-        loads_i = n.loads.index[
-            (n.loads.index.str[:2] == ct) & (n.loads.carrier == "electricity")
-        ]
-        if n.loads_t.p_set[loads_i].empty:
-            continue
-        factor = (
-            1
-            - industrial_demand.loc[loads_i, "current electricity"].sum()
-            / n.loads_t.p_set[loads_i].sum().sum()
-        )
-        n.loads_t.p_set[loads_i] *= factor
+            loads_i = n.loads.index[
+                (n.loads.index.str[:2] == ct) & (n.loads.carrier == "electricity")
+            ]
+            if n.loads_t.p_set[loads_i].empty:
+                continue
+            factor = (
+                1
+                - industrial_demand.loc[loads_i, "current electricity"].sum()
+                / n.loads_t.p_set[loads_i].sum().sum()
+            )
+            n.loads_t.p_set[loads_i] *= factor
 
     n.madd(
         "Load",

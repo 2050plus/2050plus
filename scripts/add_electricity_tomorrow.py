@@ -111,16 +111,17 @@ if __name__ == "__main__":
     n = pypsa.Network(snakemake.input.base_network)
     n_clustered = pypsa.Network(snakemake.input.network)
 
-    attach_load_tomorrow(
-        n,
-        n_clustered,
-        snakemake.input.regions,
-        snakemake.input.load_future,
-        snakemake.input.nuts3_shapes,
-        snakemake.config["countries"],
-        snakemake.input.bus_map_s,
-        snakemake.input.bus_map_s_c,
-        snakemake.config["load"]["scaling_factor"]
-    )
+    if snakemake.config["enable"].get("modify_residual_load", False):
+        attach_load_tomorrow(
+            n,
+            n_clustered,
+            snakemake.input.regions,
+            snakemake.input.load_future,
+            snakemake.input.nuts3_shapes,
+            snakemake.config["countries"],
+            snakemake.input.bus_map_s,
+            snakemake.input.bus_map_s_c,
+            snakemake.config["load"]["scaling_factor"]
+        )
 
     n_clustered.export_to_netcdf(snakemake.output[0])
