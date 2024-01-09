@@ -17,9 +17,8 @@ Relevant Settings
 
 .. code:: yaml
 
-    snapshots:
-
     load:
+        load_year:
         interpolate_limit:
         time_shift_for_large_gaps:
         manual_adjustments:
@@ -284,10 +283,12 @@ if __name__ == "__main__":
     interpolate_limit = snakemake.config["load"]["interpolate_limit"]
     countries = snakemake.config["countries"]
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
-    years = slice(snapshots[0], snapshots[-1])
+    years = slice(pd.Timestamp(f'{snakemake.config["load"]["load_year"]}-01-01 00:00:00'),
+                  pd.Timestamp(f'{snakemake.config["load"]["load_year"]}-12-31 23:00:00'))
     time_shift = snakemake.config["load"]["time_shift_for_large_gaps"]
 
     load = load_timeseries(snakemake.input[0], years, countries, powerstatistics)
+    load.set_index(snapshots, inplace=True)
 
     if snakemake.config["load"]["manual_adjustments"]:
         load = manual_adjustment(load, snakemake.input[0], powerstatistics)
