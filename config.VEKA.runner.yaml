@@ -359,8 +359,6 @@ existing_capacities:
   conventional_carriers:
   - lignite
   - coal
-  - oil
-  - uranium
   exit_year: { } # assuming phase out at the end of the year
 
 sector:
@@ -381,6 +379,10 @@ sector:
   conventional_generation: # generator : carrier
     OCGT: gas
     CCGT: gas
+    nuclear: uranium
+    nuclear (SMR): uranium
+    oil: oil
+    biomass: biomass
   ammonia: true # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
   haber_bosch: true
   ammonia_cracker: true

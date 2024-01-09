@@ -778,6 +778,7 @@ nuclear,FOM,1.417395379,%/year,Ugent rev 1,IEA2020-2
 nuclear,VOM,10.8,EUR/MWh_e,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 nuclear,efficiency,0.33,per unit,default,Lazard s Levelized Cost of Energy Analysis - Version 13.0
 nuclear,fuel,2.6,EUR/MWh_th,Ugent rev 2,IEA2020-2
+nuclear (SMR),fuel,2.6,EUR/MWh_th,Ugent rev 2,IEA2020-2
 nuclear,investment,7843000,EUR/MW_e,Ugent rev 2,KPMG marktbevraging kernenergie 2021
 nuclear,lifetime,60,years,Ugent rev 1,IEA2020-2
 offwind,FOM,3.849564359,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
