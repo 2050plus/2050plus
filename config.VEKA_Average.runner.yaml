@@ -869,6 +869,7 @@ plotting:
     Nuclear: '#ff8c00'
     Nuclear marginal: '#ff8c00'
     nuclear: '#ff8c00'
+    nuclear (SMR): '#ff8c00'
     uranium: '#ff8c00'
     # coal
     Coal: '#545454'
