@@ -403,7 +403,7 @@ sector:
   # Heat module
   solar_thermal: true
   heat_pumps: true
-  cluster_heat_buses: true # cluster residential and service heat buses to one to save memory
+  cluster_heat_buses: false # cluster residential and service heat buses to one to save memory
   tes: true
   resistive_heater: true
   gas_boiler: true
