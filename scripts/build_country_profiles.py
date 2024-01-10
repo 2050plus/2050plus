@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     load_annual = pd.read_csv(snakemake.input.load_annual, parse_dates=True, index_col=0)
     sectors = set([re.sub(r"^[A-Z]{2}_(.*)$", r"\1", i) for i in load_annual.columns]) - set(["tot", "TR_tot"])
-    load_hourly = pd.read_csv(snakemake.input.load_hourly, parse_dates=True, index_col="utc_timestamp")
+    load_hourly = pd.read_csv(snakemake.input.load_hourly, parse_dates=True, index_col=0)
     snapshots = load_hourly.index.rename("utc timestamp")
 
     heat_profiles, heat_map = build_heat_profiles(snapshots)

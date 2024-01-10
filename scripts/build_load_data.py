@@ -49,7 +49,7 @@ from _helpers import configure_logging
 from pandas import Timedelta as Delta
 
 
-def load_timeseries(fn, years, countries, powerstatistics=True):
+def load_timeseries(fn, years, snapshots, countries, powerstatistics=True):
     """
     Read load data from OPSD time-series package version 2020-10-06.
 
@@ -58,6 +58,8 @@ def load_timeseries(fn, years, countries, powerstatistics=True):
     years : None or slice()
         Years for which to read load data (defaults to
         slice("2018","2019"))
+    snapshots : pandas.DateTimeIndex
+        Climatic year reference used as index for data
     fn : str
         File name or url location (file format .csv)
     countries : listlike
@@ -91,6 +93,7 @@ def load_timeseries(fn, years, countries, powerstatistics=True):
         .rename(columns={"GB_UKM": "GB"})
         .filter(items=countries)
         .loc[years]
+        .set_index(snapshots)
     )
 
 
@@ -275,7 +278,7 @@ if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
 
-        snakemake = mock_snakemake("build_load_data")
+        snakemake = mock_snakemake("build_load_data", configfiles="config.VEKA.runner.yaml")
 
     configure_logging(snakemake)
 
@@ -283,12 +286,14 @@ if __name__ == "__main__":
     interpolate_limit = snakemake.config["load"]["interpolate_limit"]
     countries = snakemake.config["countries"]
     snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
-    years = slice(pd.Timestamp(f'{snakemake.config["load"]["load_year"]}-01-01 00:00:00'),
-                  pd.Timestamp(f'{snakemake.config["load"]["load_year"]}-12-31 23:00:00'))
+    load_year = snakemake.config["load"]["load_year"]
+    if load_year:
+        years = slice(snapshots[0].replace(year=load_year), snapshots[-1].replace(year=load_year))
+    else:
+        years = slice(snapshots[0], snapshots[-1])
     time_shift = snakemake.config["load"]["time_shift_for_large_gaps"]
 
-    load = load_timeseries(snakemake.input[0], years, countries, powerstatistics)
-    load.set_index(snapshots, inplace=True)
+    load = load_timeseries(snakemake.input[0], years, snapshots, countries, powerstatistics)
 
     if snakemake.config["load"]["manual_adjustments"]:
         load = manual_adjustment(load, snakemake.input[0], powerstatistics)

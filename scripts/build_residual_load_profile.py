@@ -93,7 +93,7 @@ if __name__ == "__main__":
             .filter(regex='|'.join([f"^{c}.*" for c in countries]))
     )
     load_hourly = (
-        pd.read_csv(snakemake.input.load_hourly, parse_dates=True, index_col="utc_timestamp")
+        pd.read_csv(snakemake.input.load_hourly, parse_dates=True, index_col=0)
         .filter(items=countries)
     )
     profiles = pd.read_csv(snakemake.input.profiles)

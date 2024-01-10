@@ -46,7 +46,7 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         # Residual load
         # ToDo Switch utc_timestamp to snapshots
         residual_profile = (
-            pd.read_csv(snakemake.input.res_load_profile, index_col=['utc_timestamp'], parse_dates=True)
+            pd.read_csv(snakemake.input.res_load_profile, index_col=[0], parse_dates=True)
             .loc[snapshots_hist]
             .set_index(snapshots)
         )
