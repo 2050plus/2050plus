@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_lv3_net2040_load_residual" # use this to keep track of runs with different settings
+  name: "VEKA_el" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -59,8 +59,8 @@ scenario:
 countries: ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'ME', 'MK', 'NL', 'NO', 'PL', 'PT', 'RO', 'RS', 'SE', 'SI', 'SK']
 
 snapshots:
-  start: "2018-01-01"
-  end: "2019-01-01"
+  start: "2013-01-01"
+  end: "2014-01-01"
   inclusive: 'left' # include start, not end
 
 enable:
@@ -114,7 +114,7 @@ electricity:
     H2: 168
 
   extendable_carriers:
-    Generator: [OCGT, CCGT, nuclear, lignite, oil,  coal, Solar, offwind-ac,offwind-dc,onwind]
+    Generator: [OCGT, CCGT, nuclear, lignite, oil,  coal, solar, offwind-ac,offwind-dc,onwind]
     StorageUnit: [] # battery, H2
     Store: [battery, H2]
     Link: [] # H2 pipeline
