@@ -459,7 +459,7 @@ sector:
   bev_charge_efficiency: 0.9  #BEV (dis-)charging efficiency
   bev_plug_to_wheel_efficiency: 0.2 #kWh/km from EPA https://www.fueleconomy.gov/feg/ for Tesla Model S
   bev_charge_rate: 0.011 #3-phase charger with 11 kW
-  bev_avail_max: 0.95
+  bev_avail_max: 0.9
   bev_avail_mean: 0.5
   #what is not EV or FCEV is oil-fuelled ICE
   land_transport_fuel_cell_share:
