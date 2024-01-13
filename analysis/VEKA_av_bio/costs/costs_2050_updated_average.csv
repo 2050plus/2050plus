@@ -373,11 +373,11 @@ air separation unit,FOM,3.0,%/year,"Danish Energy Agency, data_sheets_for_renewa
 air separation unit,electricity-input,0.25,MWh_el/t_N2,"DEA (2022): Technology Data for Renewable Fuels (https://ens.dk/en/our-services/projections-and-models/technology-data/technology-data-renewable-fuels), p.288.","For consistency reasons use value from Danish Energy Agency. DEA also reports range of values (0.2-0.4 MWh/t_N2) on pg. 288. Other efficienices reported are even higher, e.g. 0.11 Mwh/t_N2 from Morgan (2013): Techno-Economic Feasibility Study of Ammonia Plants Powered by Offshore Wind ."
 air separation unit,investment,457307.7803,EUR/t_N2/h,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx",103 Hydrogen to Ammonia:  Specific investment
 air separation unit,lifetime,30.0,years,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx",103 Hydrogen to Ammonia:  Technical lifetime
-battery inverter,FOM,33.33333333333333,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
+battery inverter,FOM,11.363636363636363,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 battery inverter,efficiency,0.9,per unit,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
-battery inverter,investment,60000.0,EUR/MW,Min,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx"
+battery inverter,investment,176000.0,EUR/MW,Average,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx"
 battery inverter,lifetime,15.0,years,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
-battery storage,investment,75000.0,EUR/MWh,Min,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx"
+battery storage,investment,110333.3333,EUR/MWh,Average,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx"
 battery storage,lifetime,15.0,years,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 biogas,CO2 stored,0.0868,tCO2/MWh_th,"Stoichiometric calculation, doi:10.1016/j.apenergy.2022.120016",
 biogas,FOM,14.1248,%/year,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx","81 Biogas Plant, Basic conf.:  Total O&M"
@@ -508,13 +508,13 @@ central resistive heater,lifetime,20.0,years,"Danish Energy Agency, technology_d
 central solar thermal,FOM,1.4,%/year,HP, from old pypsa cost assumptions
 central solar thermal,investment,140000.0,EUR/1000m2,default,HP
 central solar thermal,lifetime,20.0,years,HP, from old pypsa cost assumptions
-central solid biomass CHP,FOM,3.0,%/year,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+central solid biomass CHP,FOM,3.330282603003229,%/year,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 central solid biomass CHP,VOM,4.6676,EUR/MWh_e,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Variable O&M "
 central solid biomass CHP,c_b,0.3423,50°C/100°C,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Cb coefficient"
 central solid biomass CHP,c_v,1.0,50°C/100°C,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Cv coefficient"
 central solid biomass CHP,efficiency,0.2652,per unit,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Electricity efficiency, net, annual average"
 central solid biomass CHP,efficiency-heat,0.8294,per unit,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Heat efficiency, net, annual average"
-central solid biomass CHP,investment,1000000.0,EUR/MW_e,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+central solid biomass CHP,investment,2151983.5,EUR/MW_e,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 central solid biomass CHP,lifetime,25.0,years,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Technical lifetime"
 central solid biomass CHP,p_nom_ratio,1.0,per unit,, from old pypsa cost assumptions
 central solid biomass CHP CC,FOM,2.8518,%/year,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx","09a Wood Chips, Large 50 degree:  Fixed O&M"
@@ -672,10 +672,10 @@ electrolysis,efficiency,0.723333333,per unit,Average,"Danish Energy Agency, data
 electrolysis,efficiency-heat,0.0834,per unit,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx",86 AEC 100MW:   - hereof recoverable for district heating
 electrolysis,investment,718108.175,EUR/MW_e,Average,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx"
 electrolysis,lifetime,27.5,years,Average,"Danish Energy Agency, data_sheets_for_renewable_fuels.xlsx"
-fuel cell,FOM,5.0,%/year,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+fuel cell,FOM,5.0,%/year,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 fuel cell,c_b,1.25,50oC/100oC,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",12 LT-PEMFC CHP:  Cb coefficient
-fuel cell,efficiency,0.5,per unit,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
-fuel cell,investment,579000.0,EUR/MW_e,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+fuel cell,efficiency,0.535,per unit,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+fuel cell,investment,689500.0,EUR/MW_e,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 fuel cell,lifetime,20.0,years,Ugent rev 1,IEA tech roadmap
 gas,CO2 intensity,0.2,tCO2/MWh_th,Ugent rev 1,EIA
 gas,fuel,35.0,EUR/MWh_th,Ugent rev 1,"EnergyVille 2022 (PATHS2050, https://perspective2050.energyville.be/paths2050)"
@@ -780,14 +780,14 @@ nuclear,efficiency,0.33,per unit,Lazard s Levelized Cost of Energy Analysis - Ve
 nuclear,fuel,2.62,EUR/MWh_th,Ugent rev 2,IEA2020-2
 nuclear,investment,7843000.0,EUR/MW_e,Ugent rev 2,KPMG marktbevraging kernenergie 2021
 nuclear,lifetime,60.0,years,Ugent rev 1,IEA2020-2
-offwind,FOM,5.071466379727929,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
+offwind,FOM,4.160307710622189,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 offwind,VOM,0.0,EUR/MWhel,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
-offwind,investment,1380271.4,"EUR/MW_e, 2020",Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+offwind,investment,1682567.85,"EUR/MW_e, 2020",Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 offwind,lifetime,15.0,years,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 offwind-ac-connection-submarine,investment,2685.0,EUR/MW/km,default,DEA https://ens.dk/en/our-services/projections-and-models/technology-data
 offwind-ac-connection-underground,investment,1342.0,EUR/MW/km,default,DEA https://ens.dk/en/our-services/projections-and-models/technology-data
 offwind-ac-station,investment,250000.0,EUR/MWel,default,DEA https://ens.dk/en/our-services/projections-and-models/technology-data
-offwind-dc-connection-submarine,investment,1300.0,EUR/MW/km,Min,DTU report based on Fig 34 of https://ec.europa.eu/energy/sites/ener/files/documents/2014_nsog_report.pdf
+offwind-dc-connection-submarine,investment,1650.0,EUR/MW/km,Average,DTU report based on Fig 34 of https://ec.europa.eu/energy/sites/ener/files/documents/2014_nsog_report.pdf
 offwind-dc-connection-underground,investment,1000.0,EUR/MW/km,default,Haertel 2017; average + 13% learning reduction
 offwind-dc-station,investment,400000.0,EUR/MWel,default,Haertel 2017; assuming one onshore and one offshore node + 13% learning reduction
 oil,CO2 intensity,0.2571,tCO2/MWh_th,Stoichiometric calculation with 44 GJ/t diesel and -CH2- approximation of diesel,
@@ -798,9 +798,9 @@ oil,efficiency,0.35,per unit,"Danish Energy Agency, technology_data_for_el_and_d
 oil,fuel,50.0,EUR/MWhth,IEA WEM2017 97USD/boe = http://www.iea.org/media/weowebsite/2017/WEM_Documentation_WEO2017.pdf, from old pypsa cost assumptions
 oil,investment,336000.0,EUR/MW,default,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 oil,lifetime,25.0,years,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",50 Diesel engine farm:  Technical lifetime
-onwind,FOM,6.1058344640434195,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
+onwind,FOM,5.19217549173141,%/year,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 onwind,VOM,0.0,EUR/MWh,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
-onwind,investment,737000.0,EUR/MW,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+onwind,investment,866688.7333,EUR/MW,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 onwind,lifetime,15.0,years,Ugent rev 2,Elia AdeqFlex 24-34 (https://www.elia.be/en/electricity-market-and-system/adequacy/adequacy-studies)
 ror,FOM,2.0,%/year,DIW DataDoc http://hdl.handle.net/10419/80348, from old pypsa cost assumptions
 ror,efficiency,0.9,per unit,DIW DataDoc http://hdl.handle.net/10419/80348, from old pypsa cost assumptions
@@ -819,7 +819,7 @@ solar,investment,370.188,EUR/kW_e,Calculated. See 'further description'.,Mixed i
 solar,lifetime,40.0,years,Calculated. See 'further description'.,Mixed investment costs based on average of 50% 'solar-rooftop' and 50% 'solar-utility'
 solar-rooftop,FOM,1.6059,%/year,Calculated. See 'further description'.,Mixed investment costs based on average of 50% 'solar-rooftop commercial' and 50% 'solar-rooftop residential'
 solar-rooftop,discount rate,0.04,per unit,standard for decentral, from old pypsa cost assumptions
-solar-rooftop,investment,360000.0,EUR/MW_e,Min,Calculated. See 'further description'.
+solar-rooftop,investment,417690.0,EUR/MW_e,Average,Calculated. See 'further description'.
 solar-rooftop,lifetime,25.0,years,Essencia,Lazards
 solar-rooftop commercial,FOM,1.812,%/year,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Rooftop PV commercial:  Fixed O&M [2020-EUR/MW_e/y]
 solar-rooftop commercial,investment,374.8836,EUR/kW_e,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Rooftop PV commercial:  Nominal investment [2020-MEUR/MW_e]
@@ -828,7 +828,7 @@ solar-rooftop residential,FOM,1.3998,%/year,"Danish Energy Agency, technology_da
 solar-rooftop residential,investment,575.8763,EUR/kW_e,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Rooftop PV residential:  Nominal investment [2020-MEUR/MW_e]
 solar-rooftop residential,lifetime,40.0,years,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Rooftop PV residential:  Technical lifetime [years]
 solar-utility,FOM,2.5292,%/year,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Utility-scale PV:  Fixed O&M [2020-EUR/MW_e/y]
-solar-utility,investment,264996.0,EUR/MW_e,Min,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
+solar-utility,investment,294498.0,EUR/MW_e,Average,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx"
 solar-utility,lifetime,40.0,years,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Utility-scale PV:  Technical lifetime [years]
 solar-utility single-axis tracking,FOM,2.5531,%/year,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Utility-scale PV tracker:  Fixed O&M [2020-EUR/MW_e/y]
 solar-utility single-axis tracking,investment,319.2816,EUR/kW_e,"Danish Energy Agency, technology_data_for_el_and_dh.xlsx",22 Utility-scale PV tracker:  Nominal investment [2020-MEUR/MW_e]
@@ -869,7 +869,7 @@ waste CHP CC,lifetime,25.0,years,"Danish Energy Agency, technology_data_for_el_a
 water tank charger,efficiency,0.8367,per unit,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx",:  efficiency from sqr(Round trip efficiency)
 water tank discharger,efficiency,0.8367,per unit,"Danish Energy Agency, technology_data_catalogue_for_energy_storage.xlsx",:  efficiency from sqr(Round trip efficiency)
 nuclear (SMR),efficiency,0.33,per unit,default,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
-nuclear (SMR),FOM,0.4444444444444444,%/year,default,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
-nuclear (SMR),investment,2700000.0,EUR/MWh,Min,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
+nuclear (SMR),FOM,0.2352941176470588,%/year,default,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
+nuclear (SMR),investment,5100000.0,EUR/MWh,Average,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
 nuclear (SMR),lifetime,60.0,years,default,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
 nuclear (SMR),VOM,4000.0,EUR/MWh/year,default,"IEA2020-2, Elsevier 2020 - Renewable and Sustainable Energy Review, Economics and finance of Small Modular Reactors: A systematic review and research agenda, Hitachi"
