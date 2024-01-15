@@ -2165,6 +2165,25 @@ def add_biomass(n, costs):
         e_initial=solid_biomass_potentials_spatial,
     )
 
+    if "biomass" in snakemake.config["electricity"]["conventional_carriers"]:
+        nodes_elec = pop_layout.index
+        n.madd(
+            "Link",
+            spatial.biomass.nodes,
+            bus0=spatial.biomass.nodes,
+            bus1=nodes_elec,
+            bus2="co2 atmosphere",
+            marginal_cost=costs.at["biomass", "efficiency"]
+                          * costs.at["biomass", "VOM"],  # NB: VOM is per MWel
+            capital_cost=costs.at["biomass", "efficiency"]
+                         * costs.at["biomass", "fixed"],  # NB: fixed cost is per MWel
+            p_nom_extendable=True,
+            carrier="solid biomass",
+            efficiency=costs.at["biomass", "efficiency"],
+            efficiency2=costs.at["biomass", "CO2 intensity"],
+            lifetime=costs.at["biomass", "lifetime"],
+        )
+
     if options["biogas_upgrading"]:
         n.madd(
             "Link",

@@ -382,7 +382,6 @@ sector:
     nuclear: uranium
     nuclear (SMR): uranium
     oil: oil
-    biomass: biomass
   ammonia: true # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
   haber_bosch: true
   ammonia_cracker: true
