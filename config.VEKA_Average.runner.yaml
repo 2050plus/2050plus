@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_av_bio" # use this to keep track of runs with different settings
+  name: "VEKA_av_bio_fix" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -424,7 +424,7 @@ sector:
   use_electrolysis_waste_heat: true
   # Biomass
   biomass_spatial: true  # regionally resolve biomass (e.g. potentials)
-  biomass_transport: false  # allow transport of solid biomass between nodes
+  biomass_transport: true  # allow transport of solid biomass between nodes
   biogas_upgrading: true
   biomass_chp: true
   biomass_chp_cc: true
