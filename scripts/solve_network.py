@@ -220,6 +220,25 @@ def prepare_network(n, solve_opts=None, config=None):
     return n
 
 
+def warn_potentials(extrema, extrema_conditions, index):
+    """
+    Warn if conditions could lead to infeasibility
+    """
+    potential = n.generators.query("p_nom_extendable")[['bus', 'carrier', extrema]]
+    potential.bus = potential.bus.apply(lambda x: x[:2])
+    potential = potential.rename(columns={'bus': 'country'}).groupby(['country', 'carrier']).sum()
+    diff = pd.concat([potential.loc[index], extrema_conditions.loc[index].to_dataframe()['extrema']], axis=1)
+    if extrema == "p_nom_max":
+        diff = diff.loc[diff[extrema] < diff['extrema']]
+        msg = "Max potential lower than minimum for"
+    elif extrema == "p_nom_min":
+        diff = diff.loc[diff[extrema] > diff['extrema']]
+        msg = "Min potential higher than maximum for"
+    if len(diff) > 0:
+        logger.warning(f"Solver might not be able to solve the system. {msg} {len(diff.index.values)} combinaisons.\n"
+                       f"{diff}")
+
+
 def add_CCL_constraints(n, config):
     """
     Add CCL (country & carrier limit) constraint to the network.
@@ -247,12 +266,12 @@ def add_CCL_constraints(n, config):
     p_nom = n.model["Generator-p_nom"]
 
     gens = n.generators.query("p_nom_extendable").rename_axis(index="Generator-ext")
-    grouper = [gens.bus.map(n.buses.country), gens.carrier]
-    grouper = xr.DataArray(pd.MultiIndex.from_arrays(grouper), dims=["Generator-ext"])
+    grouper = pd.concat([gens.bus.map(n.buses.country), gens.carrier], axis=1)
     lhs = p_nom.groupby(grouper).sum().rename(bus="country")
 
     minimum = xr.DataArray(agg_p_nom_minmax["min"].dropna()).rename(dim_0="group")
     index = minimum.indexes["group"].intersection(lhs.indexes["group"])
+    warn_potentials("p_nom_max", minimum.rename("extrema"), index)
     if not index.empty:
         n.model.add_constraints(
             lhs.sel(group=index) >= minimum.loc[index], name="agg_p_nom_min"
@@ -260,6 +279,7 @@ def add_CCL_constraints(n, config):
 
     maximum = xr.DataArray(agg_p_nom_minmax["max"].dropna()).rename(dim_0="group")
     index = maximum.indexes["group"].intersection(lhs.indexes["group"])
+    warn_potentials("p_nom_min", maximum.rename("extrema"), index)
     if not index.empty:
         n.model.add_constraints(
             lhs.sel(group=index) <= maximum.loc[index], name="agg_p_nom_max"
