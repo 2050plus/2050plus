@@ -10,7 +10,7 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_av_bio_fix" # use this to keep track of runs with different settings
+  name: "VEKA_av_bio_fix_nuc_bev" # use this to keep track of runs with different settings
   disable_progressbar: false # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
@@ -458,8 +458,8 @@ sector:
   bev_charge_efficiency: 0.9  #BEV (dis-)charging efficiency
   bev_plug_to_wheel_efficiency: 0.2 #kWh/km from EPA https://www.fueleconomy.gov/feg/ for Tesla Model S
   bev_charge_rate: 0.011 #3-phase charger with 11 kW
-  bev_avail_max: 0.9
-  bev_avail_mean: 0.5
+  bev_avail_max: 0.7
+  bev_avail_mean: 0.4
   #what is not EV or FCEV is oil-fuelled ICE
   land_transport_fuel_cell_share:
     2020: 0
