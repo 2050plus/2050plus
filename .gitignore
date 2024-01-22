@@ -22,7 +22,7 @@ gurobi.log
 /data/*
 !/data/costs_*.csv
 !/data/agg_p_nom_minmax.csv
-!/data/agg_p_nom_minmax_2030.csv
+!/data/agg_p_nom_minmax_*.csv
 /cutouts
 
 doc/_build
