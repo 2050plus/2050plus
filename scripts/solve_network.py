@@ -220,13 +220,20 @@ def prepare_network(n, solve_opts=None, config=None):
     return n
 
 
-def warn_potentials(extrema, extrema_conditions, index):
+def warn_potentials(config, extrema, extrema_conditions, index, rename_offwind):
     """
     Warn if conditions could lead to infeasibility
     """
-    potential = n.generators.query("p_nom_extendable")[['bus', 'carrier', extrema]]
+    if config["electricity"]["agg_p_nom_limits"]["include_existing"]:
+        potential_ext = n.generators.query("p_nom_extendable")[['bus', 'carrier', extrema]]
+        potential_hist = n.generators.query("~p_nom_extendable")[['bus', 'carrier', "p_nom"]].rename(columns={"p_nom": extrema})
+        potential = pd.concat([potential_ext, potential_hist])
+    else:
+        potential = n.generators.query("p_nom_extendable")[['bus', 'carrier', extrema]]
     potential.bus = potential.bus.apply(lambda x: x[:2])
     potential = potential.rename(columns={'bus': 'country'}).groupby(['country', 'carrier']).sum()
+    if config["electricity"]["agg_p_nom_limits"]["agg_offwind"]:
+        potential = potential.rename(rename_offwind).groupby(by=["country", "carrier"]).sum()
     diff = pd.concat([potential.loc[index], extrema_conditions.loc[index].to_dataframe()['extrema']], axis=1)
     if extrema == "p_nom_max":
         diff = diff.loc[diff[extrema] < diff['extrema']]
@@ -260,26 +267,51 @@ def add_CCL_constraints(n, config):
         agg_p_nom_limits: data/agg_p_nom_minmax.csv
     """
     agg_p_nom_minmax = pd.read_csv(
-        config["electricity"]["agg_p_nom_limits"][snakemake.wildcards.planning_horizons], index_col=[0, 1]
+        config["electricity"]["agg_p_nom_limits"]["years"][int(snakemake.wildcards.planning_horizons)], index_col=[0, 1]
     )
     logger.info("Adding generation capacity constraints per carrier and country")
     p_nom = n.model["Generator-p_nom"]
 
     gens = n.generators.query("p_nom_extendable").rename_axis(index="Generator-ext")
+    if config["electricity"]["agg_p_nom_limits"]["agg_offwind"]:
+        rename_offwind = {"offwind-ac": "offwind-all", "offwind-dc": "offwind-all", "offwind": "offwind-all"}
+        gens = gens.replace(rename_offwind)
     grouper = pd.concat([gens.bus.map(n.buses.country), gens.carrier], axis=1)
     lhs = p_nom.groupby(grouper).sum().rename(bus="country")
 
-    minimum = xr.DataArray(agg_p_nom_minmax["min"].dropna()).rename(dim_0="group")
+    if config["electricity"]["agg_p_nom_limits"]["include_existing"]:
+        gens_cst = n.generators.query("~p_nom_extendable").rename_axis(index="Generator-cst")
+        gens_cst = gens_cst[(gens_cst["build_year"] + gens_cst["lifetime"]) >= int(snakemake.wildcards.planning_horizons)]
+        if config["electricity"]["agg_p_nom_limits"]["agg_offwind"]:
+            gens_cst = gens_cst.replace(rename_offwind)
+        rhs_cst = (
+            pd.concat([gens_cst.bus.map(n.buses.country), gens_cst[["carrier", "p_nom"]]], axis=1)
+            .groupby(["bus", "carrier"]).sum()
+        )
+        rhs_cst.index = rhs_cst.index.rename({"bus": "country"})
+        rhs_min = agg_p_nom_minmax["min"].dropna()
+        rhs = (rhs_min - rhs_cst.p_nom).dropna()
+        rhs[rhs < 0] = 0
+        minimum = xr.DataArray(rhs).rename(dim_0="group")
+    else:
+        minimum = xr.DataArray(agg_p_nom_minmax["min"].dropna()).rename(dim_0="group")
+
     index = minimum.indexes["group"].intersection(lhs.indexes["group"])
-    warn_potentials("p_nom_max", minimum.rename("extrema"), index)
+    warn_potentials(config, "p_nom_max", minimum.rename("extrema"), index, rename_offwind)
     if not index.empty:
         n.model.add_constraints(
             lhs.sel(group=index) >= minimum.loc[index], name="agg_p_nom_min"
         )
 
-    maximum = xr.DataArray(agg_p_nom_minmax["max"].dropna()).rename(dim_0="group")
+    if config["electricity"]["agg_p_nom_limits"]["include_existing"]:
+        rhs_max = agg_p_nom_minmax["max"].dropna()
+        rhs = (rhs_max - rhs_cst.p_nom).dropna()
+        rhs[rhs < 0] = 0
+        maximum = xr.DataArray(rhs).rename(dim_0="group")
+    else:
+        maximum = xr.DataArray(agg_p_nom_minmax["max"].dropna()).rename(dim_0="group")
     index = maximum.indexes["group"].intersection(lhs.indexes["group"])
-    warn_potentials("p_nom_min", maximum.rename("extrema"), index)
+    warn_potentials(config, "p_nom_min", maximum.rename("extrema"), index, rename_offwind)
     if not index.empty:
         n.model.add_constraints(
             lhs.sel(group=index) <= maximum.loc[index], name="agg_p_nom_max"
