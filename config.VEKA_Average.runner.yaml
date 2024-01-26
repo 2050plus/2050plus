@@ -10,8 +10,8 @@ logging:
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "VEKA_av_bio_fix_nuc_bev" # use this to keep track of runs with different settings
-  disable_progressbar: false # set to true to disable the progressbar
+  name: "VEKA_av_bio_fix_nuc_bev_ccl" # use this to keep track of runs with different settings
+  disable_progressbar: true # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
 
@@ -145,8 +145,8 @@ electricity:
 
 atlite:
   default_cutout: europe-2013-era5
-  nprocesses: 4
-  show_progress: true # false saves time
+  nprocesses: 8
+  show_progress: false # false saves time
   cutouts:
     # use 'base' to determine geographical bounds and time span from config
     # base:
@@ -518,12 +518,12 @@ sector:
   reduce_space_heat_exogenously_factor:  # per unit reduction in space heat demand
   # the default factors are determined by the LTS scenario from http://tool.european-calculator.eu/app/buildings/building-types-area/?levers=1ddd4444421213bdbbbddd44444ffffff11f411111221111211l212221
     2020: 0.0  # this results in a space heat demand reduction of 10%
-    2025: 0.12  # first heat demand increases compared to 2020 because of larger floor area per capita
-    2030: 0.23
-    2035: 0.35
-    2040: 0.47
-    2045: 0.58
-    2050: 0.70
+    2025: 0.05
+    2030: 0.1
+    2035: 0.15
+    2040: 0.2
+    2045: 0.25
+    2050: 0.3
   retrofitting:   # co-optimises building renovation to reduce space heat demand
     retro_endogen: false  # co-optimise space heat savings
     cost_factor: 1.0   # weight costs for building renovation
