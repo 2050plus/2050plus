@@ -19,6 +19,10 @@ rule plot_network:
         + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-costs-all_{planning_horizons}.pdf",
         today=RESULTS
         + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}_{planning_horizons}-today.pdf",
+        capacities=RESULTS
+        + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-capacities-all_{planning_horizons}.pdf",
+        series=RESULTS
+        + "maps/series_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-AC_{planning_horizons}.pdf",
     threads: 2
     resources:
         mem_mb=10000,
@@ -94,6 +98,7 @@ rule make_summary:
         energy=RESULTS + "csvs/energy.csv",
         supply=RESULTS + "csvs/supply.csv",
         supply_energy=RESULTS + "csvs/supply_energy.csv",
+        nodal_supply_energy=RESULTS + "csvs/nodal_supply_energy.csv",
         prices=RESULTS + "csvs/prices.csv",
         weighted_prices=RESULTS + "csvs/weighted_prices.csv",
         market_values=RESULTS + "csvs/market_values.csv",

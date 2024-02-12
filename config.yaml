@@ -72,6 +72,7 @@ enable:
   retrieve_sector_databundle: true
   retrieve_cost_data: true
   build_cutout: false
+  retrieve_irena: false
   retrieve_cutout: true
   build_natura_raster: false
   retrieve_natura_raster: true
@@ -279,6 +280,7 @@ transformers:
   type: ''
 
 load:
+  load_year: 2018
   power_statistics: true # only for files from <2019; set false in order to get ENTSOE transparency data
   interpolate_limit: 3 # data gaps up until this size are interpolated linearly
   time_shift_for_large_gaps: 1w # data gaps up until this size are copied by copying from
@@ -353,6 +355,7 @@ existing_capacities:
   - coal
   - oil
   - uranium
+  exit_year: {} # assuming phase out at the end of the year
 
 
 sector:
@@ -470,6 +473,7 @@ sector:
   co2_vent: false
   allam_cycle: false
   SMR: true
+  SMR_cc: false
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential
     attribute: 'conservative estimate Mt'
@@ -898,6 +902,7 @@ plotting:
     H2 liquefaction: '#d647bd'
     hydrogen storage: '#bf13a0'
     H2 storage: '#bf13a0'
+    H2 Store: '#bf13a0'
     land transport fuel cell: '#6b3161'
     H2 pipeline: '#f081dc'
     H2 pipeline retrofitted: '#ba99b5'

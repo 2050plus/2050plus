@@ -1,0 +1,11 @@
+Technology name,Carrier 1,Carrier 2,Carrier 3,Carrier 4
+Biogas,Biogas,-,-,-
+Biogas upgrading,Biogas,Gas,-,-
+Biomass boiler,Biomass,Heat,-,-
+BioSNG,Biomass,Gas,-,-
+BioSNG CC,Biomass,Gas,CO2 CC,-
+BtL,Biomass,Oil,-,-
+BtL CC,Biomass,Oil,CO2 CC,-
+Central solid biomass CHP,Biomass,Elec,Heat,-
+Central solid biomass CHP CC,Biomass,Elec,Heat,CO2 CC
+Solid Biomass,Biomass,-,-,-
