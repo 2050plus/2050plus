@@ -6,12 +6,12 @@ version: 0.8.0
 tutorial: false
 
 logging:
-  level: DEBUG
+  level: INFO
   format: '%(levelname)s:%(name)s:%(message)s'
 
 run:
-  name: "test-tgi" # use this to keep track of runs with different settings
-  disable_progressbar: false # set to true to disable the progressbar
+  name: "VEKA_av_bio_fix_nuc_bev_ccl" # use this to keep track of runs with different settings
+  disable_progressbar: true # set to true to disable the progressbar
   shared_resources: true # set to true to share the default resources across runs
   shared_cutouts: true # set to true to share the default cutout(s) across runs
 
@@ -20,15 +20,15 @@ foresight: myopic # options are overnight, myopic, perfect (perfect is not yet i
 
 scenario:
   simpl:
-  - 180
+  - 181
   ll:  # allowed transmission line volume expansion, can be any float >= 1.0 with a prefix v|c (today) or "copt"
-  - v1.1
+  - v3.0
   clusters:  # number of nodes in Europe, any integer between 37 (1 node per country-zone) and several hundred
-  - '37m'
+  - 37m
   opts: # only relevant for PyPSA-Eur
   - ''
   sector_opts: # this is where the main scenario settings are
-  - 12H
+  - 3H-I-T-H-B-A-CCL
   # to really understand the options here, look in scripts/prepare_sector_network.py
   # Co2Lx specifies the CO2 target in x% of the 1990 values; default will give default (5%);
   # Co2L0p25 will give 25% CO2 emissions; Co2Lm0p05 will give 5% negative emissions
@@ -54,7 +54,7 @@ scenario:
   # - 2030
   # - 2040
   # - 2050
-  # for myopic foresight
+  # for myopic foresight 'ME', 'MK', 'AL', 'GB', 'CH', 'NO', 'RS', 'BA'
 
 countries: ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'ME', 'MK', 'NL', 'NO', 'PL', 'PT', 'RO', 'RS', 'SE', 'SI', 'SK']
 
@@ -69,29 +69,38 @@ enable:
   retrieve_sector_databundle: false
   retrieve_cost_data: false
   build_cutout: false
+  retrieve_irena: false
   retrieve_cutout: false
-  build_natura_raster: false
+  build_natura_raster: true
   retrieve_natura_raster: false
   custom_busmap: false
+  retrieve_load_future: false
+  modify_residual_load: false
 
 # CO2 budget as a fraction of 1990 emissions
 # this is over-ridden if CO2Lx is set in sector_opts
 # this is also over-ridden if cb is set in sector_opts
 co2_budget:
-  2020: 0.701
-  2025: 0.524
-  2030: 0.297
-  2035: 0.150
-  2040: 0.071
-  2045: 0.032
-  2050: 0.000
+  2020: 0.7010
+  2025: 0.6092
+  2030: 0.52
+  2035: 0.42
+  2040: 0.342
+  2045: 0.284
+  2050: 0.11
 
 electricity:
   voltages: [220., 300., 380.]
   gaslimit: false # global gas usage limit of X MWh_th
   co2limit: 7.75e+7 # 0.05 * 3.1e9*0.5
   co2base: 1.487e+9
-  agg_p_nom_limits: data/agg_p_nom_minmax.csv
+  agg_p_nom_limits:
+    agg_offwind: True
+    include_existing: True
+    years:
+      2030: data/agg_p_nom_minmax.csv
+      2040: data/agg_p_nom_minmax.csv
+      2050: data/agg_p_nom_minmax.csv
 
   operational_reserve: # like https://genxproject.github.io/GenX/dev/core/#Reserves
     activate: false
@@ -104,15 +113,15 @@ electricity:
     H2: 168
 
   extendable_carriers:
-    Generator: [solar, onwind, offwind-ac, offwind-dc, OCGT]
+    Generator: [OCGT, CCGT, nuclear, lignite, oil,  coal, solar, offwind-ac, offwind-dc, onwind, biomass]
     StorageUnit: [] # battery, H2
     Store: [battery, H2]
     Link: [] # H2 pipeline
 
   # use pandas query strings here, e.g. Country not in ['Germany']
-  powerplants_filter: (DateOut >= 2022 or DateOut != DateOut)
+  powerplants_filter: ((DateOut >= 2022 or DateOut != DateOut) and ~(Country == 'BE' and Fueltype == 'Nuclear'))
   # use pandas query strings here, e.g. Country in ['Germany']
-  custom_powerplants: false
+  custom_powerplants: true
 
   conventional_carriers: [nuclear, oil, OCGT, CCGT, coal, lignite, geothermal, biomass]
   renewable_carriers: [solar, onwind, offwind-ac, offwind-dc, hydro]
@@ -136,8 +145,8 @@ electricity:
 
 atlite:
   default_cutout: europe-2013-era5
-  nprocesses: 10
-  show_progress: true # false saves time
+  nprocesses: 8
+  show_progress: false # false saves time
   cutouts:
     # use 'base' to determine geographical bounds and time span from config
     # base:
@@ -167,7 +176,7 @@ renewable:
     resource:
       method: wind
       turbine: Vestas_V112_3MW
-    capacity_per_sqkm: 3 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
+    capacity_per_sqkm: 2.5 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 30% fraction of the already restricted
     # area is available for installation of wind generators due to competing land use and likely public
     # acceptance issues.
     # correction_factor: 0.93
@@ -186,7 +195,7 @@ renewable:
     resource:
       method: wind
       turbine: NREL_ReferenceTurbine_5MW_offshore
-    capacity_per_sqkm: 2 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 20% fraction of the already restricted
+    capacity_per_sqkm: 5 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 20% fraction of the already restricted
     # area is available for installation of wind generators due to competing land use and likely public
     # acceptance issues.
     correction_factor: 0.8855
@@ -206,7 +215,7 @@ renewable:
     resource:
       method: wind
       turbine: NREL_ReferenceTurbine_5MW_offshore
-    capacity_per_sqkm: 2 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 20% fraction of the already restricted
+    capacity_per_sqkm: 5 # ScholzPhd Tab 4.3.1: 10MW/km^2 and assuming 20% fraction of the already restricted
     # area is available for installation of wind generators due to competing land use and likely public
     # acceptance issues.
     correction_factor: 0.8855
@@ -276,6 +285,7 @@ transformers:
   type: ''
 
 load:
+  load_year: 2018
   power_statistics: true # only for files from <2019; set false in order to get ENTSOE transparency data
   interpolate_limit: 3 # data gaps up until this size are interpolated linearly
   time_shift_for_large_gaps: 1w # data gaps up until this size are copied by copying from
@@ -348,16 +358,81 @@ existing_capacities:
   conventional_carriers:
   - lignite
   - coal
-  - oil
-  - uranium
-  exit_year:
-    CCGT: 2034
-    OCGT: 2034
-    coal: 2029
-    lignite: 2029
-
+  exit_year: { } # assuming phase out at the end of the year
 
 sector:
+  # Technologies
+  electrolysis: true
+  fuel_cell: true
+  SMR: true
+  SMR_cc: true
+  coal_cc: true
+  solar_rooftop: true # only valid if distribution_grid is True
+  methanation: true
+  helmeth: true
+  co2_vent: false
+  allam_cycle: false
+  gas_distribution_grid: true
+  electricity_grid_connection: true  # only applies to onshore wind and utility PV   
+  electricity_distribution_grid: true
+  conventional_generation: # generator : carrier
+    OCGT: gas
+    CCGT: gas
+    nuclear: uranium
+    nuclear (SMR): uranium
+    oil: oil
+  ammonia: true # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
+  haber_bosch: true
+  ammonia_cracker: true
+  ammonia_store: true
+  # Networks and storage
+  H2_network: true
+  gas_network: true
+  H2_retrofit: true  # if set to True existing gas pipes can be retrofitted to H2 pipes
+  co2_spatial: true
+  co2network: true
+  hydrogen_underground_storage: true
+  hydrogen_overground_storage: true
+  battery : true
+  home_battery: true # only valid if distribution_grid is True
+  # Transport
+  v2g: true #allows feed-in to grid from EV battery
+  bev_dsm: true #turns on EV battery
+  # Heat module
+  solar_thermal: true
+  heat_pumps: true
+  cluster_heat_buses: false # cluster residential and service heat buses to one to save memory
+  tes: true
+  resistive_heater: true
+  gas_boiler: true
+  chp: true 
+  chp_cc: true
+  micro_chp: true
+  dac: true #only valid if heat module is activated
+  # Industry module
+  biomass_industry_cc: true
+  gas_industry_cc: true
+  shipping_hydrogen_liquefaction: true # whether to consider liquefaction costs for shipping H2 demands 
+  #methanolisation for shipping is considered to be turned off by setting the demand to 0
+  oil_boilers: true
+  fischer_tropsch: true
+  process_emissions_cc: true
+  # Waste-Heat module
+  use_fischer_tropsch_waste_heat: true
+  use_fuel_cell_waste_heat: true
+  use_electrolysis_waste_heat: true
+  # Biomass
+  biomass_spatial: true  # regionally resolve biomass (e.g. potentials)
+  biomass_transport: true  # allow transport of solid biomass between nodes
+  biogas_upgrading: true
+  biomass_chp: true
+  biomass_chp_cc: true
+  biomass_boiler: true
+  biomass_to_liquid: true
+  biomass_to_liquid_cc: true
+  biosng: true
+  biosng_cc: true
+  #Other parameters
   district_heating:
     potential: 0.6  # maximum fraction of urban demand which can be supplied by district heating
      # increase of today's district heating demand to potential maximum district heating share
@@ -365,10 +440,10 @@ sector:
     progress:
       2020: 0.0
       2030: 0.3
+      2035: 0.45
       2040: 0.6
       2050: 1.0
     district_heating_loss: 0.15
-  cluster_heat_buses: false # cluster residential and service heat buses to one to save memory
   bev_dsm_restriction_value: 0.75  #Set to 0 for no restriction on BEV DSM
   bev_dsm_restriction_time: 7  #Time at which SOC of BEV has to be dsm_restriction_value
   transport_heating_deadband_upper: 20.
@@ -377,29 +452,30 @@ sector:
   ICE_upper_degree_factor: 1.6
   EV_lower_degree_factor: 0.98
   EV_upper_degree_factor: 0.63
-  bev_dsm: true #turns on EV battery
-  bev_availability: 0.5  #How many cars do smart charging
+  bev_availability: 0.3  #How many cars do smart charging
   bev_energy: 0.05  #average battery size in MWh
   bev_charge_efficiency: 0.9  #BEV (dis-)charging efficiency
   bev_plug_to_wheel_efficiency: 0.2 #kWh/km from EPA https://www.fueleconomy.gov/feg/ for Tesla Model S
   bev_charge_rate: 0.011 #3-phase charger with 11 kW
-  bev_avail_max: 0.95
-  bev_avail_mean: 0.8
-  v2g: true #allows feed-in to grid from EV battery
+  bev_avail_max: 0.7
+  bev_avail_mean: 0.4
   #what is not EV or FCEV is oil-fuelled ICE
   land_transport_fuel_cell_share:
     2020: 0
     2030: 0.05
+    2035: 0.075
     2040: 0.1
     2050: 0.15
   land_transport_electric_share:
     2020: 0
     2030: 0.25
+    2035: 0.425
     2040: 0.6
     2050: 0.85
   land_transport_ice_share:
     2020: 1
     2030: 0.7
+    2035: 0.5
     2040: 0.3
     2050: 0
   transport_fuel_cell_efficiency: 0.5
@@ -411,20 +487,22 @@ sector:
   MWh_MeOH_per_MWh_H2: 0.8787 # in LHV, source: DECHEMA (2017): Low carbon energy and feedstock for the European chemical industry , pg. 64.
   MWh_MeOH_per_tCO2: 4.0321 # in LHV, source: DECHEMA (2017): Low carbon energy and feedstock for the European chemical industry , pg. 64.
   MWh_MeOH_per_MWh_e: 3.6907 # in LHV, source: DECHEMA (2017): Low carbon energy and feedstock for the European chemical industry , pg. 64.
-  shipping_hydrogen_liquefaction: false # whether to consider liquefaction costs for shipping H2 demands
   shipping_hydrogen_share:
     2020: 0
     2030: 0
+    2035: 0
     2040: 0
     2050: 0
   shipping_methanol_share:
     2020: 0
     2030: 0.3
+    2035: 0.5
     2040: 0.7
     2050: 1
   shipping_oil_share:
     2020: 1
     2030: 0.7
+    2035: 0.5
     2040: 0.3
     2050: 0
   shipping_methanol_efficiency: 0.46 # 10-15% higher https://www.iea-amf.org/app/webroot/files/file/Annex%20Reports/AMF_Annex_56.pdf, https://users.ugent.be/~lsileghe/documents/extended_abstract.pdf
@@ -439,39 +517,26 @@ sector:
   # the factor is negative: increasing floor area, increased thermal comfort, population growth
   reduce_space_heat_exogenously_factor:  # per unit reduction in space heat demand
   # the default factors are determined by the LTS scenario from http://tool.european-calculator.eu/app/buildings/building-types-area/?levers=1ddd4444421213bdbbbddd44444ffffff11f411111221111211l212221
-    2020: 0.10  # this results in a space heat demand reduction of 10%
-    2025: 0.09  # first heat demand increases compared to 2020 because of larger floor area per capita
-    2030: 0.09
-    2035: 0.11
-    2040: 0.16
-    2045: 0.21
-    2050: 0.29
+    2020: 0.0  # this results in a space heat demand reduction of 10%
+    2025: 0.05
+    2030: 0.1
+    2035: 0.15
+    2040: 0.2
+    2045: 0.25
+    2050: 0.3
   retrofitting:   # co-optimises building renovation to reduce space heat demand
     retro_endogen: false  # co-optimise space heat savings
     cost_factor: 1.0   # weight costs for building renovation
     interest_rate: 0.04  # for investment in building components
-    annualise_cost: true  # annualise the investment costs
-    tax_weighting: false   # weight costs depending on taxes in countries
-    construction_index: true   # weight costs depending on labour/material costs per country
-  tes: true
+    annualise_cost: false  # annualise the investment costs
+    tax_weighting: true   # weight costs depending on taxes in countries
+    construction_index: false   # weight costs depending on labour/material costs per country
   tes_tau: # 180 day time constant for centralised, 3 day for decentralised
     decentral: 3
     central: 180
-  boilers: true
-  oil_boilers: false
-  biomass_boiler: true
-  chp: true
-  micro_chp: false
-  solar_thermal: true
   solar_cf_correction: 0.788457  # =  >>> 1/1.2683
   marginal_cost_storage: 0. #1e-4
-  methanation: true
-  helmeth: true
-  coal_cc: false
-  dac: true
-  co2_vent: false
-  allam_cycle: false
-  SMR: true
+  allam_marginal_cost: "gas"  # can be number (EUR/MWh_th), "gas" (use gas price)
   regional_co2_sequestration_potential:
     enable: false  # enable regionally resolved geological co2 storage potential
     attribute: 'conservative estimate Mt'
@@ -480,40 +545,22 @@ sector:
     max_size: 25 # Gt, max sequestration potential for any one site, TODO research suitable value
     years_of_storage: 25 # years until potential exhausted at optimised annual rate
   co2_sequestration_potential: 200  #MtCO2/a sequestration potential for Europe
-  co2_sequestration_cost: 10   #EUR/tCO2 for sequestration of CO2
-  co2_spatial: false
-  co2network: false
-  cc_fraction: 0.9  # default fraction of CO2 captured with post-combustion capture
-  hydrogen_underground_storage: true
+  co2_sequestration_cost: 100   #EUR/tCO2 for sequestration of CO2
+  cc_fraction: 0.95  # default fraction of CO2 captured with post-combustion capture
   hydrogen_underground_storage_locations:
-    # - onshore  # more than 50 km from sea
+  - onshore  # more than 50 km from sea
   - nearshore    # within 50 km of sea
-    # - offshore
-  ammonia: false # can be false (no NH3 carrier), true (copperplated NH3), "regional" (regionalised NH3 without network)
+  - offshore
   min_part_load_fischer_tropsch: 0.9 # p_min_pu
   min_part_load_methanolisation: 0.5 # p_min_pu
-  use_fischer_tropsch_waste_heat: true
-  use_fuel_cell_waste_heat: true
-  use_electrolysis_waste_heat: false
-  electricity_distribution_grid: true
   electricity_distribution_grid_cost_factor: 1.0  #multiplies cost in data/costs.csv
-  electricity_grid_connection: true  # only applies to onshore wind and utility PV
-  H2_network: true
-  gas_network: false
-  H2_retrofit: false  # if set to True existing gas pipes can be retrofitted to H2 pipes
   # according to hydrogen backbone strategy (April, 2020) p.15
   # https://gasforclimate2050.eu/wp-content/uploads/2020/07/2020_European-Hydrogen-Backbone_Report.pdf
   # 60% of original natural gas capacity could be used in cost-optimal case as H2 capacity
   H2_retrofit_capacity_per_CH4: 0.6  # ratio for H2 capacity per original CH4 capacity of retrofitted pipelines
   gas_network_connectivity_upgrade: 1 # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.connectivity.edge_augmentation.k_edge_augmentation.html#networkx.algorithms.connectivity.edge_augmentation.k_edge_augmentation
-  gas_distribution_grid: true
   gas_distribution_grid_cost_factor: 1.0  #multiplies cost in data/costs.csv
-  biomass_spatial: false  # regionally resolve biomass (e.g. potentials)
-  biomass_transport: false  # allow transport of solid biomass between nodes
-  conventional_generation: # generator : carrier
-    OCGT: gas
-  biomass_to_liquid: false
-  biosng: false
+
 
 industry:
   St_primary_fraction:  # fraction of steel produced via primary route versus secondary route (scrap+EAF); today fraction is 0.6
@@ -570,7 +617,7 @@ industry:
 
 costs:
   year: 2030
-  version: v0.5.0
+  version: v0.6.2
   rooftop_share: 0.14  # based on the potentials, assuming  (0.1 kW/m2 and 10 m2/person)
   fill_values:
     FOM: 0
@@ -584,16 +631,16 @@ costs:
   # Marginal and capital costs can be overwritten
   # capital_cost:
   #   onwind: 500
-  marginal_cost:
-    solar: 0.01
-    onwind: 0.015
-    offwind: 0.015
-    hydro: 0.
-    H2: 0.
-    electrolysis: 0.
-    fuel cell: 0.
-    battery: 0.
-    battery inverter: 0.
+  # marginal_cost:
+    # solar: 0.01
+    # onwind: 0.015
+    # offwind: 0.015
+    # hydro: 0.
+    # H2: 0.
+    # electrolysis: 0.
+    # fuel cell: 0.
+    # battery: 0.
+    # battery inverter: 0.
   emission_prices: # in currency per tonne emission, only used with the option Ep
     co2: 0.
 
@@ -626,7 +673,7 @@ solving:
     formulation: kirchhoff
     clip_p_max_pu: 1.e-2
     load_shedding: false
-    noisy_costs: true
+    noisy_costs: false
     skip_iterations: true
     track_iterations: false
     min_iterations: 4
@@ -820,6 +867,7 @@ plotting:
     Nuclear: '#ff8c00'
     Nuclear marginal: '#ff8c00'
     nuclear: '#ff8c00'
+    nuclear (SMR): '#ff8c00'
     uranium: '#ff8c00'
     # coal
     Coal: '#545454'

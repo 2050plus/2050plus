@@ -31,21 +31,25 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
         # Heat
         heat = {}
         for he in heat_map.values():
-            heat[c + '_' + he] = load_annual[c + '_' + he].values * profiles[c + '_' + he]
+            heat[c + '_' + he] = load_annual[c + '_' + he] * profiles[c + '_' + he].values
         heat = pd.concat(heat, axis=1).sum(axis=1)
 
         # Transport
         transport = {}
         for tr in transport_map.keys():
-            transport[c + '_' + tr] = load_annual[c + '_' + tr].values * profiles[c + '_' + tr]
+            transport[c + '_' + tr] = load_annual[c + '_' + tr] * profiles[c + '_' + tr].values
         transport = pd.concat(transport, axis=1).sum(axis=1)
 
         # Industry
-        industry = load_annual[c + "_IN_tot"].values * profiles[c + "_IN_tot"]
+        industry = load_annual[c + "_IN_tot"] * profiles[c + "_IN_tot"].values
 
         # Residual load
         # ToDo Switch utc_timestamp to snapshots
-        residual_profile = pd.read_csv(snakemake.input.res_load_profile, index_col=['utc_timestamp'])
+        residual_profile = (
+            pd.read_csv(snakemake.input.res_load_profile, index_col=[0], parse_dates=True)
+            .loc[snapshots_hist]
+            .set_index(snapshots)
+        )
         residual = (
                 (load_annual[c + "_tot"] -
                  (
@@ -55,25 +59,43 @@ def apply_profiles_tomorrow(load_annual, countries, profiles, heat_map, transpor
                      .sum(axis=1)
                  )
                  ).mean()
-                * residual_profile[c].values
+                * residual_profile[c]
         )
         # ToDo Set tr_losses as option in yaml
         tr_losses = 0.05
         supply = (industry + heat + transport + residual) * tr_losses
 
         # Future load
-        load_future[c] = industry + heat + transport + supply + residual
+        # FixMe With wildcards, this rule is failing
+        opts = snakemake.config["scenario"]["sector_opts"][0].split("-")
+        load_future[c] = supply + residual
+        
+        if not ("I" in opts):
+            load_future[c] += industry
+        if not ("H" in opts):
+            load_future[c] += heat
+        if not ("T" in opts):
+            load_future[c] += transport
+            
         logger.info(f"Build total load for {c} is {load_future[c].sum() / 1e6:.2f} TWh")
+        logging.debug(f"Residual contribution from {c}: {(residual.sum().sum()) /  (load_future[c].sum()) * 100:.2f}%")
+        logging.debug(f"Residual load from {c}: {residual.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Supply from {c}: {supply.sum() / 1e6:.2f}TWh")
+        logging.debug(f"Industry from {c}: {industry.sum() / 1e6:.2f}TWh")
+        logging.debug(f"Heat from {c}: {heat.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Transport from {c}: {transport.sum().sum() / 1e6:.2f}TWh")
+        logging.debug(f"Total from {c}: {(industry + heat + transport + residual).sum().sum() / 1e6:.2f}TWh")
 
-    return load_future.set_index(snapshots)
+    return load_future
 
 
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
 
-        snakemake = mock_snakemake("build_future_load", simpl="",
-                                   planning_horizons="2030", clusters="37")
+        snakemake = mock_snakemake("build_future_load", simpl="181",
+                                   planning_horizons="2030", clusters="37m",
+                                   configfiles="config.VEKA.runner.yaml")
 
     configure_logging(snakemake)
 
@@ -82,12 +104,12 @@ if __name__ == "__main__":
 
     # ToDo What if leap year (e.g.: 2040)
     # ToDo Adjust weekly pattern to new year
-    snapshots = pd.date_range(freq="h", **snakemake.config["snapshots"])
-    snapshots = pd.DatetimeIndex([i.replace(year=int(horizon)) for i in snapshots.to_list()])
+    snapshots_hist = pd.date_range(freq="h", **snakemake.config["snapshots"])
+    snapshots = pd.DatetimeIndex([pd.to_datetime(i.replace(year=int(horizon))) for i in snapshots_hist.to_list()])
 
     load_annual_future = pd.read_csv(snakemake.input.load_annual, delimiter=',', parse_dates=True, index_col="year")
 
-    profiles = pd.read_csv(snakemake.input.profiles)
+    profiles = pd.read_csv(snakemake.input.profiles, index_col=0, parse_dates=True).loc[snapshots_hist]
     heat_map = pd.read_csv(snakemake.input.heat_map).to_dict(orient="index")[0]
     transport_map = pd.read_csv(snakemake.input.transport_map).to_dict(orient="index")[0]
 

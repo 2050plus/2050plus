@@ -19,7 +19,10 @@ gurobi.log
 /benchmarks
 /logs
 /notebooks
-/data
+/data/*
+!/data/costs_*.csv
+!/data/agg_p_nom_minmax.csv
+!/data/agg_p_nom_minmax_*.csv
 /cutouts
 
 doc/_build
@@ -41,7 +44,6 @@ dconf
 /data/retro/tabula-calculator-calcsetbuilding.csv
 /data/nuts*
 data/gas_network/scigrid-gas/
-data/costs_*.csv
 
 dask-worker-space/
 publications.jrc.ec.europa.eu/
@@ -67,7 +69,5 @@ doc/_build
 *.xls
 
 *.geojson
-
-data/costs_*
 
 merger-todos.md

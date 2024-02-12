@@ -8,6 +8,10 @@ This rule downloads yearly electric load data for each european country from the
 This rule downloads appropriate years using configuration file. Yearly electric load data are defined by per-country
 scenarios.
 
+The current metric map defines the residual load as : electricity demand from agriculture and part of the electricity
+demand from buildings (incl. appliances, cooking and lightning - which is approximately 2/3 of the buildings demand).
+The total electricity load doesn't include export of electricity.
+
 **Releveant Settings**
 
 .. code:: yaml
@@ -43,6 +47,7 @@ URL_TO_USE = "prod url"
 # URL_TO_USE = "test url"
 
 METRIC_MAP = pd.DataFrame([
+    # Transport
     ["tra_energy-demand_domestic_electricity_BEV_freight_HDV[TWh]", "TR_hdv"],
     ["tra_energy-demand_domestic_electricity_PHEV_freight_HDV[TWh]", "TR_hdv"],
     ["tra_energy-demand_domestic_electricity_PHEVCE_freight_HDV[TWh]", "TR_hdv"],
@@ -52,25 +57,29 @@ METRIC_MAP = pd.DataFrame([
     ["tra_energy-demand_domestic_electricity_PHEV_passenger_LDV[TWh]", "TR_cars"],
     ["tra_energy-demand_domestic_electricity_BEV_passenger_bus[TWh]", "TR_bus"],
     ["tra_energy-demand_domestic_electricity_PHEV_passenger_bus[TWh]", "TR_bus"],
-    ["tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]", "TR_rail"],
+    # ["tra_energy-demand_domestic_electricity_CEV_freight_rail[TWh]", "TR_rail"],  # Already included in elec demand
+    # ["tra_energy-demand_domestic_electricity_CEV_passenger_rail[TWh]", "TR_rail"],  # Already included in elec demand
+
+    # Buildings
     ["bld_energy-demand_non-residential_heating_electricity[TWh]", "HE_ter_spa"],
     ["bld_energy-demand_non-residential_hotwater_electricity[TWh]", "HE_ter_wat"],
     ["bld_energy-demand_residential_heating_electricity[TWh]", "HE_res_spa"],
     ["bld_energy-demand_residential_hotwater_electricity[TWh]", 'HE_res_wat'],
-    ["ind_energy-demand-by-carrier_electricity[TWh]", "IN_tot"],
+
+    # Industry
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_ind[TWh]", "IN_tot"],
+
+    # Supply
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]", "SU_tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]", "SU_tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_agr[TWh]", "tot"],
+
+    # Total
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_tra[TWh]", "tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_bld[TWh]", "tot"],
     ["elc_elec-demand-by-energy-carrier-and-sector_electricity_ind[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_tra[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-sector[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_hydrogen-for-power-prod[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_efuels[TWh]", "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-CHP[TWh]",  "tot"],
-    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_heat-only[TWh]", "tot"]
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_refineries[TWh]", "tot"],
+    ["elc_elec-demand-by-energy-carrier-and-sector_electricity_losses[TWh]", "tot"],
+
 ], columns=["metric_id", "sector"])
 
 TEMPLATE_REQUEST = """

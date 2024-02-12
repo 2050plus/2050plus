@@ -280,6 +280,7 @@ transformers:
   type: ''
 
 load:
+  load_year: 2018
   power_statistics: true # only for files from <2019; set false in order to get ENTSOE transparency data
   interpolate_limit: 3 # data gaps up until this size are interpolated linearly
   time_shift_for_large_gaps: 1w # data gaps up until this size are copied by copying from
@@ -354,7 +355,7 @@ existing_capacities:
   - coal
   - oil
   - uranium
-  exit_year:  # assuming phase out at the end of the year
+  exit_year: {} # assuming phase out at the end of the year
 
 
 sector:
