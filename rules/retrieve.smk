@@ -97,6 +97,22 @@ if config["enable"]["retrieve"] and config["enable"].get("retrieve_cost_data", T
             "../scripts/retrieve_cost_data.py"
 
 
+if config["enable"].get("copy_cost_data", True):
+
+    rule copy_costs_data:
+        input:
+            config["costs"]["costs_dir"] + "/costs_{year}.csv",
+        output:
+            resources("costs_{year}.csv")
+        log:
+            logs("copy_cost_data_{year}.log"),
+        resources:
+            mem_mb=5000,
+        retries: 2
+        run:
+            copyfile(input[0],output[0])
+
+
 if config["enable"]["retrieve"] and config["enable"].get(
     "retrieve_natura_raster", True
 ):

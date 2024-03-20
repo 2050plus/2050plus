@@ -18,7 +18,7 @@ gurobi.log
 /benchmarks
 /logs
 /notebooks
-/data
+/data/*
 /cutouts
 /tmp
 doc/_build
@@ -74,5 +74,7 @@ d1gam3xoknrgr2.cloudfront.net/
 
 merger-todos.md
 
+# Climact addititions
+!/data/costs
 .idea/
 .DS_Store
