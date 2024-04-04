@@ -179,6 +179,8 @@ Upcoming Release
 
 * Fix index of existing capacities in `add_power_capacities_installed_before_baseyear` with `m` option.
 
+* Fix fill missing data in `build_industry_sector_ratios_intermediate`.
+
 * Fix custom busmap read in `cluster_network`.
 
 PyPSA-Eur 0.10.0 (19th February 2024)
