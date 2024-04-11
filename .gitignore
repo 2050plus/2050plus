@@ -76,5 +76,6 @@ merger-todos.md
 
 # Climact addititions
 !/data/costs
+!/data/custom_busmap_*.csv
 .idea/
 .DS_Store
