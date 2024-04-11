@@ -184,6 +184,9 @@ Upcoming Release
 * Fix custom busmap read in `cluster_network`.
 
 * Clarify suffix usage in `add_existing_baseyear`.
+
+* Fix p_nom_min of renewables generators for myopic approach and add check of existing capacities in `add_land_use_constraint_m`.
+
 PyPSA-Eur 0.10.0 (19th February 2024)
 =====================================
 
