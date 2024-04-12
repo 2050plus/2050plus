@@ -199,6 +199,8 @@ Upcoming Release
 
 * Fix gas network retrofitting in `add_brownfield`.
 
+* Add `nodal_supply_energy` to `make_summary`.
+
 PyPSA-Eur 0.10.0 (19th February 2024)
 =====================================
 
