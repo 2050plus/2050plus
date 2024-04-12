@@ -424,7 +424,7 @@ def add_heating_capacities_installed_before_baseyear(
         heat_pump_type = "air" if "urban" in name else "ground"
 
         # Add heat pumps
-        costs_name = f"decentral {heat_pump_type}-sourced heat pump"
+        costs_name = f"{name_type} {heat_pump_type}-sourced heat pump"
 
         cop = {"air": ashp_cop, "ground": gshp_cop}
 

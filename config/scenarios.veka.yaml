@@ -16,7 +16,47 @@ central: {}
 electrification:
   costs:
     costs_dir: data/costs/electrification
-
+  sector:
+    land_transport_fuel_cell_share:
+        2020: 0
+        2030: 0
+        2040: 0
+        2050: 0
+    land_transport_electric_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
+        2020: 0.01
+        2030: 0.16
+        2040: 0.36
+        2050: 0.46
+    land_transport_ice_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
+        2020: 0.99
+        2030: 0.84
+        2040: 0.45
+        2050: 0.27
+  industry:
+    St_primary_fraction:
+        2020: 0.6
+        2025: 0.6
+        2030: 0.5
+        2035: 0.3
+        2040: 0.3
+        2045: 0.3
+        2050: 0.3
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.05
+        2035: 0.25
+        2040: 0.5
+        2045: 0.75
+        2050: 1
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0
+        2035: 0
+        2040: 0
+        2045: 0
+        2050: 0
 molecule:
   costs:
     costs_dir: data/costs/molecule
