@@ -779,7 +779,14 @@ solving:
     horizon: 365
 
   agg_p_nom_limits:
-    agg_offwind: true
+    agg_carriers: # carriers on which to aggregate
+      offwind-ac: offwind-all
+      offwind-dc: offwind-all
+      offwind: offwind-all
+      nuclear: nuclear-all
+      nuclear (SMR): nuclear-all
+    agg_buses: # if Link, bus to consider for aggregated carrier
+      nuclear-all: bus1
     include_existing: true
     file: data/agg_p_nom_minmax.csv
 
