@@ -1244,14 +1244,13 @@ def add_storage_and_grids(n, costs):
         if options["H2_retrofit"]:
             gas_pipes["p_nom_max"] = gas_pipes.p_nom
             gas_pipes["p_nom_min"] = 0.0
-            # 0.1 EUR/MWkm/a to prefer decommissioning to address degeneracy
-            gas_pipes["capital_cost"] = 0.1 * gas_pipes.length
         else:
             gas_pipes["p_nom_max"] = np.inf
             gas_pipes["p_nom_min"] = gas_pipes.p_nom
-            gas_pipes["capital_cost"] = (
-                gas_pipes.length * costs.at["CH4 (g) pipeline", "fixed"]
-            )
+            
+        gas_pipes["capital_cost"] = (
+            gas_pipes.length * costs.at["CH4 (g) pipeline", "fixed"]
+        )
 
         n.madd(
             "Link",
