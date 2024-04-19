@@ -33,6 +33,8 @@ def rename_techs_tyndp(tech):
         return "ammonia"
     elif tech in ["CCGT", "OCGT", "CHP", "gas boiler", "H2 Fuel Cell"]:
         return "gas-to-power/heat"
+    elif tech in ["CCGT CC", "OCGT CC"]:
+        return "gas-to-power/heat CC"
     # elif "solar" in tech:
     #     return "solar"
     elif tech in ["Fischer-Tropsch", "methanolisation"]:

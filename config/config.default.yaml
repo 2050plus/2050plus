@@ -508,6 +508,7 @@ sector:
   allam_cycle: false
   hydrogen_fuel_cell: true
   hydrogen_turbine: false
+  CC_turbine: false
   SMR: true
   SMR_cc: true
   regional_methanol_demand: false
@@ -1079,6 +1080,8 @@ plotting:
     H2 Fuel Cell: '#c251ae'
     H2 fuel cell: '#c251ae'
     H2 turbine: '#991f83'
+    OCGT H2: '#991f83'
+    CCGT H2: '#991f83'
     H2 Electrolysis: '#ff29d9'
     H2 electrolysis: '#ff29d9'
     # ammonia
@@ -1126,6 +1129,7 @@ plotting:
     power-to-H2: '#ff29d9'
     power-to-liquid: '#25c49a'
     gas-to-power/heat: '#ee8340'
+    gas-to-power/heat CC: '#b56431'
     waste: '#e3d37d'
     other: '#000000'
     geothermal: '#ba91b1'

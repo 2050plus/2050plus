@@ -1163,22 +1163,75 @@ def add_storage_and_grids(n, costs):
 
     if options["hydrogen_turbine"]:
         logger.info(
-            "Adding hydrogen turbine for re-electrification. Assuming OCGT technology costs."
+            "Adding hydrogen turbine for re-electrification."
         )
-        # TODO: perhaps replace with hydrogen-specific technology assumptions.
 
         n.madd(
             "Link",
-            nodes + " H2 turbine",
+            nodes + " OCGT H2",
             bus0=nodes + " H2",
             bus1=nodes,
             p_nom_extendable=True,
-            carrier="H2 turbine",
-            efficiency=costs.at["OCGT", "efficiency"],
-            capital_cost=costs.at["OCGT", "fixed"]
-            * costs.at["OCGT", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["OCGT", "VOM"],
-            lifetime=costs.at["OCGT", "lifetime"],
+            carrier="OCGT H2",
+            efficiency=costs.at["OCGT_H2", "efficiency"],
+            capital_cost=costs.at["OCGT_H2", "fixed"]
+            * costs.at["OCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
+            marginal_cost=costs.at["OCGT_H2", "VOM"],
+            lifetime=costs.at["OCGT_H2", "lifetime"],
+        )
+        
+        n.madd(
+            "Link",
+            nodes + " CCGT H2",
+            bus0=nodes + " H2",
+            bus1=nodes,
+            p_nom_extendable=True,
+            carrier="CCGT H2",
+            efficiency=costs.at["CCGT_H2", "efficiency"],
+            capital_cost=costs.at["CCGT_H2", "fixed"]
+            * costs.at["CCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
+            marginal_cost=costs.at["CCGT_H2", "VOM"],
+            lifetime=costs.at["CCGT_H2", "lifetime"],
+        )
+        
+    if options["CC_turbine"]:
+        logger.info(
+            "Adding carbon capture gas powerplants."
+        )
+
+        n.madd(
+            "Link",
+            nodes + " OCGT CC",
+            bus0=spatial.gas.nodes,
+            bus1=nodes,
+            bus2="co2 atmosphere",
+            bus3=spatial.co2.nodes,
+            p_nom_extendable=True,
+            carrier="OCGT CC",
+            efficiency=costs.at["OCGT_CC", "efficiency"],
+            efficiency2=costs.at['gas','CO2 intensity']* (1 - options["cc_fraction"]),
+            efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
+            capital_cost=costs.at["OCGT_CC", "fixed"]
+            * costs.at["OCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
+            marginal_cost=costs.at["OCGT_CC", "VOM"],
+            lifetime=costs.at["OCGT_CC", "lifetime"],
+        )
+        n.madd(
+            "Link",
+            nodes + " CCGT CC",
+            bus0=spatial.gas.nodes,
+            bus1=nodes,
+            bus2="co2 atmosphere",
+            bus3=spatial.co2.nodes,
+            p_nom_extendable=True,
+            carrier="CCGT CC",
+            efficiency=costs.at["CCGT_CC", "efficiency"],
+            efficiency2=costs.at['gas','CO2 intensity']* (1 - options["cc_fraction"]),
+            efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
+            capital_cost=costs.at["CCGT_CC", "fixed"]
+            * costs.at["CCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
+            marginal_cost=costs.at["CCGT_CC", "VOM"],
+            lifetime=costs.at["CCGT_CC", "lifetime"],
         )
 
     cavern_types = snakemake.params.sector["hydrogen_underground_storage_locations"]
