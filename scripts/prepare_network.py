@@ -348,7 +348,7 @@ if __name__ == "__main__":
 
     maybe_adjust_costs_and_potentials(n, snakemake.params["adjustments"])
 
-    emission_prices = snakemake.params.costs["emission_prices"]
+    emission_prices = snakemake.params.costs["emission_prices"]["electricity"]
     if emission_prices["co2_monthly_prices"]:
         logger.info(
             "Setting time dependent emission prices according spot market price"
@@ -356,7 +356,7 @@ if __name__ == "__main__":
         add_dynamic_emission_prices(n)
     elif emission_prices["enable"]:
         add_emission_prices(
-            n, dict(co2=snakemake.params.costs["emission_prices"]["co2"])
+            n, dict(co2=emission_prices["co2"])
         )
 
     ll_type, factor = snakemake.wildcards.ll[0], snakemake.wildcards.ll[1:]

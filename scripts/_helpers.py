@@ -557,13 +557,13 @@ def update_config_from_wildcards(config, w, inplace=True):
                 config["electricity"]["gaslimit"] = gasl_value * 1e6
 
         if "Ept" in opts:
-            config["costs"]["emission_prices"]["co2_monthly_prices"] = True
+            config["costs"]["emission_prices"]["electricity"]["co2_monthly_prices"] = True
 
         ep_enable, ep_value = find_opt(opts, "Ep")
         if ep_enable:
-            config["costs"]["emission_prices"]["enable"] = True
+            config["costs"]["emission_prices"]["electricity"]["enable"] = True
             if ep_value is not None:
-                config["costs"]["emission_prices"]["co2"] = ep_value
+                config["costs"]["emission_prices"]["electricity"]["co2"] = ep_value
 
         if "ATK" in opts:
             config["autarky"]["enable"] = True

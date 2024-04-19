@@ -50,6 +50,25 @@ logger = logging.getLogger(__name__)
 pypsa.pf.logger.setLevel(logging.WARNING)
 
 
+def add_emission_prices(n, emission_prices={"co2": 0.0}):
+    logger.info("Add emission prices")
+    for i, ep_ in emission_prices.items():
+        ep = ep_.get(int(snakemake.wildcards.planning_horizons), 0)
+        bus_map = n.buses.index.to_series() == f"{i} atmosphere"
+
+        for c in n.iterate_components(['Link']):
+            for end in [col[3:] for col in c.df.columns if col[:3] == "bus"]:
+                items = c.df.index[c.df["bus" + str(end)].map(bus_map).fillna(False)]
+
+                if len(items) == 0:
+                    continue
+
+                mapping = {'1': ''}
+                c_ep = ep * c.df.loc[items, "efficiency" + mapping.get(end, end)]
+                c.df.loc[items, "marginal_cost"] += c_ep.clip(lower=0)
+                c.pnl["marginal_cost"] += c_ep[c.pnl["marginal_cost"].columns]
+
+
 def add_land_use_constraint(n, planning_horizons, config):
     if "m" in snakemake.wildcards.clusters:
         _add_land_use_constraint_m(n, planning_horizons, config)
@@ -382,6 +401,9 @@ def prepare_network(
             marginal_cost=load_shedding,  # Eur/kWh
             p_nom=1e9,  # kW
         )
+
+    if snakemake.params.emission_prices.get("enable", False):
+        add_emission_prices(n, dict(co2=snakemake.params.emission_prices["co2"]))
 
     if solve_opts.get("noisy_costs"):
         for t in n.iterate_components():
