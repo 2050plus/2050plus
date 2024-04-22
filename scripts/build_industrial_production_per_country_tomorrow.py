@@ -28,14 +28,22 @@ if __name__ == "__main__":
     total_steel = production[keys].sum(axis=1)
 
     st_primary_fraction = get(params["St_primary_fraction"], investment_year)
-    dri_fraction = get(params["DRI_fraction"], investment_year)
+    dri_h2_fraction = get(params["DRI_H2_fraction"], investment_year)
+    dri_ch4_fraction = get(params["DRI_CH4_fraction"], investment_year)
+    
+    dri_fraction = dri_h2_fraction + dri_ch4_fraction
+    
     int_steel = production["Integrated steelworks"].sum()
     fraction_persistent_primary = st_primary_fraction * total_steel.sum() / int_steel
 
-    dri = (
-        dri_fraction * fraction_persistent_primary * production["Integrated steelworks"]
+    dri_h2 = (
+        dri_h2_fraction * fraction_persistent_primary * production["Integrated steelworks"]
     )
-    production.insert(2, "DRI + Electric arc", dri)
+    dri_ch4 = (
+        dri_ch4_fraction * fraction_persistent_primary * production["Integrated steelworks"]
+    )
+    production.insert(2, "DRI H2 + Electric arc", dri_h2)
+    production.insert(2, "DRI CH4 + Electric arc", dri_ch4)
 
     not_dri = 1 - dri_fraction
     production["Integrated steelworks"] = (
@@ -43,7 +51,8 @@ if __name__ == "__main__":
     )
     production["Electric arc"] = (
         total_steel
-        - production["DRI + Electric arc"]
+        - production["DRI H2 + Electric arc"]
+        - production["DRI CH4 + Electric arc"]
         - production["Integrated steelworks"]
     )
 

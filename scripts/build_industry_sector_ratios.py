@@ -177,10 +177,10 @@ def iron_and_steel():
     sel = ["elec", "heat", "methane"]
     df.loc[sel, sector] = df.loc[sel, sector] * toe_to_MWh / s_out[sector]
 
-    ## DRI + Electric arc
+    ## DRI H2 + Electric arc
     # For primary route: DRI with H2 + EAF
 
-    sector = "DRI + Electric arc"
+    sector = "DRI H2 + Electric arc"
 
     df[sector] = df["Electric arc"]
 
@@ -188,8 +188,22 @@ def iron_and_steel():
     df.at["hydrogen", sector] = params["H2_DRI"]
 
     # add electricity consumption in DRI shaft (0.322 MWh/tSl)
-    df.at["elec", sector] += params["elec_DRI"]
+    df.at["elec", sector] += params["elec_DRI_H2"]
 
+
+    ## DRI CH4 + Electric arc
+    sector = "DRI CH4 + Electric arc"
+
+    df[sector] = df["Electric arc"]
+
+    # add H2 consumption for DRI at 1.7 MWh H2 /ton steel
+    df.at["methane", sector] = params["CH4_DRI"]
+
+    # add electricity consumption in DRI shaft (0.322 MWh/tSl + 0.146 MWh/tSl)
+    # adding 0.146 MWh/tSl based on https://www.sciencedirect.com/science/article/pii/S0973082623002132
+    # and considering EAF part is the same process that H2 DRI
+    df.at["elec", sector] += params["elec_DRI_CH4"]
+    
     ## Integrated steelworks
     # could be used in combination with CCS)
     # Assume existing fuels are kept, except for furnaces, refining, rolling, finishing

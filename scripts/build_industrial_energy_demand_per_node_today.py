@@ -16,7 +16,8 @@ from _helpers import set_scenario_config
 sector_mapping = {
     "Electric arc": "Iron and steel",
     "Integrated steelworks": "Iron and steel",
-    "DRI + Electric arc": "Iron and steel",
+    "DRI H2 + Electric arc": "Iron and steel",
+    "DRI CH4 + Electric arc": "Iron and steel",
     "Ammonia": "Chemical industry",
     "Basic chemicals (without ammonia)": "Chemical industry",
     "Other chemicals": "Chemical industry",

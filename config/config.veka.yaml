@@ -618,7 +618,9 @@ industry:
     2045: 0.42
     2050: 0.5
   H2_DRI: 1.7
-  elec_DRI: 0.322
+  elec_DRI_H2: 0.322
+  CH4_DRI: 2.76
+  elec_DRI_CH4: 0.468
   Al_primary_fraction:
     2020: 0.4
     2025: 0.375

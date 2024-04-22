@@ -3133,8 +3133,9 @@ def add_industry(n, costs):
     primary_steel = get(
         snakemake.config["industry"]["St_primary_fraction"], investment_year
     )
-    dri_steel = get(snakemake.config["industry"]["DRI_fraction"], investment_year)
-    bof_steel = primary_steel - dri_steel
+    dri_h2_steel = get(snakemake.config["industry"]["DRI_H2_fraction"], investment_year)
+    dri_ch4_steel = get(snakemake.config["industry"]["DRI_CH4_fraction"], investment_year)
+    bof_steel = primary_steel - dri_h2_steel - dri_ch4_steel
 
     if bof_steel > 0:
         add_carrier_buses(n, "coal")
