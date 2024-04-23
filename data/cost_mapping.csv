@@ -1,0 +1,125 @@
+﻿carrier,type,cost_segment
+coal,generators,Production
+lignite,generators,Production
+oil,generators,Production
+uranium,generators,Production
+gas,generators,Production
+residential rural solar thermal,generators,Production
+residential urban decentral solar thermal,generators,Production
+services rural solar thermal,generators,Production
+services urban decentral solar thermal,generators,Production
+urban central solar thermal,generators,Production
+offwind-ac,generators,Production
+onwind,generators,Production
+ror,generators,Production
+solar,generators,Production
+solar rooftop,generators,Production
+offwind,generators,Production
+offwind-dc,generators,Production
+AC,lines,Transport
+DC,links,Transport
+BEV charger,links,Balancing
+BioSNG,links,Production
+CCGT,links,Production
+DAC,links,Balancing
+Fischer-Tropsch,links,Balancing
+H2 Electrolysis,links,Balancing
+H2 Fuel Cell,links,Balancing
+Haber-Bosch,links,Balancing
+OCGT,links,Production
+SMR,links,Balancing
+SMR CC,links,Balancing
+Sabatier,links,Balancing
+V2G,links,Balancing
+ammonia cracker,links,Balancing
+battery charger,links,Balancing
+battery discharger,links,Balancing
+biogas to gas,links,Balancing
+biomass to liquid,links,Balancing
+coal,links,Production
+electricity distribution grid,links,Transport
+gas for industry,links,Production
+gas for industry CC,links,Balancing
+helmeth,links,Balancing
+home battery charger,links,Balancing
+home battery discharger,links,Balancing
+methanolisation,links,Balancing
+nuclear,links,Production
+nuclear (SMR),links,Production
+oil,links,Production
+process emissions,links,Production
+process emissions CC,links,Balancing
+residential rural biomass boiler,links,Production
+residential rural gas boiler,links,Production
+residential rural ground heat pump,links,Production
+residential rural micro gas CHP,links,Production
+residential rural oil boiler,links,Production
+residential rural resistive heater,links,Production
+residential rural water tanks charger,links,Balancing
+residential rural water tanks discharger,links,Balancing
+residential urban decentral air heat pump,links,Production
+residential urban decentral biomass boiler,links,Production
+residential urban decentral gas boiler,links,Production
+residential urban decentral micro gas CHP,links,Production
+residential urban decentral oil boiler,links,Production
+residential urban decentral resistive heater,links,Production
+residential urban decentral water tanks charger,links,Balancing
+residential urban decentral water tanks discharger,links,Balancing
+services rural biomass boiler,links,Production
+services rural gas boiler,links,Production
+services rural ground heat pump,links,Production
+services rural micro gas CHP,links,Production
+services rural oil boiler,links,Production
+services rural resistive heater,links,Production
+services rural water tanks charger,links,Balancing
+services rural water tanks discharger,links,Balancing
+services urban decentral air heat pump,links,Production
+services urban decentral biomass boiler,links,Production
+services urban decentral gas boiler,links,Production
+services urban decentral micro gas CHP,links,Production
+services urban decentral oil boiler,links,Production
+services urban decentral resistive heater,links,Production
+services urban decentral water tanks charger,links,Balancing
+services urban decentral water tanks discharger,links,Balancing
+solid biomass,links,Production
+solid biomass for industry,links,Production
+solid biomass for industry CC,links,Balancing
+urban central air heat pump,links,Production
+urban central gas CHP,links,Production
+urban central gas CHP CC,links,Balancing
+urban central gas boiler,links,Production
+urban central resistive heater,links,Production
+urban central solid biomass CHP,links,Production
+urban central solid biomass CHP CC,links,Balancing
+urban central water tanks charger,links,Balancing
+urban central water tanks discharger,links,Balancing
+urban central oil boiler,links,Production
+lignite,links,Production
+CO2 pipeline,links,Transport
+H2 pipeline,links,Transport
+H2 pipeline retrofitted,links,Transport
+solid biomass transport,links,Transport
+gas pipeline,links,Transport
+gas pipeline new,links,Transport
+hydro,storage_units,Balancing
+PHS,storage_units,Balancing
+co2,stores,Balancing
+H2 Store,stores,Balancing
+battery,stores,Balancing
+battery storage,stores,Balancing
+biogas,stores,Balancing
+co2 stored,stores,Balancing
+gas,stores,Balancing
+home battery,stores,Balancing
+residential rural water tanks,stores,Balancing
+residential urban decentral water tanks,stores,Balancing
+services rural water tanks,stores,Balancing
+services urban decentral water tanks,stores,Balancing
+solid biomass,stores,Balancing
+urban central water tanks,stores,Balancing
+ammonia store,stores,Balancing
+coal,stores,Balancing
+lignite,stores,Balancing
+methanol,stores,Balancing
+oil,stores,Balancing
+uranium,stores,Balancing
