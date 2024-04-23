@@ -759,7 +759,8 @@ solving:
     horizon: 365
 
   agg_p_nom_limits:
-    agg_offwind: false
+    agg_carriers: {}
+    agg_buses: {}
     include_existing: false
     file: data/agg_p_nom_minmax.csv
 
