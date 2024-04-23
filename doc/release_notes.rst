@@ -197,6 +197,8 @@ Upcoming Release
 
   - Added the possibility to have a different file for each planning horizon.
 
+* Fix gas network retrofitting in `add_brownfield`.
+
 PyPSA-Eur 0.10.0 (19th February 2024)
 =====================================
 
