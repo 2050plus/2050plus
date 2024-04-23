@@ -1297,13 +1297,17 @@ def add_storage_and_grids(n, costs):
         if options["H2_retrofit"]:
             gas_pipes["p_nom_max"] = gas_pipes.p_nom
             gas_pipes["p_nom_min"] = 0.0
+            gas_pipes["capital_cost"] = (
+                    gas_pipes.length * costs.at["CH4 (g) pipeline", "FOM"]/100
+                    * costs.at["CH4 (g) pipeline", "investment"] * nyears
+            )
         else:
             gas_pipes["p_nom_max"] = np.inf
             gas_pipes["p_nom_min"] = gas_pipes.p_nom
-            
-        gas_pipes["capital_cost"] = (
-            gas_pipes.length * costs.at["CH4 (g) pipeline", "fixed"]
-        )
+            gas_pipes["capital_cost"] = (
+                gas_pipes.length * costs.at["CH4 (g) pipeline", "fixed"]
+            )
+
 
         n.madd(
             "Link",
@@ -1317,6 +1321,7 @@ def add_storage_and_grids(n, costs):
             p_nom_min=gas_pipes.p_nom_min,
             length=gas_pipes.length,
             capital_cost=gas_pipes.capital_cost,
+            marginal_cost=costs.at["CH4 (g) pipeline", "VOM"],
             tags=gas_pipes.name,
             carrier="gas pipeline",
             lifetime=costs.at["CH4 (g) pipeline", "lifetime"],
@@ -1391,6 +1396,7 @@ def add_storage_and_grids(n, costs):
                 length=new_gas_pipes.length,
                 capital_cost=new_gas_pipes.length
                 * costs.at["CH4 (g) pipeline", "fixed"],
+                marginal_cost=costs.at["CH4 (g) pipeline", "VOM"],
                 carrier="gas pipeline new",
                 lifetime=costs.at["CH4 (g) pipeline", "lifetime"],
             )
@@ -1413,6 +1419,7 @@ def add_storage_and_grids(n, costs):
             length=h2_pipes.length,
             capital_cost=costs.at["H2 (g) pipeline repurposed", "fixed"]
             * h2_pipes.length,
+            marginal_cost=costs.at["H2 (g) pipeline", "VOM"],
             tags=h2_pipes.name,
             carrier="H2 pipeline retrofitted",
             lifetime=costs.at["H2 (g) pipeline repurposed", "lifetime"],
@@ -1435,6 +1442,7 @@ def add_storage_and_grids(n, costs):
             p_nom_extendable=True,
             length=h2_pipes.length.values,
             capital_cost=costs.at["H2 (g) pipeline", "fixed"] * h2_pipes.length.values,
+            marginal_cost=costs.at["H2 (g) pipeline", "VOM"],
             carrier="H2 pipeline",
             lifetime=costs.at["H2 (g) pipeline", "lifetime"],
         )
