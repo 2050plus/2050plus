@@ -14,7 +14,7 @@ scenario_dict = {
         "path": "20240131/VEKA_el_bio_fix_nuc_bev_ccl",
     },
     "2. Electrification": {
-        "path": "20240429/VEKA2_el",
+        "path": "20240425/electrification",
     }
 }
 CLIP_VALUE_TWH = 1e-1
