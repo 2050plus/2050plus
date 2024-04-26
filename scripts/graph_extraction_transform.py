@@ -22,6 +22,7 @@ from scripts.graph_extraction_utils import TRANSMISSION_RENAMER
 from scripts.graph_extraction_utils import bus_mapper
 from scripts.graph_extraction_utils import remove_prefixes
 from scripts.graph_extraction_utils import groupby_bus
+from scripts.graph_extraction_utils import groupby_buses
 from scripts.graph_extraction_utils import renamer_to_country
 
 from scripts.make_summary import calculate_nodal_capacities
@@ -94,7 +95,7 @@ RENAMER = {
 
     # Solid biomass CHP
     "urban central solid biomass CHP": "solid biomass CHP",
-    "urban central solid biomass CHP CC": "solid biomass CHP",
+    "urban central solid biomass CHP CC": "solid biomass CHP CC",
 
 }
 
@@ -415,7 +416,6 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
         header=0).dropna()
     sector_mapping = sector_mapping.reset_index()
     sector_mapping["carrier"] = sector_mapping["carrier"].map(lambda x: carriers_renamer.get(x, x))
-    sector_mapping["item"] = sector_mapping["item"].map(remove_prefixes)
     sector_mapping.loc[sector_mapping.query("component == 'links'").index, "item"] = sector_mapping.loc[
         sector_mapping.query("component == 'links'").index, "item"].apply(lambda x: x[:-1])
     sector_mapping.component = sector_mapping.component.apply(
@@ -425,8 +425,7 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
     for y, ni in n.items():
         stats = ni.statistics
         inst_capa_elec_node_i = stats.optimal_capacity(bus_carrier=["AC", "low voltage"], groupby=groupby_bus)
-
-
+        
         inst_capa_elec_node_i = (inst_capa_elec_node_i
                                  .rename(y)
                                  .reset_index()
@@ -446,7 +445,9 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
 
 def extract_balancing_data(method, n):
     balancing_data = []
-    techno_to_keep = {"PHS", "hydro", "H2 Fuel Cell", "battery charger", "home battery charger", "V2G", "BEV charger" ,"ground heat pump", "air heat pump", "water tanks charger"}
+    techno_to_keep = {"PHS", "hydro", "H2 Fuel Cell", "battery charger",
+                      "home battery charger", "V2G", "BEV charger" ,
+                      "ground heat pump", "air heat pump", "water tanks charger"}
 
     for y, ni in n.items():
         stats = ni.statistics
@@ -468,6 +469,47 @@ def extract_balancing_data(method, n):
     balancing_data = pd.concat(balancing_data, axis=1)
 
     return balancing_data
+
+def extract_electricity_network(n):
+    
+    # DC
+    links_DC = []
+    
+    for y, ni in n.items():
+        links_DC_i = ni.links[ni.links['carrier'] == 'DC']
+        links_DC_i = links_DC_i[['bus0', 'bus1', 'length', 'p_nom', 'p_nom_max', 'carrier', 'p_nom_opt']]
+        links_DC_i = links_DC_i.assign(year=str(y))
+        links_DC_i = links_DC_i.reset_index()
+        links_DC_i.rename(columns={'Link': 'Cable'}, inplace=True)
+        links_DC_i.set_index(['Cable', 'year'], inplace=True)
+        
+        links_DC.append(links_DC_i)
+    
+    links_DC = pd.concat(links_DC)
+    
+    # AC
+    lines_AC = []
+    
+    for y, ni in n.items():
+        lines_AC_i = ni.lines[['bus0', 'bus1', 'length', 's_nom', 's_nom_max', 'carrier', 's_nom_opt']]
+        lines_AC_i.rename(columns={'s_nom': 'p_nom', 's_nom_max':'p_nom_max', 's_nom_opt':'p_nom_opt'}, inplace=True)
+        lines_AC_i = lines_AC_i.assign(year=str(y))
+        lines_AC_i = lines_AC_i.reset_index()
+        lines_AC_i.rename(columns={'Line': 'Cable'}, inplace=True)
+        lines_AC_i.set_index(['Cable', 'year'], inplace=True)
+    
+        lines_AC.append(lines_AC_i)
+    
+    lines_AC = pd.concat(lines_AC)
+    
+    elec_grid = pd.concat([links_DC, lines_AC])
+
+    elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']] = elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']].div(1e3) 
+    #elec_grid = elec_grid[elec_grid.p_nom_opt > 1e-3] # only keep cables > 1MW
+    
+    
+    return elec_grid
+
 
 # %%
 def extract_res_statistics(n):
@@ -517,7 +559,7 @@ def extract_res_temporal_energy(config, n):
 
         res_t.columns = res_t.columns.map(lambda x: (y, res.loc[x].carrier, res.loc[x].country))
         res_t.rename_axis(["year", "carrier", "country"], axis=1, inplace=True)
-        res_t = res_t.groupby(["year", "carrier", "country"], axis=1).sum()
+        res_t = res_t.groupby(["year", "carrier", "country"], axis=1).sum().abs().astype(float)
         df.append(res_t)
     df = pd.concat(df, axis=1) / 1e3  # GW
     return df.T
@@ -683,6 +725,41 @@ def extract_nodal_costs(config):
                            "level_2": "country",
                            "level_3": "carrier"})
           )
+    df_capa = (pd.read_csv(Path(config["path"]["results_path"], "csvs", "nodal_capacities.csv"),
+                      index_col=[0, 1, 2],
+                      skiprows=3,
+                      header=0)
+          .reset_index()
+          .rename(columns={"planning_horizon": "type",
+                           "level_1": "country",
+                           "level_2": "carrier"})
+          )
+
+    index_elec_capa = df_capa.query('carrier.str.contains("distribution")').index
+    index_elec_cost = df.query('carrier.str.contains("distribution") and cost=="capital"').index
+    capital_cost = (
+                    (df.loc[index_elec_cost,['2030','2040']].values/
+                     df_capa.loc[index_elec_capa,['2030','2040']].values)
+                    .mean()*config["sector"]["gas_distribution_grid_cost_factor"]
+                    )
+    # gas boilers
+    cond_str = '((carrier.str.contains("gas boiler") and not(carrier.str.contains("urban central"))) or carrier.str.contains("micro gas"))'
+    df= df.set_index(['type','country','carrier','cost'])
+    df_capa= df_capa.set_index(['type','country','carrier'])
+    index_gas_cost = df.query(cond_str+'and cost=="capital"').index
+    index_gas_capa = df_capa.query(cond_str).index
+    distri_gas = capital_cost* df_capa.loc[index_gas_capa, ['2030','2040']]
+    distri_gas['cost'] = 'capital'
+    distri_gas = distri_gas.reset_index().set_index(['type','country','carrier','cost'])
+
+    df.loc[index_gas_cost, ['2030','2040']] = df.loc[index_gas_cost, ['2030','2040']]  - distri_gas[['2030','2040']].values
+
+    assets_distri = df.loc[index_gas_cost].reset_index()
+    assets_distri.carrier = 'gas distribution grid'
+    assets_distri[['2030','2040']] = distri_gas.values
+    assets_distri = assets_distri.groupby(["type", "country", "carrier", "cost",]).sum()
+    df = pd.concat([df,assets_distri],axis=0).reset_index()
+
     df["country"] = df["country"].str[:2].fillna("EU")
     fuels = df.query(
         "carrier in ['gas','oil','coal','lignite','uranium'] and cost == 'marginal' and type == 'generators'").index
@@ -703,10 +780,9 @@ def extract_marginal_prices(n, carrier_list=["AC"]):
             if "hist" != y:
                 price_y = (
                     ni.buses_t.marginal_price[ni.buses.query("carrier == @ca ").index]
-                    .mean()
-                    .groupby(lambda x: x[:2]).mean()
                 )
-                prices[y] = price_y
+                prices[y] = price_y.mean().groupby(lambda x: x[:2]).mean()
+                prices[f"{y}_std"] = price_y.std().groupby(lambda x: x[:2]).mean()
         prices["carrier"] = ca.replace("AC", "elec")
         df.append(prices.reset_index().set_index(["countries", "carrier"]))
     df = pd.concat(df, axis=0)
@@ -971,6 +1047,9 @@ def transform_data(config, n, n_ext, color_shift=None):
     carriers_renamer.update(HEAT_RENAMER)
     carriers_renamer.update(ELEC_RENAMER)
 
+    elec_grid = extract_electricity_network(n)
+    
+    capa_country = extract_country_capacities(config, n_ext)
     n_balancing_capa = extract_balancing_data("optimal_capacity", n)
     n_balancing_supply = extract_balancing_data("supply", n)
     n_power_capa = extract_inst_capa_elec_node(config, n, carriers_renamer)
@@ -1021,6 +1100,7 @@ def transform_data(config, n, n_ext, color_shift=None):
         "grid_capacities": ACDC_grid,
         "H2_network_capacities": H2_grid,
         "gas_network_capacities": gas_grid,
+        "elec_grid": elec_grid,
 
         # energy balance
         "imports_exports": imp_exp,

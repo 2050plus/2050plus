@@ -34,6 +34,7 @@ def get_data(scenario, year):
 # - eventually per country
 # - eventuelly per subtype of supply
 years = ['2030', '2040', '2050']
+
 col1, col2 = st.columns(2)
 with col1:
     year = st.selectbox('Choose the year:', years)

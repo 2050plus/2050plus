@@ -197,12 +197,12 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
         index = (df
                  .groupby(idx)
                  .sum(numeric_only=True)
-                 .sum(axis=1) >= CLIP_VALUE_TWH * len(config["scenario"]["planning_horizons"])
+                 .sum(axis=1) >= CLIP_VALUE_TWH 
                  )
         df = df.set_index(idx).loc[index].reset_index()
     else:
         df = df.set_index(idx)
-        df = df[df.sum(axis=1) >= CLIP_VALUE_TWH * len(config["scenario"]["planning_horizons"])]
+        df = df[df.sum(axis=1) >= CLIP_VALUE_TWH]
         df = df.reset_index()
 
     return df
@@ -242,6 +242,12 @@ def groupby_bus(n, c, nice_names=True):
     else:
         return [n.df(c).bus1, n.df(c).carrier]
     
+def groupby_buses(n, c, nice_names=True):
+    if c in n.one_port_components:
+        return [n.df(c).bus, n.df(c).carrier]
+    else:
+        return [n.df(c).bus0, n.df(c).bus1, n.df(c).carrier]
+
     
 # def extract_production_profiles(n, subset):
 #     profiles = []

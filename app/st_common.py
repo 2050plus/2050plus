@@ -18,6 +18,7 @@ scenario_dict = {
     }
 }
 CLIP_VALUE_TWH = 1e-1
+GRAPH_AREA = {"EU27+TYNDP": "tot", "BE": "be", "EU27": "eu27"}
 
 
 def st_page_config(layout=None):
