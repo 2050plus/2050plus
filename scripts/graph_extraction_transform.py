@@ -123,73 +123,6 @@ def extract_loads(n):
     return df
 
 
-def extract_nodal_oil_load(config, nhours=8760):
-    nyears = nhours / 8760
-    options = config["sector"]
-
-    def read_load(f):
-        try:
-            df = pd.read_csv(f, index_col=0, header=0)
-            return df
-        except FileNotFoundError:
-            logging.warning(f"Extract nodal oil load miss a file. Mind incoherent results. Missing file : {f.name}.")
-            return pd.DataFrame()
-
-    simpl = config["scenario"]["simpl"][0]
-    clust = config["scenario"]["clusters"][0]
-    df_shipping = read_load(Path(config["path"]["resources_path"], f"shipping_demand_s{simpl}_{clust}.csv"))
-    df_transport = read_load(Path(config["path"]["resources_path"], f"transport_demand_s{simpl}_{clust}.csv"))
-    df_pop_weighted_energy_totals = read_load(Path(config["path"]["resources_path"], f"pop_weighted_energy_totals_s{simpl}_{clust}.csv"))
-    df_industry = {}
-    for y in config["scenario"]["planning_horizons"]:
-        df_industry[y] = read_load(Path(config["path"]["resources_path"], f"industrial_energy_demand_elec_s{simpl}_{clust}_{y}.csv"))
-
-    df_oil = []
-    for y in config["scenario"]["planning_horizons"]:
-        # Land transport
-        ice_share = get(options["land_transport_ice_share"], y)
-        ice_efficiency = options["transport_internal_combustion_efficiency"]
-        transport = (ice_share / ice_efficiency * df_transport.sum() / nhours).rename(index="transport")
-
-        # Shipping
-        shipping_oil_share = get(options["shipping_oil_share"], y)
-        domestic_navigation = df_pop_weighted_energy_totals["total domestic navigation"]
-        international_navigation = (df_shipping * nyears)["0"]
-        all_navigation = domestic_navigation + international_navigation
-        p_set = all_navigation * 1e6 / nhours
-        shipping = (shipping_oil_share * p_set).rename(index="shipping")
-
-        # Industry
-        demand_factor = options.get("HVC_demand_factor", 1)
-        industry = (demand_factor * df_industry[y]["naphtha"] * 1e6 * nyears / nhours).rename(index="industry")
-
-        # Aviation
-        demand_factor = options.get("aviation_demand_factor", 1)
-        all_aviation = ["total international aviation", "total domestic aviation"]
-        aviation = (demand_factor * df_pop_weighted_energy_totals[all_aviation].sum(axis=1) * 1e6 / nhours) \
-            .rename(index="aviation")
-
-        # Agriculture
-        oil_share = get(options["agriculture_machinery_oil_share"], y)
-        machinery_nodal_energy = df_pop_weighted_energy_totals["total agriculture machinery"]
-        agriculture = (oil_share * machinery_nodal_energy * 1e6 / nhours).rename(index="agriculture")
-
-        df = pd.concat([transport, shipping, industry, aviation, agriculture], axis=1)
-        df["year"] = y
-        df = df.reset_index().rename(columns={"index": "node"})
-        df["node"] = df["node"].map(renamer_to_country)
-        df = df.groupby(by=["year", "node"]).sum()
-
-        df = df * nhours / 1e6  # from MW to TWh
-
-        df_oil.append(df)
-
-    df_oil = pd.concat(df_oil)
-    df_oil.columns = df_oil.columns.str.capitalize()
-
-    return df_oil
-
-
 def extract_res_potential(n):
     """
     Extract renewable potentials in GW.
@@ -1059,7 +992,6 @@ def transform_data(config, n, n_ext, color_shift=None):
     prod_profiles = extract_profiles(config, n, supply=True)
     load_profiles = extract_profiles(config, n, load=True)
     # n_loads = extract_loads(n)
-    nodal_oil_load = extract_nodal_oil_load(config, nhours=n_ext["hist"].snapshot_weightings.generators.sum())
     n_res_pot = extract_res_potential(n)
     res_stats = extract_res_statistics(n)
     capa_country = extract_country_capacities(config, n_ext)
@@ -1106,7 +1038,6 @@ def transform_data(config, n, n_ext, color_shift=None):
         "imports_exports": imp_exp,
         "supply_energy_sectors": nodal_supply_energy,
         "temporal_supply_energy_sectors": temporal_supply_energy,
-        "nodal_oil_load": nodal_oil_load,
 
         # insights
         "costs_countries": n_costs,

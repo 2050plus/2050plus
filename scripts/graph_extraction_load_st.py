@@ -14,7 +14,6 @@ from pathlib import Path
 import pandas as pd
 from scripts.graph_extraction_utils import CLIP_VALUE_TWH
 from scripts.graph_extraction_utils import NICE_RENAMER
-from scripts.graph_extraction_utils import _load_nodal_oil
 from scripts.graph_extraction_utils import _load_supply_energy
 from scripts.graph_extraction_utils import query_imp_exp
 
@@ -58,13 +57,6 @@ def load_supply_energy_df(config, load=True):
             df.drop(df.query('sector in ["V2G", "Battery charging", "Hydroelectricity"]').index, inplace=True)
             df["carrier"] = ca
             dfl.append(df)
-        elif ca == "oil":
-            # if load and countries is not None:  # if load and countries exist
-            df_eu_load = _load_nodal_oil(config, aggregate=False)
-            df_c_load = _load_supply_energy(config, load=load, carriers=ca, aggregate=False).query("node!='EU oil'")
-            dfl.append(pd.concat([df_c_load, df_eu_load]))
-            # else:
-            #     dfl.append(_load_supply_energy(config, load=load, carriers=ca, aggregate=False))
         else:
             dfl.append(_load_supply_energy(config, load=load, carriers=ca, aggregate=False))
 
