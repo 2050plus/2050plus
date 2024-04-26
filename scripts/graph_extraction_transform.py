@@ -1002,6 +1002,8 @@ def transform_data(config, n, n_ext, color_shift=None):
     marginal_prices = extract_marginal_prices(n, carrier_list=["gas", "AC", "H2"])
     nodal_supply_energy = extract_nodal_supply_energy(config, n)
     temporal_supply_energy = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer)
+    temporal_supply_energy_BE = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer,
+                                                               country_aggregate="BE")
 
     n_gas_out = extract_gas_phase_out(n, config["scenario"]["planning_horizons"][0])
     # n_profile = extract_production_profiles(n, subset=LONG_LIST_LINKS + LONG_LIST_GENS)
@@ -1038,6 +1040,7 @@ def transform_data(config, n, n_ext, color_shift=None):
         "imports_exports": imp_exp,
         "supply_energy_sectors": nodal_supply_energy,
         "temporal_supply_energy_sectors": temporal_supply_energy,
+        "temporal_supply_energy_sectors_BE": temporal_supply_energy_BE,
 
         # insights
         "costs_countries": n_costs,

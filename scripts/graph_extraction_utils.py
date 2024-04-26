@@ -151,6 +151,8 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
     file = "supply_energy_sectors.csv"
     if temporal:
         file = 'temporal_' + file
+        if countries:
+            file = file.replace(".csv", f"_{countries}.csv")
     df = (
         pd.read_csv(Path(config["csvs"], file), header=0)
     )
@@ -166,7 +168,7 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
 
     if carriers:
         df = df.query("carrier in @carriers")
-    if countries:
+    if countries and not temporal:
         df = df.query("node in @countries")
     if aggregate:
         idx = ["carrier", "sector"]
