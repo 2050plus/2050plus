@@ -40,6 +40,7 @@ df = (
     .groupby(['sector'])
     .sum(numeric_only=True)
     .rename(index={"sector": "Technologies"})
+    
 )
 
 fig = px.bar(
@@ -74,7 +75,6 @@ df_bar = (df_bar
           # .T
           .rename_axis("Investment year")
           )
-
 fig_bar = px.bar(
     df_bar,
     title=f"{technology.capitalize()} installed capacities [GW]",

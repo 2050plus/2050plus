@@ -25,7 +25,7 @@ def get_df(scenario, mode):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st",
-                 "balancing_" + mode + "_countries.csv"),
+                 "balancing_" + mode + ".csv"),
             header=0,
         )
     )
@@ -38,9 +38,11 @@ consumption = {'BEV charger', 'air heat pump', 'battery charger', 'ground heat p
                'water tanks charger'}
 
 condition = df['carrier'].isin(consumption)
-df.loc[condition, ['2030', '2040', '2050']] *= -1
+st.write()
+df.loc[condition, df.columns[2:]] *= -1
 
 st.header("Installed capacities per country")
+st.markdown('Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
 
 all = ['EU27 + TYNDP']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
@@ -86,9 +88,10 @@ df2 = (df2
        .query("carrier == @technology")
        .drop(columns=['carrier'])
        .set_index('country')
+       .rename(columns = lambda x : x + ' [GWh]')
        )
 
-st.write("Energy output [GWh] by country")
+st.write("Energy output by country")
 
 fig_bar = px.bar(
     df2,
@@ -110,68 +113,68 @@ with col2:
     st.plotly_chart(fig_bar
                     , use_container_width=True)
 
-# %%
-st.header("Focus on EV batteries (BEVs)")
+# # %%
+# st.header("Focus on EV batteries (BEVs)")
 
-df3 = (data2.copy()
-       .query("carrier == 'BEV charger' | carrier == 'V2G'")
-       .drop(columns=['carrier'])
-       .set_index(['country'])
-       )
+# df3 = (data2.copy()
+#        .query("carrier == 'BEV charger' | carrier == 'V2G'")
+#        .drop(columns=['carrier'])
+#        .set_index(['country'])
+#        )
 
-# divides V2G charger by BEV
-df3 = df3 / df3.shift()
-df3 = df3[1::2]
+# # divides V2G charger by BEV
+# df3 = df3 / df3.shift()
+# df3 = df3[1::2]
 
-fig = px.bar(
-    df3,
-    width=1000,
-    height=600,
-    title="Fraction of the energy that the BEVs return to the grid",
-    barmode="group",
-    text_auto=".2s"
-)
+# fig = px.bar(
+#     df3,
+#     width=1000,
+#     height=600,
+#     title="Fraction of the energy that the BEVs return to the grid",
+#     barmode="group",
+#     text_auto=".2s"
+# )
 
-fig.update_layout(
-    xaxis_title="Countries",
-    hovermode="x unified",
-    legend_title_text="Technologies"
-)
-fig.update_traces(hovertemplate="%{y:,.2f}")
+# fig.update_layout(
+#     xaxis_title="Countries",
+#     hovermode="x unified",
+#     legend_title_text="Technologies"
+# )
+# fig.update_traces(hovertemplate="%{y:,.2f}")
 
-st.plotly_chart(fig)
+# st.plotly_chart(fig)
 
-# %%
-st.header("Focus on EV batteries (BEVs) - details for a country")
+# # %%
+# st.header("Focus on EV batteries (BEVs) - details for a country")
 
-# st.write("- **BEV charger** is the electrical consumption of the EV batteries from the grid")
-# st.write("- **V2G** is the electrical production from the EV batteries to the grid")
+# # st.write("- **BEV charger** is the electrical consumption of the EV batteries from the grid")
+# # st.write("- **V2G** is the electrical production from the EV batteries to the grid")
 
 
-df4 = data2.copy()
+# df4 = data2.copy()
 
-country = st.selectbox('Choose your country:', list(df4.country.unique()), key="unique_key_by_widget")
-df4 = df4.query("country in @country")
+# country = st.selectbox('Choose your country:', list(df4.country.unique()), key="unique_key_by_widget")
+# df4 = df4.query("country in @country")
 
-df4 = (df4
-       .query("carrier == 'BEV charger' | carrier == 'V2G'")
-       .drop(columns=['country'])
-       .set_index(['carrier'])
-       )
+# df4 = (df4
+#        .query("carrier == 'BEV charger' | carrier == 'V2G'")
+#        .drop(columns=['country'])
+#        .set_index(['carrier'])
+#        )
 
-df4 = df4.transpose()
+# df4 = df4.transpose()
 
-fig = px.bar(
-    df4,
-    title="Annual energy consumption/production [GWh]",
-    barmode="group",
-    text_auto=".2s"
-)
+# fig = px.bar(
+#     df4,
+#     title="Annual energy consumption/production [GWh]",
+#     barmode="group",
+#     text_auto=".2s"
+# )
 
-fig.update_yaxes(title_text='Energy [GWh]')
-fig.update_xaxes(title_text='Years')
-fig.update_traces(hovertemplate="%{y:,.0f}")
-fig.update_layout(hovermode="x unified",
-                  legend_title_text='Technologies')
+# fig.update_yaxes(title_text='Energy [GWh]')
+# fig.update_xaxes(title_text='Years')
+# fig.update_traces(hovertemplate="%{y:,.0f}")
+# fig.update_layout(hovermode="x unified",
+#                   legend_title_text='Technologies')
 
-st.plotly_chart(fig)
+# st.plotly_chart(fig)

@@ -41,16 +41,13 @@ with col2:
     country = st.selectbox('Choose your country:', ['EU27 + TYNDP'] + list(df["country"].unique()))
 if country != 'EU27 + TYNDP':
     df = df.query("country in @country")
-df = df.groupby(['carrier']).sum(numeric_only=True).T
-
-df = abs(df.loc[:, abs(df.sum() / 1e3 * 3) > 1e-1]).T
+df = df.groupby(['carrier']).sum(numeric_only=True)
 
 df_table = (
     (df.sum(axis=1) / 1e3  # TWh
      * 3)
     .rename(f"Annual production [TWh]")
     .to_frame()
-    .rename(mapper=lambda x: x.capitalize(), axis=0)
     .style
     .format(precision=2, thousands=",", decimal='.')
 )
@@ -66,7 +63,7 @@ df = df.sum(axis=0).rename(carrier).to_frame()
 
 fig = px.area(
     df,
-    title=f"{carrier.capitalize()} production profile for {country}  [GW]",
+    title=f"{carrier} production profile for {country}  [GW]",
 )
 fig.update_traces(hovertemplate="%{y:,.0f}",
                   line=dict(width=0.1))
