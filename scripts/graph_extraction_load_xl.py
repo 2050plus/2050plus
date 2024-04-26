@@ -13,11 +13,8 @@ import pandas as pd
 from scripts.graph_extraction_utils import CLIP_VALUE_GW
 from scripts.graph_extraction_utils import HEAT_RENAMER
 from scripts.graph_extraction_utils import RES
-from scripts.graph_extraction_utils import _load_nodal_oil
 from scripts.graph_extraction_utils import _load_supply_energy
 from scripts.graph_extraction_utils import query_imp_exp
-from scripts.graph_extraction_utils import LONG_LIST_LINKS
-from scripts.graph_extraction_utils import LONG_LIST_GENS
 from scripts.graph_extraction_utils import LONG_TERM_STORAGE
 from scripts.graph_extraction_utils import SHORT_TERM_STORAGE
 from scripts.graph_extraction_utils import FF_ELEC
@@ -248,13 +245,6 @@ def _load_supply_energy_dico(config, load=True, countries=None):
             df.iloc[0, 0] = 'Total'
             df.drop(df.query('sector == "V2G"').index, inplace=True)
             dico[ca] = df
-        elif ca == "oil":
-            if load and countries is not None:  # if load and countries exist
-                df_eu_load = _load_nodal_oil(config, countries)
-                df_c_load = _load_supply_energy(config, load=load, countries=countries, carriers=ca)
-                dico[ca] = pd.concat([df_c_load, df_eu_load])
-            else:
-                dico[ca] = _load_supply_energy(config, load=load, countries=countries, carriers=ca)
         else:
             dico[ca] = _load_supply_energy(config, load=load, countries=countries, carriers=ca)
 

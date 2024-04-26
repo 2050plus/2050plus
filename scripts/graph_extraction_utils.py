@@ -208,34 +208,6 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
     return df
 
 
-def _load_nodal_oil(config, countries=None, aggregate=True):
-    df = (
-        pd.read_csv(Path(config["csvs"], "nodal_oil_load.csv"), header=0)
-    )
-
-    if countries:
-        df = df.query("node in @countries")
-
-    if aggregate:
-        df = (
-            df.groupby(by="year").sum(numeric_only=True)
-            .T
-            .reset_index()
-            .rename(columns={"index": "sector"})
-        )
-    else:
-        df = (
-            df.melt(id_vars=["year", "node"])
-            .rename(columns={"variable": "sector"})
-            .pivot_table(index=["sector", "node"], columns="year", values="value")
-            .reset_index()
-        )
-
-    df.columns = [str(c) for c in df.columns]
-    df["carrier"] = "oil"
-    return df
-
-
 def groupby_bus(n, c, nice_names=True):
     if c in n.one_port_components:
         return [n.df(c).bus, n.df(c).carrier]
