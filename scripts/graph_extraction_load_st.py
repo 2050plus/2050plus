@@ -88,8 +88,8 @@ def load_imports_exports(config):
     return pd.read_csv(Path(config["csvs"], "imports_exports.csv")).replace(NICE_RENAMER)
 
 
-def load_load_temporal(config):
-    load_raw = _load_supply_energy(config, load=True, aggregate=True, temporal=True)
+def _load_load_temporal(config, countries=None):
+    load_raw = _load_supply_energy(config, load=True, aggregate=True, temporal=True, countries=countries)
     load = {}
     for y in [c for c in load_raw.columns if re.match(r"[0-9]{4}", c)]:
         load_i = load_raw.pivot_table(values=y, index=["carrier", "sector"], columns="snapshot")
@@ -100,8 +100,16 @@ def load_load_temporal(config):
     return load
 
 
-def load_supply_temporal(config):
-    supply_raw = _load_supply_energy(config, load=False, aggregate=True, temporal=True)
+def load_load_temporal(config):
+    return _load_load_temporal(config)
+
+
+def load_load_temporal_be(config):
+    return _load_load_temporal(config, "BE")
+
+
+def _load_supply_temporal(config, countries=None):
+    supply_raw = _load_supply_energy(config, load=False, aggregate=True, temporal=True, countries=countries)
     supply = {}
     for y in [c for c in supply_raw.columns if re.match(r"[0-9]{4}", c)]:
         supply_i = supply_raw.pivot_table(values=y, index=["carrier", "sector"], columns="snapshot")
@@ -110,6 +118,14 @@ def load_supply_temporal(config):
         supply_i = supply_i.loc[(supply_i.std(axis=1) / supply_i.mean(axis=1)).sort_values().index]
         supply[y] = supply_i.reset_index().replace(NICE_RENAMER).T.reset_index()
     return supply
+
+
+def load_supply_temporal(config):
+    return _load_supply_temporal(config)
+
+
+def load_supply_temporal_be(config):
+    return _load_supply_temporal(config, "BE")
 
 
 def load_res_temporal(config):
@@ -263,15 +279,20 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
         imp_exp.loc[~(imp_exp == 0).all(axis=1)].reset_index()
     )
 
+
 def load_marginal_prices(config):
     return pd.read_csv(Path(config["csvs"], "marginal_prices_countries.csv"))
+
+
 # %% Load main
 def load_data_st(config):
     logger.info(f"Exporting data to streamlit")
 
     outputs = [
         "load_temporal",
+        "load_temporal_be",
         "supply_temporal",
+        "supply_temporal_be",
         "supply_energy_df",
         "imports_exports",
         "res_temporal",
