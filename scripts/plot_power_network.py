@@ -247,6 +247,199 @@ def plot_map(
     fig.savefig(snakemake.output.map, bbox_inches="tight")
 
 
+def plot_capacity(
+    n,
+    components=["links", "stores", "storage_units", "generators"],
+    bus_size_factor=8e4,
+    transmission=False,
+    with_legend=True,
+):
+    # This function mainly do the same as plot_map do but for another metric (here capacities).
+    tech_colors = snakemake.params.plotting["tech_colors"]
+
+    assign_location(n)
+    # Drop non-electric buses so they don't clutter the plot
+    n.buses.drop(n.buses.index[n.buses.carrier != "AC"], inplace=True)
+
+    capacity = pd.DataFrame(index=n.buses.index)
+
+    for comp in components:
+        df_c = getattr(n, comp)
+
+        if df_c.empty:
+            continue
+
+        balance_exclude = ["H2 Electrolysis", "H2 Fuel Cell", "battery charger", "battery discharger",
+                           "home battery charger", "home battery discharger", "Haber-Bosch", "Sabatier",
+                           "ammonia cracker", "helmeth", "SMR", "SMR CC", "V2G", "solid biomass",
+                           "solid biomass transport"]
+        carriers_links = ["coal", "lignite", "oil"]  # same carrier name than link
+        carriers = carriers_links + ["gas", "uranium", "biomass"]  # different carrier name than link
+        transmissions = ["DC", "gas pipeline", "gas pipeline new", "CO2 pipeline", "H2 pipeline",
+                         "H2 pipeline retrofitted", "electricity distribution grid"]
+        balance_carriers_exclude = balance_exclude + carriers + transmissions
+        df_c = df_c[~df_c.carrier.isin(balance_carriers_exclude)]
+        carriers_links = ["coal", "lignite", "oil"]  # same carrier name than link
+        if comp == "links":
+            df_links = getattr(n, comp)
+            df_c = pd.concat([df_c, df_links[df_links.carrier.isin(carriers_links)]])
+        df_c["nice_group"] = df_c.carrier.map(rename_techs_tyndp)
+        bname = "bus" if comp != "links" else "bus1"
+        df_c[bname] = df_c[bname].replace({" low voltage": "", " gas": "", " solid biomass": ""}, regex=True)
+
+        attr = "e_nom_opt" if comp == "stores" else "p_nom_opt"
+
+        capa_c = (
+            df_c[attr]
+            .groupby([df_c.bus if comp != "links" else df_c[bname], df_c.nice_group])
+            .sum()
+            .unstack()
+            .fillna(0.0)
+        )
+        capacity = pd.concat([capacity, capa_c], axis=1)
+
+        logger.debug(f"{comp}, {capacity}")
+
+    capacity = capacity.T.groupby(capacity.columns).sum().T
+
+    capacity.drop(list(capacity.columns[(capacity == 0.0).all()]), axis=1, inplace=True)
+
+    new_columns = preferred_order.intersection(capacity.columns).append(
+        capacity.columns.difference(preferred_order)
+    )
+    capacity = capacity[new_columns]
+
+    for item in new_columns:
+        if item not in tech_colors:
+            logger.warning(f"{item} not in config/plotting/tech_colors")
+
+    capacity = capacity.stack()  # .sort_index()
+
+    n.links.drop(
+        n.links.index[(n.links.carrier != "DC") & (n.links.carrier != "B2B")],
+        inplace=True,
+    )
+
+    # drop non-bus
+    to_drop = capacity.index.levels[0].symmetric_difference(n.buses.index)
+    if len(to_drop) != 0:
+        logger.info(f"Dropping non-buses {to_drop.tolist()}")
+        capacity.drop(to_drop, level=0, inplace=True, axis=0, errors="ignore")
+
+    # make sure they are removed from index
+    capacity.index = pd.MultiIndex.from_tuples(capacity.index.values)
+
+    threshold = 10  # 10 MW
+    carriers = capacity.groupby(level=1).sum()
+    carriers = carriers.where(carriers > threshold).dropna()
+    carriers = list(carriers.index)
+
+    # PDF has minimum width, so set these to zero
+    line_lower_threshold = 500.0
+    line_upper_threshold = 1e4
+    linewidth_factor = 4e3
+    ac_color = "rosybrown"
+    dc_color = "darkseagreen"
+
+    title = "added grid"
+
+    if snakemake.wildcards["ll"] == "v1.0":
+        # should be zero
+        line_widths = n.lines.s_nom_opt - n.lines.s_nom
+        link_widths = n.links.p_nom_opt - n.links.p_nom
+        if transmission:
+            line_widths = n.lines.s_nom_opt
+            link_widths = n.links.p_nom_opt
+            linewidth_factor = 2e3
+            line_lower_threshold = 0.0
+            title = "current grid"
+    else:
+        line_widths = n.lines.s_nom_opt - n.lines.s_nom_min
+        link_widths = n.links.p_nom_opt - n.links.p_nom_min
+        if transmission:
+            line_widths = n.lines.s_nom_opt
+            link_widths = n.links.p_nom_opt
+            title = "total grid"
+
+    line_widths = line_widths.clip(line_lower_threshold, line_upper_threshold)
+    link_widths = link_widths.clip(line_lower_threshold, line_upper_threshold)
+
+    line_widths = line_widths.replace(line_lower_threshold, 0)
+    link_widths = link_widths.replace(line_lower_threshold, 0)
+
+    fig, ax = plt.subplots(subplot_kw={"projection": proj})
+    fig.set_size_inches(7, 6)
+
+    n.plot(
+        bus_sizes=capacity / bus_size_factor,
+        bus_colors=tech_colors,
+        line_colors=ac_color,
+        link_colors=dc_color,
+        line_widths=line_widths / linewidth_factor,
+        link_widths=link_widths / linewidth_factor,
+        ax=ax,
+        **map_opts,
+    )
+
+    sizes = [20, 10, 5]
+    labels = [f"{s} GW" for s in sizes]
+    sizes = [s / bus_size_factor * 1e3 for s in sizes]
+
+    legend_kw = dict(
+        loc="upper left",
+        bbox_to_anchor=(0.01, 1.06),
+        labelspacing=0.8,
+        frameon=False,
+        handletextpad=0,
+        title="system capacities",
+    )
+
+    add_legend_circles(
+        ax,
+        sizes,
+        labels,
+        srid=n.srid,
+        patch_kw=dict(facecolor="lightgrey"),
+        legend_kw=legend_kw,
+    )
+
+    sizes = [10, 5]
+    labels = [f"{s} GW" for s in sizes]
+    scale = 1e3 / linewidth_factor
+    sizes = [s * scale for s in sizes]
+
+    legend_kw = dict(
+        loc="upper left",
+        bbox_to_anchor=(0.27, 1.06),
+        frameon=False,
+        labelspacing=0.8,
+        handletextpad=1,
+        title=title,
+    )
+
+    add_legend_lines(
+        ax, sizes, labels, patch_kw=dict(color="lightgrey"), legend_kw=legend_kw
+    )
+
+    legend_kw = dict(
+        bbox_to_anchor=(1.52, 1.04),
+        frameon=False,
+    )
+
+    if with_legend:
+        colors = [tech_colors[c] for c in carriers] + [ac_color, dc_color]
+        labels = carriers + ["HVAC line", "HVDC link"]
+
+        add_legend_patches(
+            ax,
+            colors,
+            labels,
+            legend_kw=legend_kw,
+        )
+
+    fig.savefig(snakemake.output.capacity, bbox_inches="tight")
+
+
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
@@ -275,3 +468,4 @@ if __name__ == "__main__":
     proj = load_projection(snakemake.params.plotting)
 
     plot_map(n)
+    plot_capacity(n)
