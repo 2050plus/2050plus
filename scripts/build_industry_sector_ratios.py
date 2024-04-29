@@ -235,11 +235,12 @@ def iron_and_steel():
 
 
     ## DRI CH4 + Electric arc
+    # For primary route: DRI with CH4 and CCS + EAF
     sector = "DRI CH4 + Electric arc"
 
     df[sector] = df["Electric arc"]
 
-    # add H2 consumption for DRI at 1.7 MWh H2 /ton steel
+    # add CH4 consumption for DRI at 2.76 MWh CH4 /ton steel
     df.at["methane", sector] = params["CH4_DRI"]
 
     # add electricity consumption in DRI shaft (0.322 MWh/tSl + 0.146 MWh/tSl)
