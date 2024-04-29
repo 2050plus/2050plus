@@ -707,8 +707,11 @@ def extract_nodal_costs(config):
 
 def extract_marginal_prices(n, carrier_list=["AC"]):
     df = []
+    df_t = []
     for ca in carrier_list:
         prices = pd.DataFrame([]).rename_axis(index="countries")
+        prices_t = pd.DataFrame([])
+
         for y, ni in n.items():
             if "hist" != y:
                 price_y = (
@@ -716,10 +719,18 @@ def extract_marginal_prices(n, carrier_list=["AC"]):
                 )
                 prices[y] = price_y.mean().groupby(lambda x: x[:2]).mean()
                 prices[f"{y}_std"] = price_y.std().groupby(lambda x: x[:2]).mean()
+                marginal_t = price_y.T.groupby(lambda x : x[:2]).mean().rename_axis(index=["countries"])
+                marginal_t["year"] = y
+
+                prices_t = pd.concat([prices_t, marginal_t.reset_index().set_index(["year", "countries"])])
+                
         prices["carrier"] = ca.replace("AC", "elec")
+        prices_t["carrier"] = ca.replace("AC", "elec")
         df.append(prices.reset_index().set_index(["countries", "carrier"]))
+        df_t.append(prices_t.reset_index().set_index(["countries", "carrier", "year"]))
     df = pd.concat(df, axis=0)
-    return df
+    df_t = pd.concat(df_t)
+    return df, df_t
 
 
 
@@ -999,7 +1010,7 @@ def transform_data(config, n, n_ext, color_shift=None):
     H2_grid, H2_countries, H2_imp_exp = extract_transmission(n_ext, carriers=["H2 pipeline", "H2 pipeline retrofitted"])
     gas_grid, gas_countries, gas_imp_exp = extract_transmission(n_ext, carriers=["gas pipeline", "gas pipeline new"])
     n_costs = extract_nodal_costs(config)
-    marginal_prices = extract_marginal_prices(n, carrier_list=["gas", "AC", "H2"])
+    marginal_prices, marginal_prices_t = extract_marginal_prices(n, carrier_list=["gas", "AC", "H2"])
     nodal_supply_energy = extract_nodal_supply_energy(config, n)
     temporal_supply_energy = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer)
     temporal_supply_energy_BE = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer,
@@ -1045,6 +1056,7 @@ def transform_data(config, n, n_ext, color_shift=None):
         # insights
         "costs_countries": n_costs,
         "marginal_prices_countries": marginal_prices,
+        "marginal_prices_t_countries":marginal_prices_t,
         "res_statistics": res_stats,
         # "loads_profiles": n_loads,
         "generation_profiles": prod_profiles,
