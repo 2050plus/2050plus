@@ -468,49 +468,72 @@ def add_CCL_constraints(n, config):
     for c in n.iterate_components(["Generator", "Link"]):
         p_nom = n.model[f"{c.name}-p_nom"]
         comp = c.df.query("p_nom_extendable").rename_axis(index=f"{c.name}-ext")
-    
+
         # Constraint for technologies aggregation
         # Does not allow cross-component aggregation
         if config["solving"]["agg_p_nom_limits"]["agg_carriers"]:
             renamer = config["solving"]["agg_p_nom_limits"]['agg_carriers']
             comp = comp.replace(renamer)
-        
-        # Deal with bus0 and bus1 for Links
+
+        # Deal with mulitiple buses for Links
+        # Convention is that buses are aggregated to bus1 and are expressed as p1 (output) in agg_p_nom_minmax
+        # /!\ Buses/carriers on which to aggregate given in config / agg_buses 
+        #   must be in line with the values in agg_p_nom_minmax /!\
         if c.name == "Link":
             if config["solving"]["agg_p_nom_limits"]["agg_buses"]:
+                # Get buses used for the groupby/aggregation of p_nom_opt
                 comp_bus = comp.apply(lambda x: x[config["solving"]["agg_p_nom_limits"]["agg_buses"]
                                       .get(x['carrier'], 'bus1')], axis=1)
+                # Get efficiencies used for the correction of p_nom_minmax (if agg_bus != bus0)
+                eff = (
+                    comp
+                    .apply(
+                        lambda x: x["efficiency" + config["solving"]["agg_p_nom_limits"]["agg_buses"]
+                        .get(x['carrier'], 'bus1')[-1].replace('1', '')]
+                        , axis=1)
+                    .replace(0, 1)
+                )
             else:
+                # By default, aggregate on bus1 and take efficiency for bus1
                 comp_bus = comp.bus1
+                eff = c.df.efficiency1
+        # For Generators, only bus is needed
         else:
             comp_bus = comp.bus
-            
+
         # Grouping per country
-        grouper = pd.concat([comp_bus.map(n.buses.country).rename('bus'), comp.carrier], axis=1)
-        lhs = p_nom.groupby(grouper).sum().rename(bus="country")
-    
+        grouper = pd.concat([comp_bus.map(n.buses.country).rename('country'), comp.carrier], axis=1)
+        lhs = p_nom.groupby(grouper).sum()
+
+        # Since the condition is fixed on the model for p_nom, agg_p_nom_minmax has to be corrected
+        # so that min/max values correspond to the configured bus
+        if c.name == "Link":
+            eff = eff.groupby([grouper.country, grouper.carrier, ]).mean()
+            carrier_comp_idx = agg_p_nom_minmax[agg_p_nom_minmax.index.isin(comp.carrier.unique(), level=1)].index
+            agg_p_nom_minmax.loc[carrier_comp_idx] = agg_p_nom_minmax.loc[carrier_comp_idx].div(
+                eff[carrier_comp_idx], axis=0)
+
         if config["solving"]["agg_p_nom_limits"]["include_existing"]:
             comp_cst = c.df.query("~p_nom_extendable").rename_axis(index=f"{c.name}-cst")
             comp_cst = comp_cst[
                 (comp_cst["build_year"] + comp_cst["lifetime"]) >= int(snakemake.wildcards.planning_horizons)]
             if config["solving"]["agg_p_nom_limits"]["agg_carriers"]:
                 comp_cst = comp_cst.replace(renamer)
-                
+
             # Deal with bus0 and bus1 for Links
             if c.name == "Link":
                 if config["solving"]["agg_p_nom_limits"]["agg_buses"]:
                     comp_bus_cst = comp_cst.apply(lambda x: x[config["solving"]["agg_p_nom_limits"]["agg_buses"]
-                                               .get(x['carrier'], 'bus1')], axis=1)
+                                                  .get(x['carrier'], 'bus1')], axis=1)
                 else:
                     comp_bus_cst = comp_cst.bus1
             else:
                 comp_bus_cst = comp_cst.bus
-                
+
             rhs_cst = (
-                pd.concat([comp_bus_cst.map(n.buses.country).rename('bus'), comp_cst[["carrier", "p_nom"]]], axis=1)
-                .groupby(["bus", "carrier"]).sum()
+                pd.concat([comp_bus_cst.map(n.buses.country).rename('country'), comp_cst[["carrier", "p_nom"]]], axis=1)
+                .groupby(["country", "carrier"]).sum()
             )
-            rhs_cst.index = rhs_cst.index.rename({"bus": "country"})
             rhs_min = agg_p_nom_minmax["min"].dropna()
             idx_min = rhs_min.index.join(rhs_cst.index, how="left")
             rhs_min = rhs_min.reindex(idx_min).fillna(0)
@@ -519,13 +542,13 @@ def add_CCL_constraints(n, config):
             minimum = xr.DataArray(rhs).rename(dim_0="group")
         else:
             minimum = xr.DataArray(agg_p_nom_minmax["min"].dropna()).rename(dim_0="group")
-    
+
         index = minimum.indexes["group"].intersection(lhs.indexes["group"])
         if not index.empty:
             n.model.add_constraints(
                 lhs.sel(group=index) >= minimum.loc[index], name=f"agg_p_nom_min-{c.name}"
             )
-    
+
         if config["solving"]["agg_p_nom_limits"]["include_existing"]:
             rhs_max = agg_p_nom_minmax["max"].dropna()
             idx_max = rhs_max.index.join(rhs_cst.index, how="left")
@@ -535,7 +558,7 @@ def add_CCL_constraints(n, config):
             maximum = xr.DataArray(rhs).rename(dim_0="group")
         else:
             maximum = xr.DataArray(agg_p_nom_minmax["max"].dropna()).rename(dim_0="group")
-    
+
         index = maximum.indexes["group"].intersection(lhs.indexes["group"])
         if not index.empty:
             n.model.add_constraints(
