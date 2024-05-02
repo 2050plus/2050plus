@@ -695,7 +695,7 @@ def attach_OPSD_renewables(n: pypsa.Network, tech_map: Dict[str, List[str]]) -> 
         buses = n.buses.loc[gens.bus.unique()]
         gens_per_bus = gens.groupby("bus").p_nom.count()
 
-        caps = map_country_bus(df.query("Fueltype == @fueltype and lat == lat"), buses)
+        caps = map_country_bus(df.query("Fueltype == @fueltype"), buses)
         caps = caps.groupby(["bus"]).Capacity.sum()
         caps = caps / gens_per_bus.reindex(caps.index, fill_value=1)
 
