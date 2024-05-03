@@ -3130,14 +3130,7 @@ def add_industry(n, costs):
             p_set=p_set,
         )
 
-    primary_steel = get(
-        snakemake.config["industry"]["St_primary_fraction"], investment_year
-    )
-    dri_h2_steel = get(snakemake.config["industry"]["DRI_H2_fraction"], investment_year)
-    dri_ch4_steel = get(snakemake.config["industry"]["DRI_CH4_fraction"], investment_year)
-    bof_steel = primary_steel - dri_h2_steel - dri_ch4_steel
-
-    if bof_steel > 0:
+    if (industrial_demand["coke"].sum() + industrial_demand["coal"].sum()) != 0:
         add_carrier_buses(n, "coal")
 
         mwh_coal_per_mwh_coke = 1.366  # from eurostat energy balance
