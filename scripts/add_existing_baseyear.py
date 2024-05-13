@@ -90,7 +90,7 @@ def add_existing_renewables(df_agg):
             ]
             cfs = n.generators_t.p_max_pu[gens].mean()
             cfs_key = cfs / cfs.sum()
-            nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.values
+            nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.groupby(n.generators.loc[gens, "bus"]).sum()
 
         nodal_df = df.loc[n.buses.loc[elec_buses, "country"]]
         nodal_df.index = elec_buses
@@ -131,9 +131,13 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
         "Oil": "oil",
         "OCGT": "OCGT",
         "CCGT": "CCGT",
-        "Natural Gas": "gas",
         "Bioenergy": "urban central solid biomass CHP",
     }
+
+    # Replace Fueltype "Natural Gas" with the respective technology (OCGT or CCGT)
+    df_agg.loc[df_agg["Fueltype"] == "Natural Gas", "Fueltype"] = df_agg.loc[
+        df_agg["Fueltype"] == "Natural Gas", "Technology"
+    ]
 
     fueltype_to_drop = [
         "Hydro",
@@ -147,7 +151,7 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
     technology_to_drop = ["Pv", "Storage Technologies"]
 
-    # drop unused fueltyps and technologies
+    # drop unused fueltypes and technologies
     df_agg.drop(df_agg.index[df_agg.Fueltype.isin(fueltype_to_drop)], inplace=True)
     df_agg.drop(df_agg.index[df_agg.Technology.isin(technology_to_drop)], inplace=True)
     df_agg.Fueltype = df_agg.Fueltype.map(rename_fuel)
@@ -164,6 +168,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
     )
     df_agg.loc[biomass_i, "DateOut"] = df_agg.loc[biomass_i, "DateOut"].fillna(dateout)
 
+    # Enforce phasing out of specified carriers
+    exit_techs = snakemake.config["existing_capacities"]["exit_year"]
+    for carrier, year in exit_techs.items():
+        carrier_exit_i = (df_agg.Fueltype == carrier) & (df_agg.DateOut > year)
+        df_agg.loc[carrier_exit_i, "DateOut"] = year
+    
     # drop assets which are already phased out / decommissioned
     phased_out = df_agg[df_agg["DateOut"] < baseyear].index
     df_agg.drop(phased_out, inplace=True)
@@ -205,6 +215,9 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
         values="lifetime",
         aggfunc="mean",  # currently taken mean for clustering lifetimes
     )
+
+    # Technologies to phase out
+    exit_techs = snakemake.config["existing_capacities"]["exit_year"]                
 
     carrier = {
         "OCGT": "gas",
@@ -254,11 +267,12 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
                     # for offshore the splitting only includes coastal regions
                     inv_ind = [
-                        i for i in inv_ind if (i + name_suffix) in n.generators.index
+                        i for i in inv_ind if (i + name_suffix) in n.generators.index.str
+                        .replace(str(baseyear), str(grouping_year))
                     ]
 
                     p_max_pu = n.generators_t.p_max_pu[
-                        [i + name_suffix for i in inv_ind]
+                        [i + name_suffix.replace(str(grouping_year), str(baseyear)) for i in inv_ind]
                     ]
                     p_max_pu.columns = [i + name_suffix for i in inv_ind]
 
@@ -315,6 +329,13 @@ def add_power_capacities_installed_before_baseyear(n, grouping_years, costs, bas
 
             if not new_build.empty:
                 new_capacity = capacity.loc[new_build.str.replace(name_suffix, "")]
+
+                # If the Fueltype must be phased out, modify its lifetime according to the phasing out year
+                exit_year = exit_techs.get(generator)
+                if exit_year:
+                    lifetime_assets = lifetime_assets[new_capacity.index]
+                    to_change = ((grouping_year + lifetime_assets) > exit_year)
+                    lifetime_assets.loc[to_change] = exit_year - grouping_year
 
                 if generator != "urban central solid biomass CHP":
                     n.madd(
@@ -608,7 +629,7 @@ if __name__ == "__main__":
             ll="v1.0",
             opts="",
             sector_opts="8760H-T-H-B-I-A-solar+p3-dist1",
-            planning_horizons=2020,
+            planning_horizons=2030,
         )
 
     logging.basicConfig(level=snakemake.config["logging"]["level"])

@@ -94,6 +94,13 @@ None.
 - ``data/load_raw.csv``
 
 
+.._retrieve_load_future
+
+Rule ``retrieve_load_future``
+================================
+
+.. automodule:: retrieve_load_future
+
 Rule ``retrieve_cost_data``
 ================================
 
@@ -117,6 +124,11 @@ This rule downloads techno-economic assumptions from the `technology-data reposi
 **Outputs**
 
 - ``resources/costs.csv``
+
+Rule ``retrieve_irena``
+================================
+
+.. automodule:: retrieve_irena
 
 Rule ``retrieve_ship_raster``
 ================================

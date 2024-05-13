@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: : 2023 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
+import pandas as pd
 
 if config["enable"].get("prepare_links_p_nom", False):
 
@@ -31,6 +32,62 @@ rule build_load_data:
         "../envs/environment.yaml"
     script:
         "../scripts/build_load_data.py"
+
+
+rule build_country_profiles:
+    input:
+        load_hourly=RESOURCES + "load.csv",
+        load_annual=f"data/patex/patex_{pd.Timestamp(config['snapshots']['start']).year}.csv",
+        mobility_fn="data/emobility/",
+        heat_demand_total=RESOURCES + "heat_demand_total_elec_s{simpl}_{clusters}.nc",
+        heat_profile="data/heat_load_profile_BDEW.csv",
+        clustered_pop_layout=RESOURCES + "pop_layout_elec_s{simpl}_{clusters}.csv"
+    output:
+        profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
+        heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
+        transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv"
+    resources:
+        mem_mb=5000,
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/build_country_profiles.py"
+
+
+rule build_residual_load_profile:
+    input:
+        load_hourly=RESOURCES + "load.csv",
+        load_annual=f"data/patex/patex_{pd.Timestamp(config['snapshots']['start']).year}.csv",
+        profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
+        heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
+        transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv"
+    output:
+        res_load_profile=RESOURCES + "residual_load_profile_elec_s{simpl}_{clusters}.csv",
+    log:
+        LOGS + "build_residual_load_profile_elec_s{simpl}_{clusters}.log",
+    resources:
+        mem_mb=5000,
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/build_residual_load_profile.py"
+
+
+rule build_future_load:
+    input:
+        res_load_profile=RESOURCES + "residual_load_profile_elec_s{simpl}_{clusters}.csv",
+        profiles=RESOURCES + "load_profiles_elec_s{simpl}_{clusters}.csv",
+        heat_map=RESOURCES + "heat_map_elec_s{simpl}_{clusters}.csv",
+        transport_map=RESOURCES + "transport_map_elec_s{simpl}_{clusters}.csv",
+        load_annual="data/patex/patex_{planning_horizons}.csv",
+    output:
+        load_future=RESOURCES + "load_elec_s{simpl}_{clusters}____{planning_horizons}.csv"
+    resources:
+        mem_mb=5000,
+    log:
+        LOGS + "build_future_load_elec_s{simpl}_{clusters}____{planning_horizons}.log",
+    script:
+        "../scripts/build_future_load.py"
 
 
 rule build_powerplants:
@@ -284,6 +341,30 @@ rule add_electricity:
         "../envs/environment.yaml"
     script:
         "../scripts/add_electricity.py"
+
+
+rule add_electricity_tomorrow:
+    input:
+        base_network=RESOURCES + "networks/base.nc",
+        network=RESOURCES + "networks/elec_s{simpl}_{clusters}_ec_l{ll}_{opts}.nc",
+        regions=RESOURCES + "regions_onshore.geojson",
+        load_future=RESOURCES + "load_elec_s{simpl}_{clusters}____{planning_horizons}.csv",
+        nuts3_shapes=RESOURCES + "nuts3_shapes.geojson",
+        bus_map_s=RESOURCES + "busmap_elec_s{simpl}.csv",
+        bus_map_s_c=RESOURCES + "busmap_elec_s{simpl}_{clusters}.csv",
+    output:
+        RESOURCES + "networks/elec_s{simpl}_{clusters}_ec_l{ll}_{opts}_{planning_horizons}.nc",
+    log:
+        LOGS + "add_electricity_tomorrow_s{simpl}_{clusters}_ec_l{ll}_{opts}_{planning_horizons}.log",
+    benchmark:
+        BENCHMARKS + "add_electricity_tomorrow_s{simpl}_{clusters}_ec_l{ll}_{opts}_{planning_horizons}"
+    threads: 1
+    resources:
+        mem_mb=5000,
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/add_electricity_tomorrow.py"
 
 
 rule simplify_network:

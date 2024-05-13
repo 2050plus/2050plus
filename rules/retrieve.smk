@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+import pandas as pd
+
 if config["enable"].get("retrieve_databundle", True):
     datafiles = [
         "ch_cantons.csv",
@@ -31,6 +33,27 @@ if config["enable"].get("retrieve_databundle", True):
         script:
             "../scripts/retrieve_databundle.py"
 
+if config["enable"].get("retrieve_irena", True):
+
+    datafiles=[
+        "offwind_capacity_IRENA.csv",
+        "onwind_capacity_IRENA.csv",
+        "solar_capacity_IRENA.csv",
+    ]
+
+    rule retrieve_irena:
+        output:
+            expand("data/existing_infrastructure/{file}", file=datafiles),
+        log:
+            LOGS + "retrieve_irena.log",
+        resources:
+            mem_mb=1000,
+        retries: 2
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/retrieve_irena.py"
+
 
 if config["enable"].get("retrieve_cutout", True):
 
@@ -51,7 +74,7 @@ if config["enable"].get("retrieve_cutout", True):
             move(input[0], output[0])
 
 
-if config["enable"].get("retrieve_cost_data", True):
+if False:  # config["enable"].get("retrieve_cost_data", True):
 
     rule retrieve_cost_data:
         input:
@@ -157,6 +180,22 @@ rule retrieve_load_data:
     run:
         move(input[0], output[0])
 
+
+if config["enable"].get("retrieve_load_future", True):
+    rule retrieve_load_future:
+        input:
+            scenario_builder="scenario_builder_tool_input.xlsx",
+            load_hourly= RESOURCES + "load.csv"
+        output:
+            expand("data/patex/patex_{y}.csv", y=[pd.Timestamp(config["snapshots"]["start"]).year] +
+                                                 config["scenario"]["planning_horizons"])
+        log:
+            LOGS + "retrieve_load_future.log",
+        retries: 5
+        conda:
+            "../envs/environment.yaml"
+        script:
+            "../scripts/retrieve_load_future.py"
 
 rule retrieve_ship_raster:
     input:
