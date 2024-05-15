@@ -27,4 +27,5 @@ st.markdown(
     - **1. Average**: Scenario *average* presented to the Steering Committee on 31/01/2024.
     - **1. Electrification**: Scenario *electrification* presented to the Steering Committee on 31/01/2024.
     - **2. Electrification**: Scenario *electrification* presented to the Steering Commitee on 29/04/2024.
+    - **2. (rerun) Electrification**: Rerun of `2. Electrification` to include 2050 in the data.
 """)

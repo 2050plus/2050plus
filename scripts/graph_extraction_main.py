@@ -27,7 +27,7 @@ def main():
     logger.info("Start processing")
 
     config_file = "config/config.veka.yaml"
-    analysis_path = Path("analysis", "20240423")
+    analysis_path = Path("analysis", "20240514")
     dir_export = "graph_data"
 
     # Configuration

@@ -15,6 +15,9 @@ scenario_dict = {
     },
     "2. Electrification": {
         "path": "20240425/electrification",
+    },
+    "2. (rerun) Electrification": {
+        "path": "20240514/electrification",
     }
 }
 CLIP_VALUE_TWH = 1e-1
@@ -51,6 +54,6 @@ def st_side_bar():
         scenario = st.selectbox(
             "Select your scenario",
             scenario_dict.keys(),
-            index=2
+            index=3
         )
     return scenario
