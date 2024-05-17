@@ -94,13 +94,6 @@ None.
 - ``data/electricity_demand_raw.csv``
 
 
-.._retrieve_load_future
-
-Rule ``retrieve_load_future``
-================================
-
-.. automodule:: retrieve_load_future
-
 Rule ``retrieve_cost_data``
 ================================
 

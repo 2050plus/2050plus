@@ -3,9 +3,6 @@
 
   SPDX-License-Identifier: CC-BY-4.0
 
-
-.. _costs:
-
 ############################
 Techno-Economic Assumptions
 ############################
