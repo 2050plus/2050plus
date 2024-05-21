@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 This script calculates the space heating savings through better insulation of
 the thermal envelope of a building and corresponding costs for different
@@ -69,6 +68,7 @@ The script has the following structure:
 """
 import pandas as pd
 import xarray as xr
+from _helpers import set_scenario_config
 
 # (i) --- FIXED PARAMETER / STANDARD VALUES -----------------------------------
 
@@ -103,7 +103,7 @@ solar_energy_transmittance = (
 )
 # solar global radiation [kWh/(m^2a)]
 solar_global_radiation = pd.Series(
-    [246, 401, 246, 148],
+    [271, 392, 271, 160],
     index=["east", "south", "west", "north"],
     name="solar_global_radiation [kWh/(m^2a)]",
 )
@@ -150,7 +150,6 @@ def prepare_building_stock_data():
                        type and period
 
     """
-
     building_data = pd.read_csv(snakemake.input.building_stock, usecols=list(range(13)))
 
     # standardize data
@@ -163,6 +162,12 @@ def prepare_building_stock_data():
             "Walls": "Wall",
             "Roof ": "Roof",
             "Floor ": "Floor",
+        },
+        inplace=True,
+    )
+    building_data["feature"].replace(
+        {
+            "Construction features (U-value)": "Construction features (U-values)",
         },
         inplace=True,
     )
@@ -200,12 +205,14 @@ def prepare_building_stock_data():
         }
     )
 
+    building_data["country_code"] = building_data["country"].map(country_iso_dic)
+
     # heated floor area ----------------------------------------------------------
     area = building_data[
         (building_data.type == "Heated area [Mm²]")
         & (building_data.subsector != "Total")
     ]
-    area_tot = area.groupby(["country", "sector"]).sum()
+    area_tot = area[["country", "sector", "value"]].groupby(["country", "sector"]).sum()
     area = pd.concat(
         [
             area,
@@ -225,7 +232,7 @@ def prepare_building_stock_data():
         usecols=[0, 1, 2, 3],
         encoding="ISO-8859-1",
     )
-    area_tot = area_tot.append(area_missing.unstack(level=-1).dropna().stack())
+    area_tot = pd.concat([area_tot, area_missing.unstack(level=-1).dropna().stack()])
     area_tot = area_tot.loc[~area_tot.index.duplicated(keep="last")]
 
     # for still missing countries calculate floor area by population size
@@ -248,7 +255,7 @@ def prepare_building_stock_data():
         averaged_data.index = index
         averaged_data["estimated"] = 1
         if ct not in area_tot.index.levels[0]:
-            area_tot = area_tot.append(averaged_data, sort=True)
+            area_tot = pd.concat([area_tot, averaged_data], sort=True)
         else:
             area_tot.loc[averaged_data.index] = averaged_data
 
@@ -274,7 +281,7 @@ def prepare_building_stock_data():
             ][x["bage"]].iloc[0],
             axis=1,
         )
-        data_PL_final = data_PL_final.append(data_PL)
+        data_PL_final = pd.concat([data_PL_final, data_PL])
 
     u_values = pd.concat([u_values, data_PL_final]).reset_index(drop=True)
 
@@ -291,8 +298,8 @@ def prepare_building_stock_data():
         errors="ignore",
     )
 
-    u_values.subsector.replace(rename_sectors, inplace=True)
-    u_values.btype.replace(rename_sectors, inplace=True)
+    u_values["subsector"] = u_values.subsector.replace(rename_sectors)
+    u_values["btype"] = u_values.btype.replace(rename_sectors)
 
     # for missing weighting of surfaces of building types assume MFH
     u_values["assumed_subsector"] = u_values.subsector
@@ -300,14 +307,14 @@ def prepare_building_stock_data():
         ~u_values.subsector.isin(rename_sectors.values()), "assumed_subsector"
     ] = "MFH"
 
-    u_values.country_code.replace({"UK": "GB"}, inplace=True)
-    u_values.bage.replace({"Berfore 1945": "Before 1945"}, inplace=True)
+    u_values["country_code"] = u_values.country_code.replace({"UK": "GB"})
+    u_values["bage"] = u_values.bage.replace({"Berfore 1945": "Before 1945"})
     u_values = u_values[~u_values.bage.isna()]
 
     u_values.set_index(["country_code", "subsector", "bage", "type"], inplace=True)
 
     #  only take in config.yaml specified countries into account
-    countries = snakemake.config["countries"]
+    countries = snakemake.params.countries
     area_tot = area_tot.loc[countries]
 
     return u_values, country_iso_dic, countries, area_tot, area
@@ -318,7 +325,6 @@ def prepare_building_topology(u_values, same_building_topology=True):
     Reads in typical building topologies (e.g. average surface of building
     elements) and typical losses through thermal bridging and air ventilation.
     """
-
     data_tabula = pd.read_csv(
         snakemake.input.data_tabula,
         skiprows=lambda x: x in range(1, 11),
@@ -516,7 +522,7 @@ def prepare_cost_retro(country_iso_dic):
 
 def prepare_temperature_data():
     """
-    returns the temperature dependent data for each country:
+    Returns the temperature dependent data for each country:
 
     d_heat             : length of heating season pd.Series(index=countries) [days/year]
                          on those days, daily average temperature is below
@@ -528,16 +534,16 @@ def prepare_temperature_data():
     """
     temperature = xr.open_dataarray(snakemake.input.air_temperature).to_pandas()
     d_heat = (
-        temperature.groupby(temperature.columns.str[:2], axis=1)
+        temperature.T.groupby(temperature.columns.str[:2])
         .mean()
-        .resample("1D")
+        .T.resample("1D")
         .mean()
         < t_threshold
     ).sum()
     temperature_average_d_heat = (
-        temperature.groupby(temperature.columns.str[:2], axis=1)
+        temperature.T.groupby(temperature.columns.str[:2])
         .mean()
-        .apply(
+        .T.apply(
             lambda x: get_average_temperature_during_heating_season(x, t_threshold=15)
         )
     )
@@ -549,7 +555,7 @@ def prepare_temperature_data():
 
 
 # windows ---------------------------------------------------------------
-def window_limit(l, window_assumptions):
+def window_limit(l, window_assumptions):  # noqa: E741
     """
     Define limit u value from which on window is retrofitted.
     """
@@ -562,7 +568,7 @@ def window_limit(l, window_assumptions):
     return m * l + a
 
 
-def u_retro_window(l, window_assumptions):
+def u_retro_window(l, window_assumptions):  # noqa: E741
     """
     Define retrofitting value depending on renovation strength.
     """
@@ -575,7 +581,7 @@ def u_retro_window(l, window_assumptions):
     return max(m * l + a, 0.8)
 
 
-def window_cost(u, cost_retro, window_assumptions):
+def window_cost(u, cost_retro, window_assumptions):  # noqa: E741
     """
     Get costs for new windows depending on u value.
     """
@@ -595,36 +601,42 @@ def window_cost(u, cost_retro, window_assumptions):
     return window_cost
 
 
-def calculate_costs(u_values, l, cost_retro, window_assumptions):
+def calculate_costs(u_values, l, cost_retro, window_assumptions):  # noqa: E741
     """
     Returns costs for a given retrofitting strength weighted by the average
     surface/volume ratio of the component for each building type.
     """
     return u_values.apply(
         lambda x: (
-            cost_retro.loc[x.name[3], "cost_var"]
-            * 100
-            * float(l)
-            * l_weight.loc[x.name[3]][0]
-            + cost_retro.loc[x.name[3], "cost_fix"]
-        )
-        * x.A_element
-        / x.A_C_Ref
-        if x.name[3] != "Window"
-        else (
-            window_cost(x["new_U_{}".format(l)], cost_retro, window_assumptions)
+            (
+                cost_retro.loc[x.name[3], "cost_var"]
+                * 100
+                * float(l)
+                * l_weight.loc[x.name[3]].iloc[0]
+                + cost_retro.loc[x.name[3], "cost_fix"]
+            )
             * x.A_element
             / x.A_C_Ref
-            if x.value > window_limit(float(l), window_assumptions)
-            else 0
+            if x.name[3] != "Window"
+            else (
+                (
+                    (
+                        window_cost(x[f"new_U_{l}"], cost_retro, window_assumptions)
+                        * x.A_element
+                    )
+                    / x.A_C_Ref
+                )
+                if x.value > window_limit(float(l), window_assumptions)
+                else 0
+            )
         ),
         axis=1,
     )
 
 
-def calculate_new_u(u_values, l, l_weight, window_assumptions, k=0.035):
+def calculate_new_u(u_values, l, l_weight, window_assumptions, k=0.035):  # noqa: E741
     """
-    calculate U-values after building retrofitting, depending on the old
+    Calculate U-values after building retrofitting, depending on the old
     U-values (u_values). This is for simple insulation measuers, adding an
     additional layer of insulation.
 
@@ -644,12 +656,14 @@ def calculate_new_u(u_values, l, l_weight, window_assumptions, k=0.035):
     k: thermal conductivity
     """
     return u_values.apply(
-        lambda x: k / ((k / x.value) + (float(l) * l_weight.loc[x.name[3]]))
-        if x.name[3] != "Window"
-        else (
-            min(x.value, u_retro_window(float(l), window_assumptions))
-            if x.value > window_limit(float(l), window_assumptions)
-            else x.value
+        lambda x: (
+            k / ((k / x.value) + (float(l) * l_weight.loc[x.name[3]]))
+            if x.name[3] != "Window"
+            else (
+                min(x.value, u_retro_window(float(l), window_assumptions))
+                if x.value > window_limit(float(l), window_assumptions)
+                else x.value
+            )
         ),
         axis=1,
     )
@@ -685,7 +699,7 @@ def map_tabula_to_hotmaps(df_tabula, df_hotmaps, column_prefix):
 
 def get_solar_gains_per_year(window_area):
     """
-    returns solar heat gains during heating season in [kWh/a] depending on the
+    Returns solar heat gains during heating season in [kWh/a] depending on the
     window area [m^2] of the building, assuming a equal distributed window
     orientation (east, south, north, west)
     """
@@ -701,8 +715,8 @@ def get_solar_gains_per_year(window_area):
 
 def map_to_lstrength(l_strength, df):
     """
-    renames column names from a pandas dataframe to map tabula retrofitting
-    strengths [2 = moderate, 3 = ambitious] to l_strength
+    Renames column names from a pandas dataframe to map tabula retrofitting
+    strengths [2 = moderate, 3 = ambitious] to l_strength.
     """
     middle = len(l_strength) // 2
     map_to_l = pd.MultiIndex.from_arrays(
@@ -716,12 +730,13 @@ def map_to_lstrength(l_strength, df):
         .swaplevel(axis=1)
         .dropna(axis=1)
     )
+
     return pd.concat([df.drop([2, 3], axis=1, level=1), l_strength_df], axis=1)
 
 
 def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor):
     """
-    calculates total annual heat losses Q_ht for different insulation
+    Calculates total annual heat losses Q_ht for different insulation
     thicknesses (l_strength), depending on current insulation state (u_values),
     standard building topologies and air ventilation from TABULA (data_tabula)
     and the accumulated difference between internal and external temperature
@@ -741,13 +756,13 @@ def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor)
     """
     #  (1) by transmission
     # calculate new U values of building elements due to additional insulation
-    for l in l_strength:
-        u_values["new_U_{}".format(l)] = calculate_new_u(
+    for l in l_strength:  # noqa: E741
+        u_values[f"new_U_{l}"] = calculate_new_u(
             u_values, l, l_weight, window_assumptions
         )
     # surface area of building components [m^2]
     area_element = (
-        data_tabula[["A_{}".format(e) for e in u_values.index.levels[3]]]
+        data_tabula[[f"A_{e}" for e in u_values.index.levels[3]]]
         .rename(columns=lambda x: x[2:])
         .stack()
         .unstack(-2)
@@ -759,7 +774,7 @@ def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor)
 
     # heat transfer H_tr_e [W/m^2K] through building element
     # U_e * A_e / A_C_Ref
-    columns = ["value"] + ["new_U_{}".format(l) for l in l_strength]
+    columns = ["value"] + [f"new_U_{l}" for l in l_strength]
     heat_transfer = pd.concat(
         [u_values[columns].mul(u_values.A_element, axis=0), u_values.A_element], axis=1
     )
@@ -796,6 +811,7 @@ def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor)
         * data_tabula.A_envelope
         / data_tabula.A_C_Ref
     )
+
     heat_transfer_perm2 = pd.concat(
         [
             heat_transfer_perm2,
@@ -832,9 +848,9 @@ def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor)
     F_red_temp = map_to_lstrength(l_strength, F_red_temp)
 
     Q_ht = (
-        heat_transfer_perm2.groupby(level=1, axis=1)
+        heat_transfer_perm2.T.groupby(level=1)
         .sum()
-        .mul(F_red_temp.droplevel(0, axis=1))
+        .T.mul(F_red_temp.droplevel(0, axis=1))
         .mul(temperature_factor.reindex(heat_transfer_perm2.index, level=0), axis=0)
     )
 
@@ -843,7 +859,7 @@ def calculate_heat_losses(u_values, data_tabula, l_strength, temperature_factor)
 
 def calculate_heat_gains(data_tabula, heat_transfer_perm2, d_heat):
     """
-    calculates heat gains Q_gain [W/m^2], which consititure from gains by:
+    Calculates heat gains Q_gain [W/m^2], which consititure from gains by:
 
     (1) solar radiation (2) internal heat gains
     """
@@ -874,21 +890,18 @@ def calculate_gain_utilisation_factor(heat_transfer_perm2, Q_ht, Q_gain):
     Calculates gain utilisation factor nu.
     """
     # time constant of the building tau [h] = c_m [Wh/(m^2K)] * 1 /(H_tr_e+H_tb*H_ve) [m^2 K /W]
-    tau = c_m / heat_transfer_perm2.groupby(level=1, axis=1).sum()
+    tau = c_m / heat_transfer_perm2.T.groupby(axis=1).sum().T
     alpha = alpha_H_0 + (tau / tau_H_0)
     # heat balance ratio
     gamma = (1 / Q_ht).mul(Q_gain.sum(axis=1), axis=0)
-    # gain utilisation factor
-    nu = (1 - gamma**alpha) / (1 - gamma ** (alpha + 1))
-
-    return nu
+    return (1 - gamma**alpha) / (1 - gamma ** (alpha + 1))
 
 
 def calculate_space_heat_savings(
     u_values, data_tabula, l_strength, temperature_factor, d_heat
 ):
     """
-    calculates space heat savings (dE_space [per unit of unrefurbished state])
+    Calculates space heat savings (dE_space [per unit of unrefurbished state])
     through retrofitting of the thermal envelope by additional insulation
     material (l_strength[m])
     """
@@ -950,7 +963,8 @@ def sample_dE_costs_area(
             .rename(index=rename_sectors, level=2)
             .reset_index()
         )
-        .rename(columns={"country": "country_code"})
+        # if uncommented, leads to the second `country_code` column
+        # .rename(columns={"country": "country_code"})
         .set_index(["country_code", "subsector", "bage"])
     )
 
@@ -963,13 +977,14 @@ def sample_dE_costs_area(
     )
 
     # map missing countries
-    for ct in countries.difference(cost_dE.index.levels[0]):
+    for ct in set(countries).difference(cost_dE.index.levels[0]):
         averaged_data = (
             cost_dE.reindex(index=map_for_missings[ct], level=0)
-            .mean(level=1)
+            .groupby(level=1)
+            .mean()
             .set_index(pd.MultiIndex.from_product([[ct], cost_dE.index.levels[1]]))
         )
-        cost_dE = cost_dE.append(averaged_data)
+        cost_dE = pd.concat([cost_dE, averaged_data])
 
     # weights costs after construction index
     if construction_index:
@@ -986,24 +1001,23 @@ def sample_dE_costs_area(
     # drop not considered countries
     cost_dE = cost_dE.reindex(countries, level=0)
     # get share of residential and service floor area
-    sec_w = area_tot.value / area_tot.value.groupby(level=0).sum()
+    sec_w = area_tot.div(area_tot.groupby(level=0).transform("sum"))
     # get the total cost-energy-savings weight by sector area
     tot = (
-        cost_dE.mul(sec_w, axis=0)
-        .groupby(level="country_code")
+        # sec_w has columns "estimated" and "value"
+        cost_dE.mul(sec_w.value, axis=0)
+        # for some reasons names of the levels were lost somewhere
+        # .groupby(level="country_code")
+        .groupby(level=0)
         .sum()
-        .set_index(
-            pd.MultiIndex.from_product(
-                [cost_dE.index.unique(level="country_code"), ["tot"]]
-            )
-        )
+        .set_index(pd.MultiIndex.from_product([cost_dE.index.unique(level=0), ["tot"]]))
     )
-    cost_dE = cost_dE.append(tot).unstack().stack()
+    cost_dE = pd.concat([cost_dE, tot]).unstack().stack()
 
-    summed_area = pd.DataFrame(area_tot.groupby("country").sum()).set_index(
-        pd.MultiIndex.from_product([area_tot.index.unique(level="country"), ["tot"]])
+    summed_area = pd.DataFrame(area_tot.groupby(level=0).sum()).set_index(
+        pd.MultiIndex.from_product([area_tot.index.unique(level=0), ["tot"]])
     )
-    area_tot = area_tot.append(summed_area).unstack().stack()
+    area_tot = pd.concat([area_tot, summed_area]).unstack().stack()
 
     cost_per_saving = cost_dE["cost"] / (
         1 - cost_dE["dE"]
@@ -1040,10 +1054,11 @@ if __name__ == "__main__":
             ll="v1.0",
             sector_opts="Co2L0-168H-T-H-B-I-solar3-dist1",
         )
+    set_scenario_config(snakemake)
 
     #  ********  config  *********************************************************
 
-    retro_opts = snakemake.config["sector"]["retrofitting"]
+    retro_opts = snakemake.params.retrofitting
     interest_rate = retro_opts["interest_rate"]
     annualise_cost = retro_opts["annualise_cost"]  # annualise the investment costs
     tax_weighting = retro_opts[

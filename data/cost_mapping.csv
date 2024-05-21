@@ -1,0 +1,165 @@
+﻿carrier,type,cost_segment
+coal,generators,Energy production
+lignite,generators,Energy production
+oil,generators,Energy production
+uranium,generators,Energy production
+gas,generators,Energy production
+residential rural solar thermal,generators,Energy production
+residential urban decentral solar thermal,generators,Energy production
+services rural solar thermal,generators,Energy production
+services urban decentral solar thermal,generators,Energy production
+urban central solar thermal,generators,Energy production
+offwind-ac,generators,Energy production
+onwind,generators,Energy production
+ror,generators,Energy production
+solar,generators,Energy production
+solar rooftop,generators,Energy production
+offwind,generators,Energy production
+offwind-dc,generators,Energy production
+AC,lines,Transmission
+DC,links,Transmission
+BEV charger,links,Energy production
+BioSNG,links,Energy production
+CCGT,links,Energy production
+DAC,links,Energy production
+Fischer-Tropsch,links,Energy production
+H2 Electrolysis,links,Energy production
+H2 Fuel Cell,links,Energy production
+Haber-Bosch,links,Energy production
+OCGT,links,Energy production
+SMR,links,Energy production
+SMR CC,links,Energy production
+Sabatier,links,Energy production
+V2G,links,Energy production
+ammonia cracker,links,Energy production
+battery charger,links,Energy production
+battery discharger,links,Energy production
+biogas to gas,links,Energy production
+biomass to liquid,links,Energy production
+coal,links,Energy production
+electricity distribution grid,links,Distribution
+gas for industry,links,Energy production
+gas for industry CC,links,Energy production
+helmeth,links,Energy production
+home battery charger,links,Energy production
+home battery discharger,links,Energy production
+methanolisation,links,Energy production
+nuclear,links,Energy production
+nuclear (SMR),links,Energy production
+oil,links,Energy production
+process emissions,links,Energy production
+process emissions CC,links,Energy production
+residential rural biomass boiler,links,Energy production
+residential rural gas boiler,links,Energy production
+residential rural ground heat pump,links,Energy production
+residential rural micro gas CHP,links,Energy production
+residential rural oil boiler,links,Energy production
+residential rural resistive heater,links,Energy production
+residential rural water tanks charger,links,Energy production
+residential rural water tanks discharger,links,Energy production
+residential urban decentral air heat pump,links,Energy production
+residential urban decentral biomass boiler,links,Energy production
+residential urban decentral gas boiler,links,Energy production
+residential urban decentral micro gas CHP,links,Energy production
+residential urban decentral oil boiler,links,Energy production
+residential urban decentral resistive heater,links,Energy production
+residential urban decentral water tanks charger,links,Energy production
+residential urban decentral water tanks discharger,links,Energy production
+services rural biomass boiler,links,Energy production
+services rural gas boiler,links,Energy production
+services rural ground heat pump,links,Energy production
+services rural micro gas CHP,links,Energy production
+services rural oil boiler,links,Energy production
+services rural resistive heater,links,Energy production
+services rural water tanks charger,links,Energy production
+services rural water tanks discharger,links,Energy production
+services urban decentral air heat pump,links,Energy production
+services urban decentral biomass boiler,links,Energy production
+services urban decentral gas boiler,links,Energy production
+services urban decentral micro gas CHP,links,Energy production
+services urban decentral oil boiler,links,Energy production
+services urban decentral resistive heater,links,Energy production
+services urban decentral water tanks charger,links,Energy production
+services urban decentral water tanks discharger,links,Energy production
+solid biomass,links,Energy production
+solid biomass for industry,links,Energy production
+solid biomass for industry CC,links,Energy production
+urban central air heat pump,links,Energy production
+urban central gas CHP,links,Energy production
+urban central gas CHP CC,links,Energy production
+urban central gas boiler,links,Energy production
+urban central resistive heater,links,Energy production
+urban central solid biomass CHP,links,Energy production
+urban central solid biomass CHP CC,links,Energy production
+urban central water tanks charger,links,Energy production
+urban central water tanks discharger,links,Energy production
+urban central oil boiler,links,Energy production
+lignite,links,Energy production
+CO2 pipeline,links,Transmission
+H2 pipeline,links,Transmission
+H2 pipeline retrofitted,links,Transmission
+solid biomass transport,links,Transmission
+gas pipeline,links,Transmission
+gas pipeline new,links,Transmission
+hydro,storage_units,Storage
+PHS,storage_units,Storage
+co2,stores,Storage
+H2 Store,stores,Storage
+battery,stores,Storage
+battery storage,stores,Storage
+biogas,stores,Energy production
+co2 stored,stores,Storage
+gas,stores,Storage
+home battery,stores,Storage
+residential rural water tanks,stores,Storage
+residential urban decentral water tanks,stores,Storage
+services rural water tanks,stores,Storage
+services urban decentral water tanks,stores,Storage
+solid biomass,stores,Energy production
+urban central water tanks,stores,Storage
+ammonia store,stores,Storage
+coal,stores,Storage
+lignite,stores,Storage
+methanol,stores,Storage
+oil,stores,Storage
+uranium,stores,Storage
+rural water tanks,stores,Storage
+urban decentral water tanks,stores,Storage
+rural solar thermal,generators,Energy production
+urban decentral solar thermal,generators,Energy production
+rural biomass boiler,links,Energy production
+rural gas boiler,links,Energy production
+rural ground heat pump,links,Energy production
+rural micro gas CHP,links,Energy production
+rural oil boiler,links,Energy production
+rural resistive heater,links,Energy production
+rural water tanks charger,links,Energy production
+rural water tanks discharger,links,Energy production
+urban decentral air heat pump,links,Energy production
+urban decentral biomass boiler,links,Energy production
+urban decentral gas boiler,links,Energy production
+urban decentral micro gas CHP,links,Energy production
+urban decentral oil boiler,links,Energy production
+urban decentral resistive heater,links,Energy production
+urban decentral water tanks charger,links,Energy production
+urban decentral water tanks discharger,links,Energy production
+rural air heat pump,links,Energy production
+kerosene for aviation,links,Energy production
+land transport oil,links,Energy production
+naphtha for industry,links,Energy production
+shipping oil,links,Energy production
+agriculture machinery oil,links,Energy production
+coal for industry,links,Energy production
+shipping methanol,links,Energy production
+H2,stores,Storage
+co2 sequestered,stores,Storage
+NH3,stores,Storage
+CCGT-CC,links,Energy production
+CCGT_H2,links,Energy production
+OCGT CC,links,Energy production
+OCGT H2,links,Energy production
+allam,links,Energy production
+biogas to gas CC,links,Energy production
+co2 sequestered,links,Energy production
+Li ion,stores,Storage
+gas distribution grid,links,Distribution

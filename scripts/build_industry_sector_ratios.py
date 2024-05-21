@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Build specific energy consumption by carrier and industries.
 """
 
 import pandas as pd
-from _helpers import mute_print
+from _helpers import mute_print, set_scenario_config
 
 # GWh/ktoe OR MWh/toe
 toe_to_MWh = 11.630
@@ -178,19 +177,33 @@ def iron_and_steel():
     sel = ["elec", "heat", "methane"]
     df.loc[sel, sector] = df.loc[sel, sector] * toe_to_MWh / s_out[sector]
 
-    ## DRI + Electric arc
+    ## DRI H2 + Electric arc
     # For primary route: DRI with H2 + EAF
 
-    sector = "DRI + Electric arc"
+    sector = "DRI H2 + Electric arc"
 
     df[sector] = df["Electric arc"]
 
     # add H2 consumption for DRI at 1.7 MWh H2 /ton steel
-    df.at["hydrogen", sector] = config["H2_DRI"]
+    df.at["hydrogen", sector] = params["H2_DRI"]
 
     # add electricity consumption in DRI shaft (0.322 MWh/tSl)
-    df.at["elec", sector] += config["elec_DRI"]
+    df.at["elec", sector] += params["elec_DRI_H2"]
 
+
+    ## DRI CH4 + Electric arc
+    sector = "DRI CH4 + Electric arc"
+
+    df[sector] = df["Electric arc"]
+
+    # add H2 consumption for DRI at 1.7 MWh H2 /ton steel
+    df.at["methane", sector] = params["CH4_DRI"]
+
+    # add electricity consumption in DRI shaft (0.322 MWh/tSl + 0.146 MWh/tSl)
+    # adding 0.146 MWh/tSl based on https://www.sciencedirect.com/science/article/pii/S0973082623002132
+    # and considering EAF part is the same process that H2 DRI
+    df.at["elec", sector] += params["elec_DRI_CH4"]
+    
     ## Integrated steelworks
     # could be used in combination with CCS)
     # Assume existing fuels are kept, except for furnaces, refining, rolling, finishing
@@ -304,7 +317,7 @@ def chemicals_industry():
     # There are Solids, Refinery gas, LPG, Diesel oil, Residual fuel oil,
     # Other liquids, Naphtha, Natural gas for feedstock.
     # Naphta represents 47%, methane 17%. LPG (18%) solids, refinery gas,
-    # diesel oil, residual fuel oils and other liquids are asimilated to Naphtha
+    # diesel oil, residual fuel oils and other liquids are assimilated to Naphtha
 
     s_fec = idees["fec"][13:22]
     assert s_fec.index[0] == subsector
@@ -314,7 +327,7 @@ def chemicals_industry():
     df.loc["methane", sector] += s_fec["Natural gas"]
 
     # LPG and other feedstock materials are assimilated to naphtha
-    # since they will be produced through Fischer-Tropsh process
+    # since they will be produced through Fischer-Tropsch process
     sel = [
         "Solids",
         "Refinery gas",
@@ -384,19 +397,19 @@ def chemicals_industry():
     assert s_emi.index[0] == sector
 
     # convert from MtHVC/a to ktHVC/a
-    s_out = config["HVC_production_today"] * 1e3
+    s_out = params["HVC_production_today"] * 1e3
 
     # tCO2/t material
     df.loc["process emission", sector] += (
         s_emi["Process emissions"]
-        - config["petrochemical_process_emissions"] * 1e3
-        - config["NH3_process_emissions"] * 1e3
+        - params["petrochemical_process_emissions"] * 1e3
+        - params["NH3_process_emissions"] * 1e3
     ) / s_out
 
     # emissions originating from feedstock, could be non-fossil origin
     # tCO2/t material
     df.loc["process emission from feedstock", sector] += (
-        config["petrochemical_process_emissions"] * 1e3
+        params["petrochemical_process_emissions"] * 1e3
     ) / s_out
 
     # convert from ktoe/a to GWh/a
@@ -406,18 +419,18 @@ def chemicals_industry():
     # subtract ammonia energy demand (in ktNH3/a)
     ammonia = pd.read_csv(snakemake.input.ammonia_production, index_col=0)
     ammonia_total = ammonia.loc[ammonia.index.intersection(eu28), str(year)].sum()
-    df.loc["methane", sector] -= ammonia_total * config["MWh_CH4_per_tNH3_SMR"]
-    df.loc["elec", sector] -= ammonia_total * config["MWh_elec_per_tNH3_SMR"]
+    df.loc["methane", sector] -= ammonia_total * params["MWh_CH4_per_tNH3_SMR"]
+    df.loc["elec", sector] -= ammonia_total * params["MWh_elec_per_tNH3_SMR"]
 
-    # subtract chlorine demand
-    chlorine_total = config["chlorine_production_today"]
-    df.loc["hydrogen", sector] -= chlorine_total * config["MWh_H2_per_tCl"]
-    df.loc["elec", sector] -= chlorine_total * config["MWh_elec_per_tCl"]
+    # subtract chlorine demand (in MtCl/a)
+    chlorine_total = params["chlorine_production_today"]
+    df.loc["hydrogen", sector] -= chlorine_total * params["MWh_H2_per_tCl"] * 1e3
+    df.loc["elec", sector] -= chlorine_total * params["MWh_elec_per_tCl"] * 1e3
 
-    # subtract methanol demand
-    methanol_total = config["methanol_production_today"]
-    df.loc["methane", sector] -= methanol_total * config["MWh_CH4_per_tMeOH"]
-    df.loc["elec", sector] -= methanol_total * config["MWh_elec_per_tMeOH"]
+    # subtract methanol demand (in MtMeOH/a)
+    methanol_total = params["methanol_production_today"]
+    df.loc["methane", sector] -= methanol_total * params["MWh_CH4_per_tMeOH"] * 1e3
+    df.loc["elec", sector] -= methanol_total * params["MWh_elec_per_tMeOH"] * 1e3
 
     # MWh/t material
     df.loc[sources, sector] = df.loc[sources, sector] / s_out
@@ -428,37 +441,37 @@ def chemicals_industry():
 
     sector = "HVC (mechanical recycling)"
     df[sector] = 0.0
-    df.loc["elec", sector] = config["MWh_elec_per_tHVC_mechanical_recycling"]
+    df.loc["elec", sector] = params["MWh_elec_per_tHVC_mechanical_recycling"]
 
     # HVC chemical recycling
 
     sector = "HVC (chemical recycling)"
     df[sector] = 0.0
-    df.loc["elec", sector] = config["MWh_elec_per_tHVC_chemical_recycling"]
+    df.loc["elec", sector] = params["MWh_elec_per_tHVC_chemical_recycling"]
 
     # Ammonia
 
     sector = "Ammonia"
     df[sector] = 0.0
-    if snakemake.config["sector"].get("ammonia", False):
-        df.loc["ammonia", sector] = config["MWh_NH3_per_tNH3"]
+    if snakemake.params.ammonia:
+        df.loc["ammonia", sector] = params["MWh_NH3_per_tNH3"]
     else:
-        df.loc["hydrogen", sector] = config["MWh_H2_per_tNH3_electrolysis"]
-        df.loc["elec", sector] = config["MWh_elec_per_tNH3_electrolysis"]
+        df.loc["hydrogen", sector] = params["MWh_H2_per_tNH3_electrolysis"]
+        df.loc["elec", sector] = params["MWh_elec_per_tNH3_electrolysis"]
 
     # Chlorine
 
     sector = "Chlorine"
     df[sector] = 0.0
-    df.loc["hydrogen", sector] = config["MWh_H2_per_tCl"]
-    df.loc["elec", sector] = config["MWh_elec_per_tCl"]
+    df.loc["hydrogen", sector] = params["MWh_H2_per_tCl"]
+    df.loc["elec", sector] = params["MWh_elec_per_tCl"]
 
     # Methanol
 
     sector = "Methanol"
     df[sector] = 0.0
-    df.loc["methane", sector] = config["MWh_CH4_per_tMeOH"]
-    df.loc["elec", sector] = config["MWh_elec_per_tMeOH"]
+    df.loc["methane", sector] = params["MWh_CH4_per_tMeOH"]
+    df.loc["elec", sector] = params["MWh_elec_per_tMeOH"]
 
     # Other chemicals
 
@@ -1465,11 +1478,12 @@ if __name__ == "__main__":
         from _helpers import mock_snakemake
 
         snakemake = mock_snakemake("build_industry_sector_ratios")
+    set_scenario_config(snakemake)
 
-    # TODO make config option
+    # TODO make params option
     year = 2015
 
-    config = snakemake.config["industry"]
+    params = snakemake.params.industry
 
     df = pd.concat(
         [

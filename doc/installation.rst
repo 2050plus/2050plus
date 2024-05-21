@@ -1,5 +1,5 @@
 ..
-  SPDX-FileCopyrightText: 2019-2023 The PyPSA-Eur Authors
+  SPDX-FileCopyrightText: 2019-2024 The PyPSA-Eur Authors
 
   SPDX-License-Identifier: CC-BY-4.0
 
@@ -31,7 +31,7 @@ Install Python Dependencies
 
 PyPSA-Eur relies on a set of other Python packages to function.
 We recommend using the package manager `mamba <https://mamba.readthedocs.io/en/latest/>`_ to install them and manage your environments.
-For instructions for your operating system follow the ``mamba`` `installation guide <https://mamba.readthedocs.io/en/latest/installation.html>`_.
+For instructions for your operating system follow the ``mamba`` `installation guide <https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html>`_.
 You can also use ``conda`` equivalently.
 
 The package requirements are curated in the `envs/environment.yaml <https://github.com/PyPSA/pypsa-eur/blob/master/envs/environment.yaml>`_ file.
@@ -39,7 +39,7 @@ The environment can be installed and activated using
 
 .. code:: bash
 
-    .../pypsa-eur % mamba create -f envs/environment.yaml
+    .../pypsa-eur % mamba env create -f envs/environment.yaml
 
     .../pypsa-eur % mamba activate pypsa-eur
 
@@ -79,31 +79,9 @@ Nevertheless, you can still use open-source solvers for smaller problems.
     `Instructions how to install a solver in the documentation of PyPSA <https://pypsa.readthedocs.io/en/latest/installation.html#getting-a-solver-for-linear-optimisation>`_
 
 .. note::
-    The rules :mod:`cluster_network` and :mod:`simplify_network` solve a quadratic optimisation problem for clustering.
-    The open-source solvers Cbc and GlPK cannot handle this. A fallback to Ipopt is implemented in this case, but requires
-    it to be installed. For an open-source solver setup install in your ``conda`` environment on OSX/Linux
-
-    .. code:: bash
-
-        mamba activate pypsa-eur
-        mamba install -c conda-forge ipopt coincbc
-
-    and on Windows
-
-    .. code:: bash
-
-        mamba activate pypsa-eur
-        mamba install -c conda-forge ipopt glpk
-
-    For HiGHS, run
-
-    .. code:: bash
-
-        mamba activate pypsa-eur
-        mamba install -c conda-forge ipopt
-        pip install highspy
-
-    For Gurobi, run
+    The rules :mod:`cluster_network` and :mod:`simplify_network` solve a mixed-integer quadratic optimisation problem for clustering.
+    The open-source solvers HiGHS, Cbc and GlPK cannot handle this. A fallback to SCIP is implemented in this case.
+    For an open-source solver setup install in your ``conda`` environment on OSX/Linux. To install the default solver Gurobi, run
 
     .. code:: bash
 
@@ -118,20 +96,14 @@ Nevertheless, you can still use open-source solvers for smaller problems.
 Handling Configuration Files
 ============================
 
-PyPSA-Eur has several configuration options that must be specified in a
-``config.yaml`` file located in the root directory. An example configuration
-``config.default.yaml`` is maintained in the repository, which will be used to
-automatically create your customisable ``config.yaml`` on first use. More
-details on the configuration options are in :ref:`config`.
+PyPSA-Eur has several configuration options that users can specify in a
+``config/config.yaml`` file. The default configuration
+``config/config.default.yaml`` is maintained in the repository. More details on
+the configuration options are in :ref:`config`.
 
 You can also use ``snakemake`` to specify another file, e.g.
-``config.mymodifications.yaml``, to update the settings of the ``config.yaml``.
+``config/config.mymodifications.yaml``, to update the settings of the ``config/config.yaml``.
 
 .. code:: bash
 
-    .../pypsa-eur % snakemake -call --configfile config.mymodifications.yaml
-
-.. warning::
-    Users are advised to regularly check their own ``config.yaml`` against changes
-    in the ``config.default.yaml`` when pulling a new version from the remote
-    repository.
+    .../pypsa-eur % snakemake -call --configfile config/config.mymodifications.yaml

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Build salt cavern potentials for hydrogen storage.
 
-Technical Potential of Salt Caverns for Hydrogen Storage in Europe
-CC-BY 4.0
+Technical Potential of Salt Caverns for Hydrogen Storage in Europe CC-BY
+4.0
 https://doi.org/10.20944/preprints201910.0187.v1
 https://doi.org/10.1016/j.ijhydene.2019.12.161
 
@@ -25,6 +24,7 @@ onshore (>50km from sea), offshore (Figure 7).
 
 import geopandas as gpd
 import pandas as pd
+from _helpers import set_scenario_config
 
 
 def concat_gdf(gdf_list, crs="EPSG:4326"):
@@ -39,7 +39,6 @@ def load_bus_regions(onshore_path, offshore_path):
     """
     Load pypsa-eur on- and offshore regions and concat.
     """
-
     bus_regions_offshore = gpd.read_file(offshore_path)
     bus_regions_onshore = gpd.read_file(onshore_path)
     bus_regions = concat_gdf([bus_regions_offshore, bus_regions_onshore])
@@ -68,11 +67,7 @@ def salt_cavern_potential_by_region(caverns, regions):
         "capacity_per_area * share * area_caverns / 1000"
     )  # TWh
 
-    caverns_regions = (
-        overlay.groupby(["name", "storage_type"]).e_nom.sum().unstack("storage_type")
-    )
-
-    return caverns_regions
+    return overlay.groupby(["name", "storage_type"]).e_nom.sum().unstack("storage_type")
 
 
 if __name__ == "__main__":
@@ -82,6 +77,8 @@ if __name__ == "__main__":
         snakemake = mock_snakemake(
             "build_salt_cavern_potentials", simpl="", clusters="37"
         )
+
+    set_scenario_config(snakemake)
 
     fn_onshore = snakemake.input.regions_onshore
     fn_offshore = snakemake.input.regions_offshore

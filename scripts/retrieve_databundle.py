@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019-2022 Fabian Hofmann (TUB, FIAS)
-# SPDX-FileCopyrightText: : 2017-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2017-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3517935.svg
    :target: https://doi.org/10.5281/zenodo.3517935
@@ -24,7 +23,7 @@ The :ref:`tutorial` uses a smaller `data bundle <https://zenodo.org/record/35179
     tutorial:
 
 .. seealso::
-    Documentation of the configuration file ``config.yaml`` at
+    Documentation of the configuration file ``config/config.yaml`` at
     :ref:`toplevel_cf`
 
 **Outputs**
@@ -37,7 +36,12 @@ import logging
 import tarfile
 from pathlib import Path
 
-from _helpers import configure_logging, progress_retrieve
+from _helpers import (
+    configure_logging,
+    progress_retrieve,
+    set_scenario_config,
+    validate_checksum,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -50,22 +54,22 @@ if __name__ == "__main__":
         rootpath = ".."
     else:
         rootpath = "."
-    configure_logging(
-        snakemake
-    )  # TODO Make logging compatible with progressbar (see PR #102)
+    configure_logging(snakemake)
+    set_scenario_config(snakemake)
 
     if snakemake.config["tutorial"]:
         url = "https://zenodo.org/record/3517921/files/pypsa-eur-tutorial-data-bundle.tar.xz"
     else:
         url = "https://zenodo.org/record/3517935/files/pypsa-eur-data-bundle.tar.xz"
 
-    # Save locations
     tarball_fn = Path(f"{rootpath}/bundle.tar.xz")
-    to_fn = Path(f"{rootpath}/data")
+    to_fn = Path(rootpath) / Path(snakemake.output[0]).parent.parent
 
     logger.info(f"Downloading databundle from '{url}'.")
     disable_progress = snakemake.config["run"].get("disable_progressbar", False)
     progress_retrieve(url, tarball_fn, disable=disable_progress)
+
+    validate_checksum(tarball_fn, url)
 
     logger.info("Extracting databundle.")
     tarfile.open(tarball_fn).extractall(to_fn)

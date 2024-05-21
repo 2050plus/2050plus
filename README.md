@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2017-2023 The PyPSA-Eur Authors
+SPDX-FileCopyrightText: 2017-2024 The PyPSA-Eur Authors
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
@@ -9,8 +9,9 @@ SPDX-License-Identifier: CC-BY-4.0
 ![Size](https://img.shields.io/github/repo-size/pypsa/pypsa-eur)
 [![Zenodo PyPSA-Eur](https://zenodo.org/badge/DOI/10.5281/zenodo.3520874.svg)](https://doi.org/10.5281/zenodo.3520874)
 [![Zenodo PyPSA-Eur-Sec](https://zenodo.org/badge/DOI/10.5281/zenodo.3938042.svg)](https://doi.org/10.5281/zenodo.3938042)
-[![Snakemake](https://img.shields.io/badge/snakemake-≥5.0.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
+[![Snakemake](https://img.shields.io/badge/snakemake-≥7.7.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 [![REUSE status](https://api.reuse.software/badge/github.com/pypsa/pypsa-eur)](https://api.reuse.software/info/github.com/pypsa/pypsa-eur)
+[![Stack Exchange questions](https://img.shields.io/stackexchange/stackoverflow/t/pypsa)](https://stackoverflow.com/questions/tagged/pypsa)
 
 # [Fork] PyPSA-Eur: A Sector-Coupled Open Optimisation Model of the European Energy System
 
@@ -36,17 +37,18 @@ The model is designed to be imported into the open toolbox
 [PyPSA](https://github.com/PyPSA/PyPSA).
 
 **WARNING**: PyPSA-Eur is under active development and has several
-[limitations](https://pypsa-eur.readthedocs.io/en/latest/limitations.html)
-which you should understand before using the model. The github repository
+[limitations](https://pypsa-eur.readthedocs.io/en/latest/limitations.html) which
+you should understand before using the model. The github repository
 [issues](https://github.com/PyPSA/pypsa-eur/issues) collect known topics we are
 working on (please feel free to help or make suggestions). The
 [documentation](https://pypsa-eur.readthedocs.io/) remains somewhat patchy. You
-can find showcases of the model's capabilities in the preprint [Benefits of a
-Hydrogen Network in Europe](https://arxiv.org/abs/2207.05816), a [paper in Joule
-with a description of the industry sector](https://arxiv.org/abs/2109.09563), or
-in [a 2021 presentation at EMP-E](https://nworbmot.org/energy/brown-empe.pdf).
-We cannot support this model if you choose to use it. We do not recommend to use
-the full resolution network model for simulations. At high granularity the
+can find showcases of the model's capabilities in the Joule paper [The potential
+role of a hydrogen network in
+Europe](https://doi.org/10.1016/j.joule.2023.06.016), another [paper in Joule
+with a description of the industry
+sector](https://doi.org/10.1016/j.joule.2022.04.016), or in [a 2021 presentation
+at EMP-E](https://nworbmot.org/energy/brown-empe.pdf). We do not recommend to
+use the full resolution network model for simulations. At high granularity the
 assignment of loads and generators to the nearest network node may not be a
 correct assumption, depending on the topology of the underlying distribution
 grid, and local grid bottlenecks may cause unrealistic load-shedding or
@@ -61,9 +63,9 @@ The dataset consists of:
 
 - A grid model based on a modified [GridKit](https://github.com/bdw/GridKit)
   extraction of the [ENTSO-E Transmission System
-  Map](https://www.entsoe.eu/data/map/). The grid model contains 6763 lines
+  Map](https://www.entsoe.eu/data/map/). The grid model contains 7072 lines
   (alternating current lines at and above 220kV voltage level and all high
-  voltage direct current lines) and 3642 substations.
+  voltage direct current lines) and 3803 substations.
 - The open power plant database
   [powerplantmatching](https://github.com/FRESNA/powerplantmatching).
 - Electrical demand time series from the
@@ -92,9 +94,17 @@ to 50-200 nodes.
 
 Already-built versions of the model can be found in the accompanying [Zenodo
 repository](https://doi.org/10.5281/zenodo.3601881).
+
+# Contributing and Support
+We strongly welcome anyone interested in contributing to this project. If you have any ideas, suggestions or encounter problems, feel invited to file issues or make pull requests on GitHub.
+-   In case of code-related **questions**, please post on [stack overflow](https://stackoverflow.com/questions/tagged/pypsa).
+-   For non-programming related and more general questions please refer to the [mailing list](https://groups.google.com/group/pypsa).
+-   To **discuss** with other PyPSA users, organise projects, share news, and get in touch with the community you can use the [discord server](https://discord.com/invite/AnuJBk23FU).
+-   For **bugs and feature requests**, please use the [PyPSA-Eur Github Issues page](https://github.com/PyPSA/pypsa-eur/issues).
+
 # Licence
 
 The code in PyPSA-Eur is released as free software under the
-[MIT License](https://opensource.org/licenses/MIT), see `LICENSE.txt`.
+[MIT License](https://opensource.org/licenses/MIT), see [`doc/licenses.rst`](doc/licenses.rst).
 However, different licenses and terms of use may apply to the various
 input data.

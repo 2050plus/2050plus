@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Preprocess gas network based on data from bthe SciGRID_gas project
 (https://www.gas.scigrid.de/).
@@ -10,45 +9,46 @@ Preprocess gas network based on data from bthe SciGRID_gas project
 
 import logging
 
-logger = logging.getLogger(__name__)
-
 import geopandas as gpd
 import pandas as pd
+from _helpers import configure_logging, set_scenario_config
 from pypsa.geo import haversine_pts
 from shapely.geometry import Point
+
+logger = logging.getLogger(__name__)
 
 
 def diameter_to_capacity(pipe_diameter_mm):
     """
     Calculate pipe capacity in MW based on diameter in mm.
 
-    20 inch (500 mm)  50 bar -> 1.5   GW CH4 pipe capacity (LHV)
-    24 inch (600 mm)  50 bar -> 5     GW CH4 pipe capacity (LHV)
-    36 inch (900 mm)  50 bar -> 11.25 GW CH4 pipe capacity (LHV)
-    48 inch (1200 mm) 80 bar -> 21.7  GW CH4 pipe capacity (LHV)
+    20 inch (500 mm)  50 bar -> 1.5   GW CH4 pipe capacity (LHV) 24 inch
+    (600 mm)  50 bar -> 5     GW CH4 pipe capacity (LHV) 36 inch (900
+    mm)  50 bar -> 11.25 GW CH4 pipe capacity (LHV) 48 inch (1200 mm) 80
+    bar -> 21.7  GW CH4 pipe capacity (LHV)
 
-    Based on p.15 of https://gasforclimate2050.eu/wp-content/uploads/2020/07/2020_European-Hydrogen-Backbone_Report.pdf
+    Based on p.15 of
+    https://gasforclimate2050.eu/wp-content/uploads/2020/07/2020_European-Hydrogen-Backbone_Report.pdf
     """
-
-    # slopes definitions
-    m0 = (1500 - 0) / (500 - 0)
     m1 = (5000 - 1500) / (600 - 500)
     m2 = (11250 - 5000) / (900 - 600)
-    m3 = (21700 - 11250) / (1200 - 900)
-
-    # intercept
-    a0 = 0
     a1 = -16000
     a2 = -7500
-    a3 = -20100
-
     if pipe_diameter_mm < 500:
+        # slopes definitions
+        m0 = (1500 - 0) / (500 - 0)
+        # intercept
+        a0 = 0
         return a0 + m0 * pipe_diameter_mm
     elif pipe_diameter_mm < 600:
         return a1 + m1 * pipe_diameter_mm
     elif pipe_diameter_mm < 900:
         return a2 + m2 * pipe_diameter_mm
     else:
+        m3 = (21700 - 11250) / (1200 - 900)
+
+        a3 = -20100
+
         return a3 + m3 * pipe_diameter_mm
 
 
@@ -115,12 +115,10 @@ def prepare_dataset(
     df["p_nom_diameter"] = df.diameter_mm.apply(diameter_to_capacity)
     ratio = df.p_nom / df.p_nom_diameter
     not_nordstream = df.max_pressure_bar < 220
-    df.p_nom.update(
-        df.p_nom_diameter.where(
-            (df.p_nom <= 500)
-            | ((ratio > correction_threshold_p_nom) & not_nordstream)
-            | ((ratio < 1 / correction_threshold_p_nom) & not_nordstream)
-        )
+    df["p_nom"] = df.p_nom_diameter.where(
+        (df.p_nom <= 500)
+        | ((ratio > correction_threshold_p_nom) & not_nordstream)
+        | ((ratio < 1 / correction_threshold_p_nom) & not_nordstream)
     )
 
     # lines which have way too discrepant line lengths
@@ -131,12 +129,10 @@ def prepare_dataset(
         axis=1,
     )
     ratio = df.eval("length / length_haversine")
-    df["length"].update(
-        df.length_haversine.where(
-            (df["length"] < 20)
-            | (ratio > correction_threshold_length)
-            | (ratio < 1 / correction_threshold_length)
-        )
+    df["length"] = df.length_haversine.where(
+        (df["length"] < 20)
+        | (ratio > correction_threshold_length)
+        | (ratio < 1 / correction_threshold_length)
     )
 
     return df
@@ -148,7 +144,8 @@ if __name__ == "__main__":
 
         snakemake = mock_snakemake("build_gas_network")
 
-    logging.basicConfig(level=snakemake.config["logging"]["level"])
+    configure_logging(snakemake)
+    set_scenario_config(snakemake)
 
     gas_network = load_dataset(snakemake.input.gas_network)
 

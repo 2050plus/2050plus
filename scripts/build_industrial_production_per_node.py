@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Build industrial production per model region.
 """
@@ -10,12 +9,14 @@ Build industrial production per model region.
 from itertools import product
 
 import pandas as pd
+from _helpers import set_scenario_config
 
 # map JRC/our sectors to hotmaps sector, where mapping exist
 sector_mapping = {
     "Electric arc": "Iron and steel",
     "Integrated steelworks": "Iron and steel",
-    "DRI + Electric arc": "Iron and steel",
+    "DRI H2 + Electric arc": "Iron and steel",
+    "DRI CH4 + Electric arc": "Iron and steel",
     "Ammonia": "Chemical industry",
     "HVC": "Chemical industry",
     "HVC (mechanical recycling)": "Chemical industry",
@@ -73,5 +74,6 @@ if __name__ == "__main__":
             simpl="",
             clusters=48,
         )
+    set_scenario_config(snakemake)
 
     build_nodal_industrial_production()

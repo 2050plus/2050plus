@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# SPDX-FileCopyrightText: : 2017-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2017-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Calculates for each network node the (i) installable capacity (based on land-
 use), (ii) the available generation time series (based on weather data), and
@@ -27,45 +26,50 @@ Relevant settings
 
     renewable:
         {technology}:
-            cutout:
-            corine:
-            grid_codes:
-            distance:
-            natura:
-            max_depth:
-            max_shore_distance:
-            min_shore_distance:
-            capacity_per_sqkm:
-            correction_factor:
-            potential:
-            min_p_max_pu:
-            clip_p_max_pu:
-            resource:
+            cutout: corine: luisa: grid_codes: distance: natura: max_depth:
+            max_shore_distance: min_shore_distance: capacity_per_sqkm:
+            correction_factor: min_p_max_pu: clip_p_max_pu: resource:
 
 .. seealso::
-    Documentation of the configuration file ``config.yaml`` at
+    Documentation of the configuration file ``config/config.yaml`` at
     :ref:`snapshots_cf`, :ref:`atlite_cf`, :ref:`renewable_cf`
 
 Inputs
 ------
 
-- ``data/bundle/corine/g250_clc06_V18_5.tif``: `CORINE Land Cover (CLC) <https://land.copernicus.eu/pan-european/corine-land-cover>`_ inventory on `44 classes <https://wiki.openstreetmap.org/wiki/Corine_Land_Cover#Tagging>`_ of land use (e.g. forests, arable land, industrial, urban areas).
+- ``data/bundle/corine/g250_clc06_V18_5.tif``: `CORINE Land Cover (CLC)
+  <https://land.copernicus.eu/pan-european/corine-land-cover>`_ inventory on `44
+  classes <https://wiki.openstreetmap.org/wiki/Corine_Land_Cover#Tagging>`_ of
+  land use (e.g. forests, arable land, industrial, urban areas) at 100m
+  resolution.
 
     .. image:: img/corine.png
         :scale: 33 %
 
-- ``data/bundle/GEBCO_2014_2D.nc``: A `bathymetric <https://en.wikipedia.org/wiki/Bathymetry>`_ data set with a global terrain model for ocean and land at 15 arc-second intervals by the `General Bathymetric Chart of the Oceans (GEBCO) <https://www.gebco.net/data_and_products/gridded_bathymetry_data/>`_.
+- ``data/LUISA_basemap_020321_50m.tif``: `LUISA Base Map
+  <https://publications.jrc.ec.europa.eu/repository/handle/JRC124621>`_ land
+  coverage dataset at 50m resolution similar to CORINE. For codes in relation to
+  CORINE land cover, see `Annex 1 of the technical documentation
+  <https://publications.jrc.ec.europa.eu/repository/bitstream/JRC124621/technical_report_luisa_basemap_2018_v7_final.pdf>`_.
+
+- ``data/bundle/GEBCO_2014_2D.nc``: A `bathymetric
+  <https://en.wikipedia.org/wiki/Bathymetry>`_ data set with a global terrain
+  model for ocean and land at 15 arc-second intervals by the `General
+  Bathymetric Chart of the Oceans (GEBCO)
+  <https://www.gebco.net/data_and_products/gridded_bathymetry_data/>`_.
 
     .. image:: img/gebco_2019_grid_image.jpg
         :scale: 50 %
 
-    **Source:** `GEBCO <https://www.gebco.net/data_and_products/images/gebco_2019_grid_image.jpg>`_
+    **Source:** `GEBCO
+    <https://www.gebco.net/data_and_products/images/gebco_2019_grid_image.jpg>`_
 
 - ``resources/natura.tiff``: confer :ref:`natura`
 - ``resources/offshore_shapes.geojson``: confer :ref:`shapes`
-- ``resources/regions_onshore.geojson``: (if not offshore wind), confer :ref:`busregions`
+- ``resources/regions_onshore.geojson``: (if not offshore wind), confer
+  :ref:`busregions`
 - ``resources/regions_offshore.geojson``: (if offshore wind), :ref:`busregions`
-- ``"cutouts/" + config["renewable"][{technology}]['cutout']``: :ref:`cutout`
+- ``"cutouts/" + params["renewable"][{technology}]['cutout']``: :ref:`cutout`
 - ``networks/base.nc``: :ref:`base`
 
 Outputs
@@ -129,25 +133,26 @@ Description
 This script functions at two main spatial resolutions: the resolution of the
 network nodes and their `Voronoi cells
 <https://en.wikipedia.org/wiki/Voronoi_diagram>`_, and the resolution of the
-cutout grid cells for the weather data. Typically the weather data grid is
-finer than the network nodes, so we have to work out the distribution of
-generators across the grid cells within each Voronoi cell. This is done by
-taking account of a combination of the available land at each grid cell and the
-capacity factor there.
+cutout grid cells for the weather data. Typically the weather data grid is finer
+than the network nodes, so we have to work out the distribution of generators
+across the grid cells within each Voronoi cell. This is done by taking account
+of a combination of the available land at each grid cell and the capacity factor
+there.
 
 First the script computes how much of the technology can be installed at each
-cutout grid cell and each node using the `GLAES
-<https://github.com/FZJ-IEK3-VSA/glaes>`_ library. This uses the CORINE land use data,
-Natura2000 nature reserves and GEBCO bathymetry data.
+cutout grid cell and each node using the `atlite
+<https://github.com/pypsa/atlite>`_ library. This uses the CORINE land use data,
+LUISA land use data, Natura2000 nature reserves, GEBCO bathymetry data, and
+shipping lanes.
 
 .. image:: img/eligibility.png
     :scale: 50 %
     :align: center
 
-To compute the layout of generators in each node's Voronoi cell, the
-installable potential in each grid cell is multiplied with the capacity factor
-at each grid cell. This is done since we assume more generators are installed
-at cells with a higher capacity factor.
+To compute the layout of generators in each node's Voronoi cell, the installable
+potential in each grid cell is multiplied with the capacity factor at each grid
+cell. This is done since we assume more generators are installed at cells with a
+higher capacity factor.
 
 .. image:: img/offwinddc-gridcell.png
     :scale: 50 %
@@ -165,20 +170,14 @@ at cells with a higher capacity factor.
     :scale: 50 %
     :align: center
 
-This layout is then used to compute the generation availability time series
-from the weather data cutout from ``atlite``.
+This layout is then used to compute the generation availability time series from
+the weather data cutout from ``atlite``.
 
-Two methods are available to compute the maximal installable potential for the
-node (`p_nom_max`): ``simple`` and ``conservative``:
-
-- ``simple`` adds up the installable potentials of the individual grid cells.
-  If the model comes close to this limit, then the time series may slightly
-  overestimate production since it is assumed the geographical distribution is
-  proportional to capacity factor.
-
-- ``conservative`` assertains the nodal limit by increasing capacities
-  proportional to the layout until the limit of an individual grid cell is
-  reached.
+The maximal installable potential for the node (`p_nom_max`) is computed by
+adding up the installable potentials of the individual grid cells. If the model
+comes close to this limit, then the time series may slightly overestimate
+production since it is assumed the geographical distribution is proportional to
+capacity factor.
 """
 import functools
 import logging
@@ -188,8 +187,8 @@ import atlite
 import geopandas as gpd
 import numpy as np
 import xarray as xr
-from _helpers import configure_logging
-from dask.distributed import Client, LocalCluster
+from _helpers import configure_logging, get_snapshots, set_scenario_config
+from dask.distributed import Client
 from pypsa.geo import haversine
 from shapely.geometry import LineString
 
@@ -200,27 +199,36 @@ if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
 
-        snakemake = mock_snakemake("build_renewable_profiles", technology="solar")
+        snakemake = mock_snakemake("build_renewable_profiles", technology="offwind-dc")
     configure_logging(snakemake)
+    set_scenario_config(snakemake)
 
     nprocesses = int(snakemake.threads)
     noprogress = snakemake.config["run"].get("disable_progressbar", True)
-    config = snakemake.config["renewable"][snakemake.wildcards.technology]
-    resource = config["resource"]  # pv panel config / wind turbine config
-    correction_factor = config.get("correction_factor", 1.0)
-    capacity_per_sqkm = config["capacity_per_sqkm"]
-    p_nom_max_meth = config.get("potential", "conservative")
+    noprogress = noprogress or not snakemake.config["atlite"]["show_progress"]
+    params = snakemake.params.renewable[snakemake.wildcards.technology]
+    resource = params["resource"]  # pv panel params / wind turbine params
 
-    if isinstance(config.get("corine", {}), list):
-        config["corine"] = {"grid_codes": config["corine"]}
+    tech = next(t for t in ["panel", "turbine"] if t in resource)
+    models = resource[tech]
+    if not isinstance(models, dict):
+        models = {0: models}
+    resource[tech] = models[next(iter(models))]
+
+    correction_factor = params.get("correction_factor", 1.0)
+    capacity_per_sqkm = params["capacity_per_sqkm"]
 
     if correction_factor != 1.0:
         logger.info(f"correction_factor is set as {correction_factor}")
 
-    cluster = LocalCluster(n_workers=nprocesses, threads_per_worker=1)
-    client = Client(cluster, asynchronous=True)
+    if nprocesses > 1:
+        client = Client(n_workers=nprocesses, threads_per_worker=1)
+    else:
+        client = None
 
-    cutout = atlite.Cutout(snakemake.input.cutout)
+    sns = get_snapshots(snakemake.params.snapshots, snakemake.params.drop_leap_day)
+
+    cutout = atlite.Cutout(snakemake.input.cutout).sel(time=sns)
     regions = gpd.read_file(snakemake.input.regions)
     assert not regions.empty, (
         f"List of regions in {snakemake.input.regions} is empty, please "
@@ -230,58 +238,78 @@ if __name__ == "__main__":
     regions = regions.set_index("name").rename_axis("bus")
     buses = regions.index
 
-    res = config.get("excluder_resolution", 100)
+    res = params.get("excluder_resolution", 100)
     excluder = atlite.ExclusionContainer(crs=3035, res=res)
 
-    if config["natura"]:
+    if params["natura"]:
         excluder.add_raster(snakemake.input.natura, nodata=0, allow_no_overlap=True)
 
-    corine = config.get("corine", {})
-    if "grid_codes" in corine:
-        codes = corine["grid_codes"]
-        excluder.add_raster(snakemake.input.corine, codes=codes, invert=True, crs=3035)
-    if corine.get("distance", 0.0) > 0.0:
-        codes = corine["distance_grid_codes"]
-        buffer = corine["distance"]
-        excluder.add_raster(
-            snakemake.input.corine, codes=codes, buffer=buffer, crs=3035
-        )
+    for dataset in ["corine", "luisa"]:
+        kwargs = {"nodata": 0} if dataset == "luisa" else {}
+        settings = params.get(dataset, {})
+        if not settings:
+            continue
+        if dataset == "luisa" and res > 50:
+            logger.info(
+                "LUISA data is available at 50m resolution, "
+                f"but coarser {res}m resolution is used."
+            )
+        if isinstance(settings, list):
+            settings = {"grid_codes": settings}
+        if "grid_codes" in settings:
+            codes = settings["grid_codes"]
+            excluder.add_raster(
+                snakemake.input[dataset], codes=codes, invert=True, crs=3035, **kwargs
+            )
+        if settings.get("distance", 0.0) > 0.0:
+            codes = settings["distance_grid_codes"]
+            buffer = settings["distance"]
+            excluder.add_raster(
+                snakemake.input[dataset], codes=codes, buffer=buffer, crs=3035, **kwargs
+            )
 
-    if "ship_threshold" in config:
+    if params.get("ship_threshold"):
         shipping_threshold = (
-            config["ship_threshold"] * 8760 * 6
+            params["ship_threshold"] * 8760 * 6
         )  # approximation because 6 years of data which is hourly collected
         func = functools.partial(np.less, shipping_threshold)
         excluder.add_raster(
             snakemake.input.ship_density, codes=func, crs=4326, allow_no_overlap=True
         )
 
-    if config.get("max_depth"):
+    if params.get("max_depth"):
         # lambda not supported for atlite + multiprocessing
         # use named function np.greater with partially frozen argument instead
         # and exclude areas where: -max_depth > grid cell depth
-        func = functools.partial(np.greater, -config["max_depth"])
+        func = functools.partial(np.greater, -params["max_depth"])
         excluder.add_raster(snakemake.input.gebco, codes=func, crs=4326, nodata=-1000)
 
-    if "min_shore_distance" in config:
-        buffer = config["min_shore_distance"]
+    if "min_shore_distance" in params:
+        buffer = params["min_shore_distance"]
         excluder.add_geometry(snakemake.input.country_shapes, buffer=buffer)
 
-    if "max_shore_distance" in config:
-        buffer = config["max_shore_distance"]
+    if "max_shore_distance" in params:
+        buffer = params["max_shore_distance"]
         excluder.add_geometry(
             snakemake.input.country_shapes, buffer=buffer, invert=True
         )
 
+    logger.info("Calculate landuse availability...")
+    start = time.time()
+
     kwargs = dict(nprocesses=nprocesses, disable_progressbar=noprogress)
-    if noprogress:
-        logger.info("Calculate landuse availabilities...")
-        start = time.time()
-        availability = cutout.availabilitymatrix(regions, excluder, **kwargs)
-        duration = time.time() - start
-        logger.info(f"Completed availability calculation ({duration:2.2f}s)")
-    else:
-        availability = cutout.availabilitymatrix(regions, excluder, **kwargs)
+    availability = cutout.availabilitymatrix(regions, excluder, **kwargs)
+
+    duration = time.time() - start
+    logger.info(f"Completed landuse availability calculation ({duration:2.2f}s)")
+
+    # For Moldova and Ukraine: Overwrite parts not covered by Corine with
+    # externally determined available areas
+    if "availability_matrix_MD_UA" in snakemake.input.keys():
+        availability_MDUA = xr.open_dataarray(
+            snakemake.input["availability_matrix_MD_UA"]
+        )
+        availability.loc[availability_MDUA.coords] = availability_MDUA
 
     area = cutout.grid.to_crs(3035).area / 1e6
     area = xr.DataArray(
@@ -290,29 +318,55 @@ if __name__ == "__main__":
 
     potential = capacity_per_sqkm * availability.sum("bus") * area
     func = getattr(cutout, resource.pop("method"))
-    resource["dask_kwargs"] = {"scheduler": client}
+    if client is not None:
+        resource["dask_kwargs"] = {"scheduler": client}
+
+    logger.info("Calculate average capacity factor...")
+    start = time.time()
+
     capacity_factor = correction_factor * func(capacity_factor=True, **resource)
     layout = capacity_factor * area * capacity_per_sqkm
-    profile, capacities = func(
-        matrix=availability.stack(spatial=["y", "x"]),
-        layout=layout,
-        index=buses,
-        per_unit=True,
-        return_capacity=True,
-        **resource,
-    )
 
-    logger.info(f"Calculating maximal capacity per bus (method '{p_nom_max_meth}')")
-    if p_nom_max_meth == "simple":
-        p_nom_max = capacity_per_sqkm * availability @ area
-    elif p_nom_max_meth == "conservative":
-        max_cap_factor = capacity_factor.where(availability != 0).max(["x", "y"])
-        p_nom_max = capacities / max_cap_factor
-    else:
-        raise AssertionError(
-            'Config key `potential` should be one of "simple" '
-            f'(default) or "conservative", not "{p_nom_max_meth}"'
+    duration = time.time() - start
+    logger.info(f"Completed average capacity factor calculation ({duration:2.2f}s)")
+
+    profiles = []
+    capacities = []
+    for year, model in models.items():
+
+        logger.info(
+            f"Calculate weighted capacity factor time series for model {model}..."
         )
+        start = time.time()
+
+        resource[tech] = model
+
+        profile, capacity = func(
+            matrix=availability.stack(spatial=["y", "x"]),
+            layout=layout,
+            index=buses,
+            per_unit=True,
+            return_capacity=True,
+            **resource,
+        )
+
+        dim = {"year": [year]}
+        profile = profile.expand_dims(dim)
+        capacity = capacity.expand_dims(dim)
+
+        profiles.append(profile.rename("profile"))
+        capacities.append(capacity.rename("weight"))
+
+        duration = time.time() - start
+        logger.info(
+            f"Completed weighted capacity factor time series calculation for model {model} ({duration:2.2f}s)"
+        )
+
+    profiles = xr.merge(profiles)
+    capacities = xr.merge(capacities)
+
+    logger.info("Calculating maximal capacity per bus")
+    p_nom_max = capacity_per_sqkm * availability @ area
 
     logger.info("Calculate average distances.")
     layoutmatrix = (layout * availability).stack(spatial=["y", "x"])
@@ -336,8 +390,8 @@ if __name__ == "__main__":
 
     ds = xr.merge(
         [
-            (correction_factor * profile).rename("profile"),
-            capacities.rename("weight"),
+            correction_factor * profiles,
+            capacities,
             p_nom_max.rename("p_nom_max"),
             potential.rename("potential"),
             average_distance.rename("average_distance"),
@@ -357,16 +411,22 @@ if __name__ == "__main__":
         ds["underwater_fraction"] = xr.DataArray(underwater_fraction, [buses])
 
     # select only buses with some capacity and minimal capacity factor
+    mean_profile = ds["profile"].mean("time")
+    if "year" in ds.indexes:
+        mean_profile = mean_profile.max("year")
+
     ds = ds.sel(
         bus=(
-            (ds["profile"].mean("time") > config.get("min_p_max_pu", 0.0))
-            & (ds["p_nom_max"] > config.get("min_p_nom_max", 0.0))
+            (mean_profile > params.get("min_p_max_pu", 0.0))
+            & (ds["p_nom_max"] > params.get("min_p_nom_max", 0.0))
         )
     )
 
-    if "clip_p_max_pu" in config:
-        min_p_max_pu = config["clip_p_max_pu"]
+    if "clip_p_max_pu" in params:
+        min_p_max_pu = params["clip_p_max_pu"]
         ds["profile"] = ds["profile"].where(ds["profile"] >= min_p_max_pu, 0)
 
     ds.to_netcdf(snakemake.output.profile)
-    client.shutdown()
+
+    if client is not None:
+        client.shutdown()

@@ -1,5 +1,5 @@
 ..
-  SPDX-FileCopyrightText: 2019-2023 The PyPSA-Eur Authors
+  SPDX-FileCopyrightText: 2019-2024 The PyPSA-Eur Authors
 
   SPDX-License-Identifier: CC-BY-4.0
 
@@ -22,11 +22,11 @@ Rule ``retrieve_databundle``
 Rule ``retrieve_cutout``
 ============================
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3517949.svg
-   :target: https://doi.org/10.5281/zenodo.3517949
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6382570.svg
+   :target: https://doi.org/10.5281/zenodo.6382570
 
 Cutouts are spatio-temporal subsets of the European weather data from the `ECMWF ERA5 <https://software.ecmwf.int/wiki/display/CKB/ERA5+data+documentation>`_ reanalysis dataset and the `CMSAF SARAH-2 <https://wui.cmsaf.eu/safira/action/viewDoiDetails?acronym=SARAH_V002>`_ solar surface radiation dataset for the year 2013.
-They have been prepared by and are for use with the `atlite <https://github.com/PyPSA/atlite>`_ tool. You can either generate them yourself using the ``build_cutouts`` rule or retrieve them directly from `zenodo <https://doi.org/10.5281/zenodo.3517949>`__ through the rule ``retrieve_cutout``.
+They have been prepared by and are for use with the `atlite <https://github.com/PyPSA/atlite>`_ tool. You can either generate them yourself using the ``build_cutouts`` rule or retrieve them directly from `zenodo <https://doi.org/10.5281/zenodo.6382570>`__ through the rule ``retrieve_cutout``.
 The :ref:`tutorial` uses a smaller cutout than required for the full model (30 MB), which is also automatically downloaded.
 
 .. note::
@@ -42,7 +42,7 @@ The :ref:`tutorial` uses a smaller cutout than required for the full model (30 M
         build_cutout:
 
 .. seealso::
-    Documentation of the configuration file ``config.yaml`` at
+    Documentation of the configuration file ``config/config.yaml`` at
     :ref:`toplevel_cf`
 
 **Outputs**
@@ -69,7 +69,7 @@ This rule, as a substitute for :mod:`build_natura_raster`, downloads an already 
         build_natura_raster:
 
 .. seealso::
-    Documentation of the configuration file ``config.yaml`` at
+    Documentation of the configuration file ``config/config.yaml`` at
     :ref:`toplevel_cf`
 
 **Outputs**
@@ -80,10 +80,10 @@ This rule, as a substitute for :mod:`build_natura_raster`, downloads an already 
     For details see :mod:`build_natura_raster`.
 
 
-Rule ``retrieve_load_data``
-================================
+Rule ``retrieve_electricity_demand``
+====================================
 
-This rule downloads hourly electric load data for each country from the `OPSD platform <data.open-power-system-data.org/time_series/2019-06-05/time_series_60min_singleindex.csv>`_.
+This rule downloads hourly electric load data for each country from the `OPSD platform <https://data.open-power-system-data.org/time_series/2019-06-05/time_series_60min_singleindex.csv>`_.
 
 **Relevant Settings**
 
@@ -91,15 +91,8 @@ None.
 
 **Outputs**
 
-- ``data/load_raw.csv``
+- ``data/electricity_demand_raw.csv``
 
-
-.._retrieve_load_future
-
-Rule ``retrieve_load_future``
-================================
-
-.. automodule:: retrieve_load_future
 
 Rule ``retrieve_cost_data``
 ================================
@@ -118,7 +111,7 @@ This rule downloads techno-economic assumptions from the `technology-data reposi
         version:
 
 .. seealso::
-    Documentation of the configuration file ``config.yaml`` at
+    Documentation of the configuration file ``config/config.yaml`` at
     :ref:`costs_cf`
 
 **Outputs**

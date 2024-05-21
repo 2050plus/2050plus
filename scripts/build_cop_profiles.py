@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-# SPDX-FileCopyrightText: : 2020-2023 The PyPSA-Eur Authors
+# SPDX-FileCopyrightText: : 2020-2024 The PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: MIT
-
 """
 Build coefficient of performance (COP) time series for air- or ground-sourced
 heat pumps.
 
-The COP is a function of the temperature difference between
-source and sink.
+The COP is a function of the temperature difference between source and
+sink.
 
 The quadratic regression used is based on Staffell et al. (2012)
 https://doi.org/10.1039/C2EE22653G.
 """
 
 import xarray as xr
+from _helpers import set_scenario_config
 
 
 def coefficient_of_performance(delta_T, source="air"):
@@ -36,11 +36,13 @@ if __name__ == "__main__":
             clusters=48,
         )
 
+    set_scenario_config(snakemake)
+
     for area in ["total", "urban", "rural"]:
         for source in ["air", "soil"]:
             source_T = xr.open_dataarray(snakemake.input[f"temp_{source}_{area}"])
 
-            delta_T = snakemake.config["sector"]["heat_pump_sink_T"] - source_T
+            delta_T = snakemake.params.heat_pump_sink_T - source_T
 
             cop = coefficient_of_performance(delta_T, source)
 
