@@ -290,9 +290,9 @@ def load_data_st(config):
 
     outputs = [
         "load_temporal",
-        "load_temporal_be",
+        "load_temporal_BE",
         "supply_temporal",
-        "supply_temporal_be",
+        "supply_temporal_BE",
         "supply_energy_df",
         "imports_exports",
         "res_temporal",
