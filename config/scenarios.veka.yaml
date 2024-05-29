@@ -20,17 +20,23 @@ electrification:
     land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
         2030: 0
+        2035: 0
         2040: 0
+        2045: 0        
         2050: 0
     land_transport_electric_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0.01
         2030: 0.15
+        2035: 0.235
         2040: 0.32
+        2045: 0.35
         2050: 0.38
     land_transport_ice_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0.99
         2030: 0.80
+        2035: 0.605
         2040: 0.41
+        2045: 0.315
         2050: 0.22
   industry:
     St_primary_fraction:
@@ -66,17 +72,23 @@ molecule:
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
         2030: 0.02
+        2035: 0.065
         2040: 0.11
+        2045: 0.145
         2050: 0.18
     land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0.01
         2030: 0.14
+        2035: 0.19
         2040: 0.24
+        2045: 0.255
         2050: 0.27
     land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0.99
         2030: 0.80
+        2035: 0.595
         2040: 0.39
+        2045: 0.30
         2050: 0.21
   industry:
     St_primary_fraction:
@@ -112,17 +124,23 @@ lsc:
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
         2030: 0.02
+        2035: 0.065
         2040: 0.11
+        2045: 0.145
         2050: 0.18
     land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0.01
         2030: 0.14
+        2035: 0.19
         2040: 0.24
+        2045: 0.255
         2050: 0.27
     land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0.99
         2030: 0.80
+        2035: 0.595
         2040: 0.39
+        2045: 0.30
         2050: 0.21
   industry:
     St_primary_fraction:
