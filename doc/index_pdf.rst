@@ -3,7 +3,15 @@
 
   SPDX-License-Identifier: CC-BY-4.0
 
-.. include:: index_txt.rst
+Introduction
+===============================
+
+.. toctree::
+
+    index_txt
+
+Energie Studie 2050+ for VEKA
+===============================
 
 .. toctree::
     :hidden:
@@ -13,6 +21,9 @@
     veka_overview
     veka_configurations
     veka_model
+
+Getting Started
+===============================
 
 .. toctree::
    :hidden:
@@ -24,6 +35,9 @@
    tutorial
    tutorial_sector
 
+Configuration
+===============================
+
 .. toctree::
    :hidden:
    :maxdepth: 1
@@ -33,6 +47,9 @@
    configuration
    foresight
    costs
+
+Rules Overview
+===============================
 
 .. toctree::
    :hidden:
@@ -46,6 +63,9 @@
    solving
    plotting
 
+Implementation details for sector-coupled systems
+==============================================================
+
 .. toctree::
    :hidden:
    :maxdepth: 1
@@ -53,6 +73,9 @@
 
    spatial_resolution
    supply_demand
+
+References
+===============================
 
 .. toctree::
    :hidden:

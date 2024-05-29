@@ -50,15 +50,14 @@ Annual heat demands per country are retrieved from `JRC-IDEES  <https://op.europ
 
 The space heating demand can be exogenously reduced by retrofitting measures that improve the buildings’ thermal envelopes.
 
-.. literalinclude:: ../config.default.yaml
+.. literalinclude:: ../config/config.default.yaml
     :language: yaml
     :lines: 205
 
 Co-optimsing of building renovation is also possible, if it is activated in the `config file <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L222>`_.
 Renovation of the thermal envelope reduces the space heating demand and is optimised at each node for every heat bus. Renovation measures through additional insulation material and replacement of energy inefficient windows are considered.
 In a first step, costs per energy savings are estimated in `build_retro_cost.py <https://github.com/PyPSA/pypsa-eur-sec/blob/master/scripts/build_retro_cost.py>`_. They depend on the insulation condition of the building stock and costs for renovation of the building elements. In a second step, for those cost per energy savings two possible renovation strengths are determined: a moderate renovation with lower costs, a lower maximum possible space heat savings, and an ambitious renovation with associated higher costs and higher efficiency gains. They are added by step-wise linearisation in form of two additional generations in `prepare_sector_network.py <https://github.com/PyPSA/pypsa-eur-sec/blob/master/scripts/prepare_sector_network.py>`_.
-Further information are given in the publication :
- `Mitigating heat demand peaks in buildings in a highly renewable European energy system, (2021)  <https://arxiv.org/abs/2012.01831>`_.
+Further information are given in the publication : `Mitigating heat demand peaks in buildings in a highly renewable European energy system, (2021)  <https://arxiv.org/abs/2012.01831>`_.
 
 *Water heating*
 
@@ -105,7 +104,7 @@ Ground-source heat pumps are only allowed in rural areas because of space constr
 
 Below are more detailed explanations for each heating supply component, all of which are modelled as `links <https://pypsa.readthedocs.io/en/latest/components.html?highlight=distribution#link>`_ in PyPSA-Eur-Sec.
 
-.. _Large-scale CHP:
+.. _large_scale_chp:
 
 **Large-scale CHP**
 
@@ -199,8 +198,8 @@ Further information are given in the study by Zeyen et al. : `Mitigating heat de
 Hydrogen demand
 =============================
 
-Hydrogen is consumed in the industry sector (see :ref:`Industry demand`) to produce ammonia (see :ref:`Chemicals Industry`) and direct reduced iron (DRI) (see :ref:`Iron and Steel`). Hydrogen is also consumed to produce synthetic methane (see :ref:`Methane supply`) and liquid hydrocarbons (see :ref:`Oil-based products supply`) which have multiple uses in industry and other sectors.
-Hydrogen is also used for transport applications (see :ref:`Transportation`), where it is exogenously fixed. It is used in `heavy-duty land transport <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L181>`_ and as liquified hydrogen in the shipping sector (see :ref:`Shipping`). Furthermore, stationary fuel cells may re-electrify hydrogen (with waste heat as a byproduct) to balance renewable fluctuations (see :ref:`Electricity supply and demand`). The waste heat from the stationary fuel cells can be used in `district-heating systems <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L256>`_.
+Hydrogen is consumed in the industry sector (see :ref:`Industry demand`) to produce ammonia (see :ref:`Chemicals Industry<chemicals_industry>`) and direct reduced iron (DRI) (see :ref:`Iron and Steel<iron_and_steel>`). Hydrogen is also consumed to produce synthetic methane (see :ref:`Methane supply`) and liquid hydrocarbons (see :ref:`Oil-based products supply`) which have multiple uses in industry and other sectors.
+Hydrogen is also used for transport applications (see :ref:`Transportation`), where it is exogenously fixed. It is used in `heavy-duty land transport <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L181>`_ and as liquified hydrogen in the shipping sector (see :ref:`Shipping<shipping>`). Furthermore, stationary fuel cells may re-electrify hydrogen (with waste heat as a byproduct) to balance renewable fluctuations (see :ref:`Electricity supply and demand`). The waste heat from the stationary fuel cells can be used in `district-heating systems <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L256>`_.
 
 .. _Hydrogen supply:
 
@@ -300,7 +299,7 @@ A `typical use case for biomass <https://arxiv.org/abs/2109.09563>`_ would be th
 
 *Solid biomass conversion and use*
 
-Solid biomass can be used directly to provide process heat up to 500˚C in the industry. It can also be burned in CHP plants and boilers associated with heating systems. These technologies are described elsewhere (see :ref:`Large-scale CHP` and :ref:`Industry demand`).
+Solid biomass can be used directly to provide process heat up to 500˚C in the industry. It can also be burned in CHP plants and boilers associated with heating systems. These technologies are described elsewhere (see :ref:`Large-scale CHP<large_scale_chp>` and :ref:`Industry demand`).
 
 
 Solid biomass can be converted to syngas if the option is enabled in the `config file <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L274>`_. In this case the model will enable the technology BioSNG both with and without the option for carbon capture (see `Technology-data repository <https://github.com/PyPSA/technology-data>`_).
@@ -324,8 +323,8 @@ The model can only use biogas by first upgrading it to natural gas quality [see 
 Oil-based products demand
 =========================
 
-Naphtha is used as a feedstock in the chemicals industry (see :ref:`Chemicals Industry`). Furthermore, kerosene is used as transport fuel in the aviation sector (see :ref:`Aviation`). Non-electrified agriculture machinery also consumes gasoline.
-Land transport [(see :ref:`Land transport`)  that is not electrified or converted into using :math:`H_2`-fuel cells also consumes oil-based products. While there is regional distribution of demand, the carrier is copperplated in the model, which means that transport costs and constraints are neglected.
+Naphtha is used as a feedstock in the chemicals industry (see :ref:`Chemicals Industry<chemicals_industry>`). Furthermore, kerosene is used as transport fuel in the aviation sector (see :ref:`Aviation<aviation>`). Non-electrified agriculture machinery also consumes gasoline.
+Land transport [(see :ref:`Land transport<land_transport>`)  that is not electrified or converted into using :math:`H_2`-fuel cells also consumes oil-based products. While there is regional distribution of demand, the carrier is copperplated in the model, which means that transport costs and constraints are neglected.
 
 .. _Oil-based products supply:
 
@@ -353,7 +352,7 @@ Industry demand
 Industry demand is split into a dozen different sectors with specific energy demands, process
 emissions of carbon dioxide, as well as existing and prospective mitigation strategies.
 
-The Subsection overview below provides a general description of the modelling approach for the industry sector. The following subsections describe the current energy demands, available mitigation strategies, and whether mitigation is exogenously fixed or co-optimised with the other components of the model for each industry subsector in more detail. See details for Iron and Steel (see :ref:`Iron and Steel`), Chemicals Industry and Ammonia (see :ref:`Chemicals Industry`), Non-metallic Mineral products , Non-ferrous Metals , and other Industry Subsectors.
+The Subsection overview below provides a general description of the modelling approach for the industry sector. The following subsections describe the current energy demands, available mitigation strategies, and whether mitigation is exogenously fixed or co-optimised with the other components of the model for each industry subsector in more detail. See details for Iron and Steel (see :ref:`Iron and Steel<iron_and_steel>`), Chemicals Industry and Ammonia (see :ref:`Chemicals Industry<chemicals_industry>`), Non-metallic Mineral products , Non-ferrous Metals , and other Industry Subsectors.
 
 .. _Overview:
 
@@ -391,7 +390,7 @@ Inside each country the industrial demand is then distributed using the `Hotmaps
 .. image:: ../graphics/hotmaps.png
 
 
-.. _Iron and Steel:
+.. _iron_and_steel:
 
 **Iron and Steel**
 
@@ -440,7 +439,7 @@ The share of steel produced via the primary route is exogenously set in the `con
 
 For the remaining subprocesses in this sector, the following transformations are assumed. Methane is used as energy source for the smelting process. Activities associated with furnaces, refining and rolling, and product finishing are electrified assuming the current efficiency values for these cases. These transformations result in changes in process emissions as outlined in the process emissions figure presented in the industry overview section (see :ref:`Overview`).
 
-.. _Chemicals Industry:
+.. _chemicals_industry:
 
 **Chemicals Industry**
 
@@ -532,7 +531,7 @@ Transportation
 =========================
 Annual energy demands for land transport, aviation and shipping for every country are retrieved from `JRC-IDEES data set <http://data.europa.eu/89h/jrc-10110-10001>`_. Below, the details of how each of these categories are treated is explained.
 
-.. _Land transport:
+.. _land_transport:
 
 **Land transport**
 
@@ -562,13 +561,13 @@ FCEVs are typically used to simulate demand for transport that is hard to electr
 All land transport that is not specified to be either BEV or FCEV will be treated as conventional ICEs. The transport demand is converted to a demand for oil products (see :ref:`Oil-based products supply`) using the `ICE efficiency
 <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L192>`_.
 
-.. _Aviation:
+.. _aviation:
 
 **Aviation**
 
 The `demand for aviation <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/scripts/prepare_sector_network.py#L2193>`_ includes international and domestic use. It is modelled as an oil demand since aviation consumes kerosene. This can be produced synthetically or have fossil-origin (see :ref:`Oil-based products supply`).
 
-.. _Shipping:
+.. _shipping:
 
 **Shipping**
 
@@ -580,7 +579,7 @@ The consumed hydrogen comes from the general hydrogen bus where it can be produc
 
 The energy demand for liquefaction of the hydrogen used for shipping can be `included  <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/config.default.yaml#L197>`_. If this option is selected, liquifaction will happen at the `node where the shipping demand occurs <https://github.com/PyPSA/pypsa-eur-sec/blob/3daff49c9999ba7ca7534df4e587e1d516044fc3/scripts/prepare_sector_network.py#L2064>`_.
 
-The consumed methanol comes from the general methanol bus where it is produced through methanolisation (see :ref:`Chemicals Industry`).
+The consumed methanol comes from the general methanol bus where it is produced through methanolisation (see :ref:`Chemicals Industry<chemicals_industry>`).
 
 .. _Carbon dioxide capture, usage and sequestration (CCU/S):
 
