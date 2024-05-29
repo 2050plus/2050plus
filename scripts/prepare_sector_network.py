@@ -1357,6 +1357,20 @@ def add_storage_and_grids(n, costs):
         n.generators.loc[gas_i, "p_nom_extendable"] = False
         n.generators.loc[gas_i, "p_nom"] = p_nom
 
+        if options.get("H2_imports", True):
+            logger.info("Add hydrogen imports at LNG terminal locations.")
+            
+            h2_import_nodes = gas_input_nodes.query("lng>0").index
+            h2_buses = spatial.h2.locations.intersection(h2_import_nodes) + ' H2'
+            n.madd(
+                "Generator",
+                h2_import_nodes + " H2 import",
+                bus=h2_buses,
+                p_nom_extendable=True,
+                carrier="H2",
+                marginal_cost=costs.at["hydrogen", "fuel"],
+            )
+
         # add existing gas storage capacity
         gas_i = n.stores.carrier == "gas"
         e_nom = (
