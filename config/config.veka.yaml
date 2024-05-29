@@ -186,7 +186,8 @@ renewable:
       method: wind
       turbine: NREL_ReferenceTurbine_2020ATB_5.5MW
       add_cutout_windspeed: true
-    capacity_per_sqkm: 6
+    capacity_per_sqkm: 5.6  # allows to get without unfeasibility in any country
+                            # at least 7GW offshore in Belgium, without considering historic assets for any country
     correction_factor: 0.8855
     corine: [44, 255]
     luisa: false # [0, 5230]
@@ -202,7 +203,8 @@ renewable:
       method: wind
       turbine: NREL_ReferenceTurbine_2020ATB_5.5MW
       add_cutout_windspeed: true
-    capacity_per_sqkm: 6
+    capacity_per_sqkm: 5.6 # allows to get without unfeasibility in any country
+                            # at least 7GW offshore in Belgium, without considering historic assets for any country
     correction_factor: 0.8855
     corine: [44, 255]
     luisa: false # [0, 5230]
