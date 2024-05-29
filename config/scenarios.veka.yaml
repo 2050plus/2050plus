@@ -17,21 +17,21 @@ electrification:
   costs:
     costs_dir: data/costs/electrification
   sector:
-    land_transport_fuel_cell_share:
+    land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
         2030: 0
         2040: 0
         2050: 0
-    land_transport_electric_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
+    land_transport_electric_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0.01
-        2030: 0.16
-        2040: 0.36
-        2050: 0.46
-    land_transport_ice_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
+        2030: 0.15
+        2040: 0.32
+        2050: 0.38
+    land_transport_ice_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0.99
-        2030: 0.84
-        2040: 0.45
-        2050: 0.27
+        2030: 0.80
+        2040: 0.41
+        2050: 0.22
   industry:
     St_primary_fraction:
         2020: 0.6
@@ -57,10 +57,96 @@ electrification:
         2040: 0
         2045: 0
         2050: 0
+    vlaio_scenario: ""
+
 molecule:
   costs:
     costs_dir: data/costs/molecule
+  sector:
+    land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0
+        2030: 0.02
+        2040: 0.11
+        2050: 0.18
+    land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.01
+        2030: 0.14
+        2040: 0.24
+        2050: 0.27
+    land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.99
+        2030: 0.80
+        2040: 0.39
+        2050: 0.21
+  industry:
+    St_primary_fraction:
+        2020: 0.6
+        2025: 0.6
+        2030: 0.6
+        2035: 0.6
+        2040: 0.6
+        2045: 0.6
+        2050: 0.6
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.01
+        2035: 0.05
+        2040: 0.2
+        2045: 0.525
+        2050: 1
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.04
+        2035: 0.15
+        2040: 0.2
+        2045: 0.175
+        2050: 0
+    vlaio_scenario: "CCUS MAX"
 
 lsc:
   costs:
     costs_dir: data/costs/lsc
+  sector:
+    land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0
+        2030: 0.02
+        2040: 0.11
+        2050: 0.18
+    land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.01
+        2030: 0.14
+        2040: 0.24
+        2050: 0.27
+    land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.99
+        2030: 0.80
+        2040: 0.39
+        2050: 0.21
+  industry:
+    St_primary_fraction:
+        2020: 0.6
+        2025: 0.6
+        2030: 0.6
+        2035: 0.6
+        2040: 0.6
+        2045: 0.6
+        2050: 0.6
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.0025
+        2035: 0.0075
+        2040: 0.03
+        2045: 0.045
+        2050: 0.09
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.0225
+        2035: 0.0425
+        2040: 0.07
+        2045: 0.105
+        2050: 0.21
+    vlaio_scenario: "MIX CENTRAL"

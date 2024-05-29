@@ -628,6 +628,9 @@ rule build_industrial_energy_demand_per_node:
         industrial_energy_demand_per_node=resources(
             "industrial_energy_demand_elec_s{simpl}_{clusters}_{planning_horizons}.csv"
         ),
+        industrial_energy_demand_per_node_ind=resources(
+            "industrial_energy_demand_ind_elec_s{simpl}_{clusters}_{planning_horizons}.csv"
+        ),
     threads: 1
     resources:
         mem_mb=1000,
@@ -645,6 +648,40 @@ rule build_industrial_energy_demand_per_node:
         "../envs/environment.yaml"
     script:
         "../scripts/build_industrial_energy_demand_per_node.py"
+
+
+rule build_industrial_energy_demand_per_node_for_vlaio:
+    input:
+        industrial_energy_demand_per_node_ind = resources(
+            "industrial_energy_demand_ind_elec_s{simpl}_{clusters}_{planning_horizons}.csv"
+        ),
+        vlaio_energy_demand_fl_ets = "data/vlaio/vlaio_energy_demand_fl_ets.csv",
+        vlaio_energy_demand_fl_non_ets= "data/vlaio/vlaio_energy_demand_fl_non_ets.csv",
+        vlaio_vector_mapping = "data/vlaio/vlaio_vector_mapping.csv",
+    output:
+        industrial_energy_demand_per_node_for_vlaio = resources(
+            "industrial_energy_demand_elec_vlaio_s{simpl}_{clusters}_{planning_horizons}.csv"
+        ),
+        industrial_energy_demand_per_node_ind_for_vlaio=resources(
+            "industrial_energy_demand_ind_elec_vlaio_s{simpl}_{clusters}_{planning_horizons}.csv"
+        ),
+    threads: 1
+    resources:
+        mem_mb=1000,
+    log:
+        logs(
+            "build_industrial_energy_demand_per_node_for_vlaio_s{simpl}_{clusters}_{planning_horizons}.log"
+        ),
+    benchmark:
+        (
+            benchmarks(
+                "build_industrial_energy_demand_per_node_for_vlaio/s{simpl}_{clusters}_{planning_horizons}"
+            )
+        )
+    conda:
+        "../envs/environment.yaml"
+    script:
+        "../scripts/build_industrial_energy_demand_per_node_for_vlaio.py"
 
 
 rule build_industrial_energy_demand_per_country_today:
@@ -947,7 +984,7 @@ rule prepare_sector_network:
         clustered_pop_layout=resources("pop_layout_elec_s{simpl}_{clusters}.csv"),
         simplified_pop_layout=resources("pop_layout_elec_s{simpl}.csv"),
         industrial_demand=resources(
-            "industrial_energy_demand_elec_s{simpl}_{clusters}_{planning_horizons}.csv"
+            "industrial_energy_demand_elec_vlaio_s{simpl}_{clusters}_{planning_horizons}.csv"
         ),
         hourly_heat_demand_total=resources(
             "hourly_heat_demand_total_elec_s{simpl}_{clusters}.nc"

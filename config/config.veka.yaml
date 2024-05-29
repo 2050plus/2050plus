@@ -82,8 +82,8 @@ co2_budget:
   2025: 0.6092
   2030: 0.52
   2035: 0.42
-  2040: 0.342
-  2045: 0.284
+  2040: 0.317
+  2045: 0.213
   2050: 0.11
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#electricity
@@ -404,27 +404,27 @@ sector:
   land_transport_fuel_cell_share:
     2020: 0
     #2025: 0
-    2030: 0
+    2030: 0.01
     #2035: 0
-    2040: 0
+    2040: 0.06
     #2045: 0
-    2050: 0
-  land_transport_electric_share: #total demand -15% in 2030, -40% in 2040, -66% in 2050
+    2050: 0.09
+  land_transport_electric_share: # total demand -5% in 2030, -26% in 2040, -34% in 2050
     2020: 0
     #2025: 0.1
-    2030: 0.17
+    2030: 0.14
     #2035: 0.4
-    2040: 0.036
+    2040: 0.28
     #2045: 0.
-    2050: 0.34
-  land_transport_ice_share: #total demand -15% in 2030, -40% in 2040, -66% in 2050
+    2050: 0.33
+  land_transport_ice_share: # total demand -5% in 2030, -26% in 2040, -34% in 2050
     2020: 1
     #2025: 0.9
-    2030: 0.68
+    2030: 0.80
     #2035: 0.6
-    2040: 0.24
+    2040: 0.41
     #2045: 0.2
-    2050: 0
+    2050: 0.22
   transport_fuel_cell_efficiency: 0.5
   transport_internal_combustion_efficiency: 0.3
   agriculture_machinery_electric_share: 0
@@ -506,7 +506,7 @@ sector:
   CC_turbine: true
   SMR: true
   SMR_cc: true
-  regional_methanol_demand: false
+  regional_methanol_demand: true
   regional_oil_demand: true
   regional_coal_demand: false
   regional_co2_sequestration_potential:
@@ -685,8 +685,10 @@ industry:
   methanol_production_today: 1.5
   MWh_elec_per_tMeOH: 0.167
   MWh_CH4_per_tMeOH: 10.25
+  MWh_MeOH_per_tMeOH: 5.528
   hotmaps_locate_missing: false
   reference_year: 2015
+  vlaio_scenario: "MIX CENTRAL"
 
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#costs
@@ -1122,6 +1124,7 @@ plotting:
     methanolisation: '#83d6d5'
     methanol: '#468c8b'
     shipping methanol: '#468c8b'
+    industry methanol: '#467b8c'
     # co2
     CC: '#f29dae'
     CCS: '#f29dae'

@@ -604,7 +604,7 @@ direct air capture,compression-heat-output,0.2,MWh/tCO2,"Danish Energy Agency, t
 direct air capture,electricity-input,0.4,MWh_el/t_CO2,"Beuttler et al (2019): The Role of Direct Air Capture in Mitigation of Antropogenic Greenhouse Gas emissions (https://doi.org/10.3389/fclim.2019.00010), alternative:  Breyer et al (2019).","0.4 MWh based on Beuttler et al (2019) for Climeworks LT DAC, alternative value: 0.182 MWh based on Breyer et al (2019). Should already include electricity for water scrubbing and compression (high quality CO2 output)."
 direct air capture,heat-input,1.6,MWh_th/t_CO2,"Beuttler et al (2019): The Role of Direct Air Capture in Mitigation of Antropogenic Greenhouse Gas emissions (https://doi.org/10.3389/fclim.2019.00010), alternative:  Breyer et al (2019).","Thermal energy demand. Provided via air-sourced heat pumps. 1.6 MWh based on Beuttler et al (2019) for Climeworks LT DAC, alternative value: 1.102 MWh based on Breyer et al (2019)."
 direct air capture,heat-output,0.75,MWh/tCO2,"Danish Energy Agency, technology_data_for_carbon_capture_transport_storage.xlsx",403.a Direct air capture
-direct air capture,investment,4012500,EUR/(tCO2/h),Ugent rev 1,DEA2022
+direct air capture,investment,4000000,EUR/(tCO2/h),Ugent rev 1,"Danish Energy Agency, technology_data_for_carbon_capture_transport_storage.xlsx v1"
 direct air capture,lifetime,20,years,"Danish Energy Agency, technology_data_for_carbon_capture_transport_storage.xlsx",403.a Direct air capture
 direct firing gas,FOM,1.0303,%/year,"Danish Energy Agency, technology_data_for_industrial_process_heat.xlsx",312.a Direct firing Natural Gas:  Fixed O&M
 direct firing gas,VOM,0.28,EUR/MWh,"Danish Energy Agency, technology_data_for_industrial_process_heat.xlsx",312.a Direct firing Natural Gas:  Variable O&M
@@ -653,9 +653,9 @@ electric steam cracker,electricity-input,2.7,MWh_el/t_HVC,"Lechtenböhmer et al.
 electric steam cracker,investment,10512000,EUR/(t_HVC/h),"DECHEMA 2017: DECHEMA: Low carbon energy and feedstock for the European chemical industry (https://dechema.de/dechema_media/Downloads/Positionspapiere/Technology_study_Low_carbon_energy_and_feedstock_for_the_European_chemical_industry.pdf), Table 35",Assuming CAPEX of 1200 €/t actually given in €/(t/a).
 electric steam cracker,lifetime,30,years,Guesstimate,
 electric steam cracker,naphtha-input,14.8,MWh_naphtha/t_HVC,"Lechtenböhmer et al. (2016): 10.1016/j.energy.2016.07.110, Section 4.3, page 6.",
-electricity distribution grid,FOM,2,%/year,TODO, from old pypsa cost assumptions
+electricity distribution grid,FOM,0,%/year,EnergyVille (2023) PATHS 2050,
 electricity distribution grid,investment,4320000,EUR/MW,Ugent rev 3,EnergyVille (2023) PATHS 2050
-electricity distribution grid,lifetime,40,years,Ugent rev 3,Expert judgement
+electricity distribution grid,lifetime,50,years,EnergyVille (2023) PATHS 2050,
 electricity grid connection,FOM,2,%/year,TODO, from old pypsa cost assumptions
 electricity grid connection,investment,140000,EUR/MW,default,DEA
 electricity grid connection,lifetime,40,years,TODO, from old pypsa cost assumptions
@@ -890,21 +890,22 @@ CO2 submarine pipeline,lifetime,50,years,Ugent rev 3,"Danish Energy Agency, Tech
 CH4 (g) pipeline,VOM,1.24,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_H2,FOM,3.2925682,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_H2,VOM,1.2,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-CCGT_H2,efficiency,0.6,per unit,Ugent rev 2,Assumed to be the same as CCGT
+CCGT_H2,efficiency,0.66,per unit,Ugent rev 2,Assumed to be the same as CCGT
 CCGT_H2,investment,1063000,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_H2,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 OCGT_H2,FOM,3.25660571,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_H2,VOM,2.9,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-OCGT_H2,efficiency,0.6,per unit,Ugent rev 2,Assumed to be the same as CCGT
+OCGT_H2,efficiency,0.44,per unit,Ugent rev 1,Assumed to be the same as OCGT
 OCGT_H2,investment,875000,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_H2,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 CCGT_CC,FOM,3.05488094,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,VOM,14.2,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-CCGT_CC,efficiency,0.6,per unit,Ugent rev 2,Assumed to be the same as CCGT
+CCGT_CC,efficiency,0.66,per unit,Ugent rev 2,Assumed to be the same as CCGT
 CCGT_CC,investment,1865866.5,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 OCGT_CC,FOM,4.47884736,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,VOM,15.9,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-OCGT_CC,efficiency,0.6,per unit,Ugent rev 2,Assumed to be the same as CCGT
+OCGT_CC,efficiency,0.44,per unit,Ugent rev 1,Assumed to be the same as OCGT
 OCGT_CC,investment,1127417.3,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
+electricity distribution grid,discount rate,3,%,EnergyVille (2023) PATHS 2050,

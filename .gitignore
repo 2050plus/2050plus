@@ -79,5 +79,6 @@ merger-todos.md
 !/data/custom_busmap_*.csv
 !/data/cost_mapping.csv
 !/data/sector_mapping.csv
+!/data/vlaio/
 .idea/
 .DS_Store
