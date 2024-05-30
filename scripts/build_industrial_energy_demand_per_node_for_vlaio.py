@@ -76,12 +76,6 @@ def build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map):
     )
 
     # Add steel demand from PyPSA
-    steel_pypsa = [
-        "DRI CH4 + Electric arc",
-        "DRI H2 + Electric arc",
-        "Electric arc",
-        "Integrated steelworks",
-    ]
     demand_fl_steel = (
         demand.query("`TWh/a (MtCO2/a)` == 'BE1 0' and industry.isin(@steel_pypsa)")
         .loc["BE1 0"]
@@ -111,6 +105,31 @@ def build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map):
     return demand_fl
 
 
+def update_flanders_energy_demand(demand, demand_fl):
+    """
+    Replace energy demand of Flanders in demand using demand_fl. Process emissions from demand are kept as
+    VLAIO doesn't easily give access to process emissions.
+    """
+    industry_map = {
+        "Ceramics & other NMM": "ceramics",
+        "Glass production": "glass",
+        "HVC": "chemicals-HVC",
+        "Other non-ferrous metals": "non-ferrous",
+    }
+
+    demand_fl_process = (
+        demand.query("`TWh/a (MtCO2/a)` == 'BE1 0' and industry not in @steel_pypsa and "
+                     "not industry.str.lower().str.contains('cement')")
+        [[c for c in demand.columns if "process emission" in c]]
+        .loc[lambda x: x.sum(axis=1) != 0]
+        .reset_index("industry")
+        .replace(industry_map)
+        .set_index("industry", append=True)
+    )
+
+    return pd.concat([demand.drop("BE1 0"), demand_fl, demand_fl_process]).groupby(level=[0, 1]).sum()
+
+
 if __name__ == "__main__":
     if "snakemake" not in globals():
         from _helpers import mock_snakemake
@@ -129,8 +148,14 @@ if __name__ == "__main__":
     fn = snakemake.input.industrial_energy_demand_per_node_ind
     demand = pd.read_csv(fn, header=0, index_col=[0, 1])
 
+    steel_pypsa = [
+        "DRI CH4 + Electric arc",
+        "DRI H2 + Electric arc",
+        "Electric arc",
+        "Integrated steelworks",
+    ]
+
     scenario = snakemake.config["industry"].get("vlaio_scenario", "MIX CENTRAL")
-    demand_vlaio = demand.copy()
     if scenario:
         logging.info("Overriding industrial energy demand based on VLAIO study")
 
@@ -156,7 +181,16 @@ if __name__ == "__main__":
 
         demand_fl = build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map)
 
-        demand_vlaio = pd.concat([demand_vlaio.drop("BE1 0"), demand_fl])
+        demand_vlaio = update_flanders_energy_demand(demand, demand_fl)
+    else:
+        logging.info("Moving Cement energy demand from BE1 0 to BE1 2")
+
+        demand_vlaio = demand.copy().reset_index()
+        demand_vlaio.loc[demand_vlaio["industry"] == "Cement"] = (
+            demand_vlaio.loc[demand_vlaio["industry"] == "Cement"]
+            .replace("BE1 0", "BE1 2")
+        )
+        demand_vlaio = demand_vlaio.set_index(["TWh/a (MtCO2/a)", "industry"]).groupby(level=[0, 1]).sum()
 
     fn = snakemake.output.industrial_energy_demand_per_node_for_vlaio
     demand_vlaio.groupby(by="TWh/a (MtCO2/a)").sum().to_csv(fn, float_format="%.2f")
