@@ -900,13 +900,14 @@ OCGT_H2,investment,875000,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_H2,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 CCGT_CC,FOM,3.03306036,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,VOM,14.2,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-CCGT_CC,efficiency,0.65,per unit,Ugent rev 2,Assumed to be the same as CCGT
+CCGT_CC,efficiency,0.585,per unit,Ugent rev 2,Assumed to be 10 % smaller than CCGT
 CCGT_CC,investment,1879290,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 OCGT_CC,FOM,3.64418187,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,VOM,15.9,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-OCGT_CC,efficiency,0.42,per unit,Ugent rev 1,Assumed to be the same as CCGT
+OCGT_CC,efficiency,0.378,per unit,Ugent rev 1,Assumed to be 10 % smaller than OCGT
 OCGT_CC,investment,1385642,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
-OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
+OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as OCGT
 electricity distribution grid,discount rate,3,%,EnergyVille (2023) PATHS 2050,
 hydrogen,fuel,87.84,EUR/MWh,EnergyVille (2023) PATHS 2050,
+coal_cc,efficiency,0.297,per unit,Lazard s Levelized Cost of Energy Analysis - Version 13.0 - 10%,
