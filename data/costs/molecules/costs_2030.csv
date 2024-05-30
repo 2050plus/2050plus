@@ -911,3 +911,5 @@ OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as OCGT
 electricity distribution grid,discount rate,3,%,EnergyVille (2023) PATHS 2050,
 hydrogen,fuel,96.91,EUR/MWh,EnergyVille (2023) PATHS 2050,
 coal_cc,efficiency,0.297,per unit,Lazard s Levelized Cost of Energy Analysis - Version 13.0 - 10%,
+gas distribution grid,FOM,2,%/year,Old PyPSA assumptions,
+gas distribution grid,investment,500,EUR/kW,Old PyPSA assumptions,

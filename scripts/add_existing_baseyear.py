@@ -479,6 +479,10 @@ def add_heating_capacities_installed_before_baseyear(
                 lifetime=costs.at[f"{name_type} resistive heater", "lifetime"],
             )
 
+            capital_cost = (
+                    costs.at[f"{name_type} gas boiler", "efficiency"]
+                    * costs.at[f"{name_type} gas boiler", "fixed"]
+            )
             n.madd(
                 "Link",
                 nodes,
@@ -489,9 +493,10 @@ def add_heating_capacities_installed_before_baseyear(
                 carrier=name + " gas boiler",
                 efficiency=costs.at[f"{name_type} gas boiler", "efficiency"],
                 efficiency2=costs.at["gas", "CO2 intensity"],
-                capital_cost=(
-                    costs.at[f"{name_type} gas boiler", "efficiency"]
-                    * costs.at[f"{name_type} gas boiler", "fixed"]
+                capital_cost=capital_cost if not "urban central" in name else
+                (
+                    capital_cost + costs.at["gas distribution grid", "investment"]
+                    * costs.at["gas distribution grid", "FOM"] / 100 * Nyears
                 ),
                 p_nom=(
                     existing_heating.loc[nodes, (name, "gas boiler")]
@@ -520,7 +525,7 @@ def add_heating_capacities_installed_before_baseyear(
                     / costs.at["decentral oil boiler", "efficiency"]
                 ),
                 build_year=int(grouping_year),
-                lifetime=costs.at[f"{name_type} gas boiler", "lifetime"],
+                lifetime=costs.at["decentral oil boiler", "lifetime"],
             )
 
             # delete links with p_nom=nan corresponding to extra nodes in country
