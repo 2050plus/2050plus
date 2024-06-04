@@ -698,16 +698,16 @@ costs:
   # Marginal and capital costs can be overwritten
   # capital_cost:
   #   onwind: 500
-  marginal_cost:
-    solar: 0.01
-    onwind: 0.015
-    offwind: 0.015
-    hydro: 0.
-    H2: 0.
-    electrolysis: 0.
-    fuel cell: 0.
-    battery: 0.
-    battery inverter: 0.
+#  marginal_cost:
+#    solar: 0.01
+#    onwind: 0.015
+#    offwind: 0.015
+#    hydro: 0.
+#    H2: 0.
+#    electrolysis: 0.
+#    fuel cell: 0.
+#    battery: 0.
+#    battery inverter: 0.
   emission_prices:
     enable: false
     co2: 0.
