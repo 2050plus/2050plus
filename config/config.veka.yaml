@@ -376,7 +376,7 @@ sector:
   industry: true
   agriculture: true
   district_heating:
-    potential: 0.6
+    potential: 0.3
     progress:
       2020: 0.0
       2025: 0.15

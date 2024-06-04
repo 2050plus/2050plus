@@ -654,7 +654,7 @@ electric steam cracker,investment,10512000,EUR/(t_HVC/h),"DECHEMA 2017: DECHEMA:
 electric steam cracker,lifetime,30,years,Guesstimate,
 electric steam cracker,naphtha-input,14.8,MWh_naphtha/t_HVC,"Lechtenböhmer et al. (2016): 10.1016/j.energy.2016.07.110, Section 4.3, page 6.",
 electricity distribution grid,FOM,0,%/year,EnergyVille (2023) PATHS 2050,
-electricity distribution grid,investment,4320000,EUR/MW,Ugent rev 3,EnergyVille (2023) PATHS 2050
+electricity distribution grid,investment,2000000,EUR/MW,Ugent rev 3,EnergyVille (2023) PATHS 2050 revision
 electricity distribution grid,lifetime,50,years,EnergyVille (2023) PATHS 2050,
 electricity grid connection,FOM,2,%/year,TODO, from old pypsa cost assumptions
 electricity grid connection,investment,140000,EUR/MW,default,DEA
@@ -908,7 +908,7 @@ OCGT_CC,VOM,15.9,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,efficiency,0.378,per unit,Ugent rev 1,Assumed to be 10 % smaller than OCGT
 OCGT_CC,investment,1385642,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as OCGT
-electricity distribution grid,discount rate,3,%,EnergyVille (2023) PATHS 2050,
+electricity distribution grid,discount rate,0.03,p.u.,EnergyVille (2023) PATHS 2050,
 hydrogen,fuel,87.84,EUR/MWh,EnergyVille (2023) PATHS 2050,
 coal_cc,efficiency,0.297,per unit,Lazard s Levelized Cost of Energy Analysis - Version 13.0 - 10%,
 gas distribution grid,FOM,2,%/year,Old PyPSA assumptions,
