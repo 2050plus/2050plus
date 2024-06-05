@@ -65,7 +65,7 @@ def load_supply_energy_df(config, load=True):
 
 
 def load_res_potentials(config):
-    df = pd.read_csv(Path(config["csvs"], "res_potentials.csv"), header=0)
+    df = pd.read_csv(Path(config["path"]["csvs"], "res_potentials.csv"), header=0)
     return (
         df.loc[:, ['carrier', 'region', config['years_str'][-1]]]
         .rename(columns={'region': 'country', config['years_str'][-1]: 'Potential [GW]'})
@@ -85,7 +85,7 @@ def load_imports_exports(config):
 
     """
 
-    return pd.read_csv(Path(config["csvs"], "imports_exports.csv")).replace(NICE_RENAMER)
+    return pd.read_csv(Path(config["path"]["csvs"], "imports_exports.csv")).replace(NICE_RENAMER)
 
 
 def _load_load_temporal(config, countries=None):
@@ -129,7 +129,7 @@ def load_supply_temporal_be(config):
 
 
 def load_res_temporal(config):
-    res_raw = pd.read_csv(Path(config["csvs"], "temporal_res_supply.csv"), header=0).replace(NICE_RENAMER)
+    res_raw = pd.read_csv(Path(config["path"]["csvs"], "temporal_res_supply.csv"), header=0).replace(NICE_RENAMER)
     res = {}
     for y in res_raw["year"].unique():
         res_i = res_raw.query("year==@y").drop("year", axis=1)
@@ -142,18 +142,18 @@ def load_res_temporal(config):
 
 
 def load_power_capacities(config):
-    return pd.read_csv(Path(config["csvs"], "power_production_countries.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "power_production_countries.csv"))
 
 
 def load_balancing_capacities(config):
-    return pd.read_csv(Path(config["csvs"], "balancing_capacities_countries.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "balancing_capacities_countries.csv"))
 
 
 def load_balancing_supply(config):
-    return pd.read_csv(Path(config["csvs"], "balancing_supply_countries.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "balancing_supply_countries.csv"))
 
 def load_elec_grid(config):
-    return pd.read_csv(Path(config["csvs"], "elec_grid.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "elec_grid.csv"))
 
 # generic function for calling costs
 def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=None):
@@ -175,8 +175,8 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
         DESCRIPTION.
 
     """
-    df = pd.read_csv(Path(config["csvs"], "costs_countries.csv"), header=0)
-    prices = pd.read_csv(Path(config["csvs"], 'marginal_prices_countries.csv'), header=0)
+    df = pd.read_csv(Path(config["path"]["csvs"], "costs_countries.csv"), header=0)
+    prices = pd.read_csv(Path(config["path"]["csvs"], 'marginal_prices_countries.csv'), header=0)
 
     if _countries:
         df = df.query("country in @_countries")
@@ -268,7 +268,7 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
 
     """
     imp_exp = []
-    df = pd.read_csv(Path(config["csvs"], "imports_exports.csv"), header=0)
+    df = pd.read_csv(Path(config["path"]["csvs"], "imports_exports.csv"), header=0)
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)
@@ -281,7 +281,11 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
 
 
 def load_marginal_prices(config):
-    return pd.read_csv(Path(config["csvs"], "marginal_prices_countries.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_countries.csv"))
+
+
+def load_marginal_prices_t(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_t_countries.csv"))
 
 
 def load_marginal_prices_t(config):
@@ -312,7 +316,7 @@ def load_data_st(config):
         "marginal_prices_t",
     ]
 
-    dir = Path(config["path"]["analysis_path"], "graph_extraction_st")
+    dir = config["path"]["streamlit"]
     dir.mkdir(parents=True, exist_ok=True)
     for output in outputs:
         o = globals()["load_" + output](config)

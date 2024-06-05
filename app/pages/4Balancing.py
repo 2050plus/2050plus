@@ -24,7 +24,7 @@ with st.expander("**Why balancing the network is important ?**"):
 def get_df(scenario, mode):
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st",
+            Path(network_path, scenario_dict[scenario]["path"],
                  "balancing_" + mode + ".csv"),
             header=0,
         )

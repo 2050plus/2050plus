@@ -24,7 +24,8 @@ st.markdown(
     - **Costs**: (Under construction)
     
     The following scenarios are available:
-    - **1. Average**: Scenario *average* presented to the Steering Committee on 31/01/2024.
-    - **1. Electrification**: Scenario *electrification* presented to the Steering Committee on 31/01/2024.
-    - **2. Electrification**: Scenario *electrification* presented to the Steering Commitee on 29/04/2024.
+    - Central
+    - Electrification
+    - Molecule
+    - LSC (Least Structural Changes)
 """)

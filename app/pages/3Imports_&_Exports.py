@@ -19,7 +19,7 @@ st.markdown("The energy imports and exports between countries in the system, for
 def get_data(scenario):
     df = (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "imports_exports.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "imports_exports.csv"),
             header=0
         )
     )

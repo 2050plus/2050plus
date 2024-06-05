@@ -19,7 +19,7 @@ st.markdown("The total yearly load per energy carrier, year, country and subsect
 def get_data(scenario):
     df = (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "supply_energy_df.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "supply_energy_df.csv"),
             header=0
         )
     )

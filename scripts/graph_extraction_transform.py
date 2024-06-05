@@ -942,7 +942,7 @@ def extract_series(config, n, carriers=["electricity"], load=False, supply=False
                 with pd.option_context("mode.chained_assignment", None):
                     plots[y] = plot_series(ni, carrier=carrier, name=carrier, year=str(y),
                                            load_only=load, supply_only=supply, colors=df["tech_colors"],
-                                           path=Path(config["csvs"], f"series_AC_{y}.png"), save=False)
+                                           path=Path(config["path"]["csvs"], f"series_AC_{y}.png"), save=False)
     return plots
 
 
@@ -1071,6 +1071,6 @@ def transform_data(config, n, n_ext, color_shift=None):
         "series_consumption": series_consumption,
     }
 
-    export_csvs_figures(config["csvs"], outputs, figures)
+    export_csvs_figures(config["path"]["csvs"], outputs, figures)
 
     return outputs, figures

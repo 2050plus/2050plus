@@ -21,7 +21,7 @@ st.title("Costs")
 def get_data(scenario, path):
     df = (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", path),
+            Path(network_path, scenario_dict[scenario]["path"], path),
             header=0
         )
     )

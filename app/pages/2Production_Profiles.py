@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import YEARS
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -23,7 +24,7 @@ def get_data(scenario, year, selected_area):
     area = selected_area if selected_area != "EU27+TYNDP" else ''
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st",
+            Path(network_path, scenario_dict[scenario]["path"],
                  f"supply_temporal_{area}_{year}.csv".replace('__', '_')),
             header=[1, 2]
         )
@@ -37,15 +38,14 @@ def get_data(scenario, year, selected_area):
 # - 3h load profile
 # - eventually per country
 # - eventuelly per subtype of supply
-years = ['2030', '2040', '2050']
 
 col1, col2 = st.columns(2)
 with col1:
-    year = st.selectbox('Choose the year:', years)
+    year = st.selectbox('Choose the year:', YEARS)
 data = get_data(scenario, year, selected_area)
 
 with col2:
-    carrier = st.selectbox('Choose your carrier:', data.columns.get_level_values(0).unique(), index=5)
+    carrier = st.selectbox('Choose your carrier:', data.columns.get_level_values(0).unique(), index=7)
 df = data[carrier]
 
 fig = px.area(

@@ -57,13 +57,13 @@ COST_SEGMENTS = {'prod': 'Production', 'bal': 'Balancing', 'tran': 'Transport', 
 logger = logging.getLogger(__name__)
 
 
-def load_config(config_file, analysis_path, dir_export):
+def load_config(config_file, analysis_path, dir_export, scenario=''):
     logger.info("Loading configuration")
 
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
 
-    run = config["run"]["name"]
+    run = config["run"]["name"] if not scenario else scenario
     config["path"] = {
         "analysis_path": analysis_path,
         "resources_path": Path(analysis_path, "resources", run),
@@ -80,7 +80,9 @@ def load_config(config_file, analysis_path, dir_export):
     config["label"] = (cluster, ll, sector_opts, years)
 
     config["n_name"] = f"elec_s{simpl}_{cluster}_l{ll}_{opts}_{sector_opts}_"
-    config["csvs"] = Path(analysis_path, f"{dir_export}_{config['n_name']}")
+    config["path"]["csvs"] = Path(analysis_path, dir_export, f"{scenario}_{config['n_name']}")
+    config["path"]["streamlit"] = Path(config["path"]["analysis_path"], "graph_extraction_st", scenario)
+    config["path"]["excel"] = Path(config["path"]["analysis_path"], "graph_extraction_xl", scenario)
 
     # Todo : type cast all references to year into str or int
     config["excel_columns"] = {"all_years": ["carrier", "hist"] + config["years_str"],
@@ -154,7 +156,7 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
         if countries:
             file = file.replace(".csv", f"_{countries}.csv")
     df = (
-        pd.read_csv(Path(config["csvs"], file), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], file), header=0)
     )
 
     def get_load_supply(x):

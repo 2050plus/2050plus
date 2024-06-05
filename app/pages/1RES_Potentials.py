@@ -19,7 +19,7 @@ st.markdown("The total potential for RES power production capacity considered by
 def get_df(scenario):
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "res_potentials.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "res_potentials.csv"),
             header=0,
         )
     )

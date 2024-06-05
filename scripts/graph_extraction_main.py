@@ -27,11 +27,12 @@ def main():
     logger.info("Start processing")
 
     config_file = "config/config.veka.yaml"
-    analysis_path = Path("analysis", "20240425")
+    analysis_path = Path("analysis", "20240531")
+    scenario = "central"
     dir_export = "graph_data"
 
     # Configuration
-    config = load_config(config_file, analysis_path, dir_export)
+    config = load_config(config_file, analysis_path, dir_export, scenario=scenario)
 
     config["eu27_countries"] = ["AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "GR", "ES", "FI", "FR", "HR", "HU",
                                 "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"]

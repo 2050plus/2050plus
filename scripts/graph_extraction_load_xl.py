@@ -52,7 +52,7 @@ def _load_capacities(config, techs, historical="Historical (installed capacity b
     """
     techs
     df = (
-        pd.read_csv(Path(config["csvs"], "units_capacities_countries.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "units_capacities_countries.csv"), header=0)
         .drop(columns=["units"])
         .query("carrier in @techs")
     )
@@ -136,8 +136,8 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
         DESCRIPTION.
 
     """
-    df = pd.read_csv(Path(config["csvs"], "costs_countries.csv"), header=0)
-    prices = pd.read_csv(Path(config["csvs"], 'marginal_prices_countries.csv'), header=0)
+    df = pd.read_csv(Path(config["path"]["csvs"], "costs_countries.csv"), header=0)
+    prices = pd.read_csv(Path(config["path"]["csvs"], 'marginal_prices_countries.csv'), header=0)
 
     if _countries:
         df = df.query("country in @_countries")
@@ -269,7 +269,7 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
 
     """
     imp_exp = []
-    df = pd.read_csv(Path(config["csvs"], "imports_exports.csv"), header=0)
+    df = pd.read_csv(Path(config["path"]["csvs"], "imports_exports.csv"), header=0)
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)
@@ -352,7 +352,7 @@ def load_supply_heat_be(config):
 
 def load_gas_phase_out(config):
     return (
-        pd.read_csv(Path(config["csvs"], "gas_phase_out.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "gas_phase_out.csv"), header=0)
         .reindex(columns=config["excel_columns"]["first_hist_units"])
         .rename(columns={"hist": "Historical (planned by 2025)"})
     )
@@ -360,7 +360,7 @@ def load_gas_phase_out(config):
 
 def load_grid_capacities(config):
     return (
-        pd.read_csv(Path(config["csvs"], "grid_capacities.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "grid_capacities.csv"), header=0)
         .reindex(columns=config["excel_columns"]["all_years_units"])
         .rename(columns={"hist": "Historical (planned by 2025)"})
     )
@@ -368,7 +368,7 @@ def load_grid_capacities(config):
 
 def load_grid_capacities_countries(config):
     return (
-        pd.read_csv(Path(config["csvs"], "grid_capacities_countries.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "grid_capacities_countries.csv"), header=0)
         .groupby('Year').sum(numeric_only=True)
         .loc[:, ['LU', 'GB', 'NL', 'DE', 'FR']]
         .reset_index()
@@ -378,7 +378,7 @@ def load_grid_capacities_countries(config):
 
 def load_h2_network_capacities(config):
     return (
-        pd.read_csv(Path(config["csvs"], "H2_network_capacities.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "H2_network_capacities.csv"), header=0)
         .reindex(columns=config["excel_columns"]["all_years_units"])
         .rename(columns={"hist": "Historical (planned by 2025)"})
     )
@@ -386,7 +386,7 @@ def load_h2_network_capacities(config):
 
 def load_h2_network_capacities_countries(config):
     return (
-        pd.read_csv(Path(config["csvs"], "H2_network_capacities_countries.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "H2_network_capacities_countries.csv"), header=0)
         .groupby('Year').sum(numeric_only=True)
         .loc[:, ['LU', 'GB', 'NL', 'DE', 'FR']]
         # .rename(columns={"hist": "Historical (planned by 2025)"})
@@ -396,7 +396,7 @@ def load_h2_network_capacities_countries(config):
 
 def load_res_potentials(config):
     return (
-        pd.read_csv(Path(config["csvs"], "res_potentials.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "res_potentials.csv"), header=0)
         .drop(columns=config["years_str"][:-1])
         .groupby(by="carrier").agg({config["years_str"][-1]: "sum", "units": "first"}).reset_index()
         .reindex(columns=config["excel_columns"]["last_units"])
@@ -405,7 +405,7 @@ def load_res_potentials(config):
 
 def load_res_potentials_be(config):
     return (
-        pd.read_csv(Path(config["csvs"], "res_potentials.csv"), header=0)
+        pd.read_csv(Path(config["path"]["csvs"], "res_potentials.csv"), header=0)
         .query("region == 'BE'")
         .drop(columns=config["years_str"][:-1])
         .reindex(columns=config["excel_columns"]["last_units"])
@@ -414,7 +414,7 @@ def load_res_potentials_be(config):
 
 # def load_production_profile(config):
 #     return (
-#         pd.read_csv(Path(config["csvs"], "generation_profiles.csv"), header=0)
+#         pd.read_csv(Path(config["path"]["csvs"], "generation_profiles.csv"), header=0)
 #         [["Year", "Country", "Carrier", "Annual sum [TWh]"]]
 #         .query("Carrier in ['ammonia cracker', 'battery charger', 'H2 Electrolysis', 'Haber-Bosch', 'helmet', "
 #                "'home battery charger', 'Sabatier']")
@@ -457,7 +457,9 @@ def load_data_xl(config):
         # "production_profile",
     ]
 
-    with pd.ExcelWriter(Path(config["path"]["analysis_path"], "graph_extraction_raw.xlsx")) as xl:
+    dir = config["path"]["excel"]
+    dir.mkdir(parents=True, exist_ok=True)
+    with pd.ExcelWriter(Path(dir, "graph_extraction_raw.xlsx")) as xl:
         for output in outputs:
             o = globals()["load_" + output](config)
             if isinstance(o, pd.DataFrame):
