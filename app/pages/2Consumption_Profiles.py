@@ -25,7 +25,7 @@ def get_data(scenario, year, selected_area):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"],
-                 f"load_temporal_{area}_{year}.csv".replace('__', '_')),
+                 f"load_temporal_{area.lower()}_{year}.csv".replace('__', '_')),
             header=[1, 2]
         )
         .set_index(("carrier", "sector"))

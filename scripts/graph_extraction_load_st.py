@@ -289,7 +289,7 @@ def load_marginal_prices_t(config):
 
 
 def load_marginal_prices_t(config):
-    return pd.read_csv(Path(config["csvs"], "marginal_prices_t_countries.csv"))
+    return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_t_countries.csv"))
 
 
 # %% Load main

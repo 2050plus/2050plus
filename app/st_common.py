@@ -19,6 +19,9 @@ scenario_dict = {
     # "LSC": {
     #     "path": "20240531/graph_extraction_st/lsc",
     # },
+    "Electrification (2030 rerun)": {
+        "path": "20240604/graph_extraction_st/electrification",
+    }
 }
 CLIP_VALUE_TWH = 1e-1
 GRAPH_AREA = {"EU27+TYNDP": "tot", "BE": "be", "EU27": "eu27"}
