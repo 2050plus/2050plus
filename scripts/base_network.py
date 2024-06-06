@@ -292,7 +292,7 @@ def _add_links_from_tyndp(buses, links, links_tyndp, europe_shape):
         length=links_tyndp["Length (given) (km)"].fillna(
             links_tyndp["Length (distance*1.2) (km)"]
         ),
-        under_construction=True,
+        under_construction=links_tyndp["status"] != "built",
         underground=False,
         geometry=(
             links_tyndp[["x1", "y1", "x2", "y2"]].apply(
