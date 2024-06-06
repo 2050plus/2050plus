@@ -118,6 +118,9 @@ molecule:
     vlaio_scenario: "CCUS MAX"
 
 lsc:
+  renewable:
+    onwind:
+        capacity_per_sqkm: 2.1
   costs:
     costs_dir: data/costs/lsc
   sector:
