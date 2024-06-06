@@ -900,12 +900,12 @@ OCGT_H2,investment,875000,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_H2,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 CCGT_CC,FOM,3.05488094,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,VOM,14.2,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-CCGT_CC,efficiency,0.594,per unit,Ugent rev 2,Assumed to be 10 % smaller than CCGT
+CCGT_CC,efficiency,0.596,per unit,Ugent rev 2,Assumed to be 10 % smaller than CCGT
 CCGT_CC,investment,1865866.5,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 CCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as CCGT
 OCGT_CC,FOM,4.47884736,%/year,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,VOM,15.9,EUR/MWh,Ugent rev 3,ELIA Blueprint Study 2024
-OCGT_CC,efficiency,0.396,per unit,Ugent rev 1,Assumed to be 10 % smaller than OCGT
+OCGT_CC,efficiency,0.399,per unit,Ugent rev 1,Assumed to be 10 % smaller than OCGT
 OCGT_CC,investment,1127417.3,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as OCGT
 electricity distribution grid,discount rate,0.03,p.u.,EnergyVille (2023) PATHS 2050,

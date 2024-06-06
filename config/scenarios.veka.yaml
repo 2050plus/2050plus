@@ -65,9 +65,9 @@ electrification:
         2050: 0
     vlaio_scenario: ""
 
-molecule:
+molecules:
   costs:
-    costs_dir: data/costs/molecule
+    costs_dir: data/costs/molecules
   sector:
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
