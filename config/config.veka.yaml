@@ -569,7 +569,8 @@ sector:
   H2_import: true
   gas_network_connectivity_upgrade: 1
   gas_distribution_grid: true
-  gas_distribution_grid_cost_factor: 0.115741 # = 500/4320 (default/PATH2050)
+  gas_distribution_grid_cost_factor: 0.611140680431766 # ratio between historical distribution gas network price 
+                                                       # and revised value for electricity ditribution network
   biomass_spatial: true
   biomass_transport: true
   biogas_upgrading_cc: true
