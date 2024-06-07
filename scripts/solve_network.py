@@ -54,19 +54,32 @@ def add_emission_prices(n, emission_prices={"co2": 0.0}):
     logger.info("Add emission prices")
     for i, ep_ in emission_prices.items():
         ep = ep_.get(int(snakemake.wildcards.planning_horizons), 0)
+        idx_p = snakemake.params.planning_horizons.index(int(snakemake.wildcards.planning_horizons)) - 1
+        planning_horizons_p = snakemake.params.planning_horizons[idx_p] if idx_p >= 0 else None
+        ep_p = ep_.get(planning_horizons_p, 0)
         bus_map = n.buses.index.to_series() == f"{i} atmosphere"
 
         for c in n.iterate_components(['Link']):
             for end in [col[3:] for col in c.df.columns if col[:3] == "bus"]:
-                items = c.df.index[c.df["bus" + str(end)].map(bus_map).fillna(False)]
+                items_new = c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))
+                                       & (c.df.build_year == int(snakemake.wildcards.planning_horizons))]
 
-                if len(items) == 0:
+                items_old = c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))
+                                       & (c.df.build_year != int(snakemake.wildcards.planning_horizons))]
+
+                if len(items_new) == 0 and len(items_old) == 0:
                     continue
 
+                if int(snakemake.params.planning_horizons[0]) == int(snakemake.wildcards.planning_horizons):
+                    items_new = items_new.union(items_old)
+                    items_old = pd.Index([])
+
                 mapping = {'1': ''}
-                c_ep = ep * c.df.loc[items, "efficiency" + mapping.get(end, end)]
-                c.df.loc[items, "marginal_cost"] += c_ep.clip(lower=0)
-                c.pnl["marginal_cost"] += c_ep[c.pnl["marginal_cost"].columns]
+                c_ep = ep * c.df.loc[items_new, "efficiency" + mapping.get(end, end)]
+                c.df.loc[items_new, "marginal_cost"] += c_ep.clip(lower=0)
+
+                c_ep_p = (ep - ep_p) * c.df.loc[items_old, "efficiency" + mapping.get(end, end)]
+                c.df.loc[items_old, "marginal_cost"] += c_ep_p.clip(lower=0)
 
 
 def add_land_use_constraint(n, planning_horizons, config):
