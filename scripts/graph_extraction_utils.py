@@ -23,11 +23,14 @@ HEAT_RENAMER = {"residential rural heat": "dec_heat", "services rural heat": "de
                 "residential urban decentral heat": "dec_heat", "services urban decentral heat": "dec_heat",
                 "urban central heat": "cent_heat", "rural heat" : 'dec_heat', "urban decentral heat" : "dec_heat"}
 NICE_RENAMER = {'dec_heat' : "Decentralized heat" , 'cent_heat' : "Centralized heat",
-                'elec' : 'Electricity', 'shipping methanol' : 'Methanol', 'oil' : 'Oil', 
+                'elec' : 'Electricity', 'rural heat' : "Decentralized heat" , 'electricity' : 'Electricity',
+                'urban decentral heat' : "Decentralized heat" , 'urban central heat' : "Centralized heat",
+                'methanol': 'Methanol', 'oil' : 'Oil', 'co2' : 'CO2 emissions',
                 "coal" : "Coal", 'gas': 'Methane', 'solid biomass' : 'Solid biomass',
                 "hydro" : "Hydro Dams", "offwind": "Offshore wind", "onwind": "Onshore wind",
                 "solar" : "Solar PV", "solar thermal" : 'Solar thermal', 'ror': "Run-of-the-river",
-                "solid biomass CHP": "Solid biomass CHP", "solid biomass CHP CC" : "Solid biomass CHP CC"}
+                "solid biomass CHP": "Solid biomass CHP", "solid biomass CHP CC" : "Solid biomass CHP CC",
+                "co2 stored" : "CO2 captured", "H2" : "Hydrogen", "NH3": "Ammonia"}
 ELEC_RENAMER = {'AC': 'elec', 'DC': 'elec', 'low voltage': 'elec'}
 TRANSMISSION_RENAMER = {"AC": "elec", "DC": "elec", "H2 pipeline": "H2",
                         "H2 pipeline retrofitted": "H2", "gas pipeline": "gas", "gas pipeline new": "gas"}
@@ -133,12 +136,14 @@ def bus_mapper(x, n, column=None):
 
 
 def renamer_to_country(x):
-    rx = re.compile(r"([A-Z]{2})[0-9]\s[0-9]")
-
-    if rx.match(x):
-        return rx.match(x).group(1)
+    rx_c = re.compile(r"([A-Z]{2})[0-9]\s[0-9]")
+    rx_eu = re.compile(r"(EU)\s")
+    if rx_c.match(x):
+        return rx_c.match(x).group(1)
+    elif rx_eu.match(x):
+        return rx_eu.match(x).group(1)
     else:
-        return x
+        return np.nan
 
 
 def _load_supply_energy(config, load=True, carriers=None, countries=None, aggregate=True, temporal=False):

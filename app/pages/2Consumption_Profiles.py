@@ -67,12 +67,17 @@ st.plotly_chart(
 
 st.subheader(f"Annual {carrier} consumption per sector for {year} ")
 
+df_table = ((df.sum() / 1e3
+             * 8760 / len(df.axes[0]))
+            .rename('Annual consumption [TWh]')
+            .sort_values(ascending=False)
+            .to_frame())
+
+total = (df_table.sum())
+
+df_table.loc['Total']= total
 st.table(
-    (df.sum() / 1e3
-     * 8760 / len(df.axes[0]))
-    .rename('Annual consumption [TWh]')
-    .sort_values(ascending=False)
-    .to_frame()
+    df_table
     .style
     .format(precision=2, thousands=",", decimal='.')
 )

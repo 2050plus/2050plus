@@ -747,7 +747,7 @@ def extract_nodal_supply_energy(config, n):
 
     df = df.reset_index()
     df["node"] = df["node"].map(renamer_to_country)
-    df = df.set_index(idx)
+    df = df.dropna().set_index(idx)
 
     df = df * 1e-6  # TWh
     df["units"] = "TWh"
@@ -795,7 +795,7 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
         df = df.reset_index()
         df["node"] = df["node"].map(renamer_to_country)
         # Filter on annual total
-        df = df.loc[(df.groupby(["node", "carrier", "component", "item"])
+        df = df.dropna().loc[(df.groupby(["node", "carrier", "component", "item"])
                      [config["scenario"]["planning_horizons"]]
                      .filter(lambda x: (x.sum(axis=0) > 1e2).any()) 
                      ).index].set_index(idx)
