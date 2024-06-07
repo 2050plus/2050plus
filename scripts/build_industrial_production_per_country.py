@@ -56,7 +56,7 @@ The following subcategories [kton/a] are considered:
 - Wood and wood products
 - Other Industrial Sectors
 - Ammonia
-- HVC
+- HVC (NSC)
 - Chlorine
 - Methanol
 """

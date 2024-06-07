@@ -39,9 +39,10 @@ The following carriers are considered:
 - hydrogen
 - heat
 - naphtha
+- ammonia
+- methanol
 - process emission
 - process emission from feedstock
-- (ammonia)
 
 If the `config["industry"]["ammonia"] <https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry>` is set to true the ammonia demand is not converted to hydrogen and electricity but is considered as a separate carrier.
 

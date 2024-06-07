@@ -32,7 +32,7 @@ For each country and each subcategory of
 - Electric arc
 - Food, beverages and tobacco
 - Glass production
-- HVC
+- HVC (NSC)
 - Integrated steelworks
 - Machinery Equipment
 - Methanol

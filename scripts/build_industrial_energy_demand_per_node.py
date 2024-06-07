@@ -30,6 +30,7 @@ For each bus, the following carriers are considered:
 - low-temperature heat
 - naphtha
 - ammonia
+- methanol
 - process emission
 - process emission from feedstock
 

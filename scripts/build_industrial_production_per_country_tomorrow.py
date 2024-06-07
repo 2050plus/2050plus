@@ -39,14 +39,23 @@ This rule uses the ``industrial_production_per_country.csv`` file and the expect
 **St_primary_fraction**
 The fraction of steel that is coming from primary production. This is more energy intensive than recycling steel (secondary production).
 
-**DRI_fraction**
-The fraction of primary steel that is produced in DRI plants.
+**DRI_CH4_fraction**
+The fraction of primary steel that is produced in DRI H2 plants.
+
+**DRI_H2_fraction**
+The fraction of primary steel that is produced in DRI CH4 plants.
 
 **Al_primary_fraction**
 The fraction of aluminium that is coming from primary production. This is more energy intensive than recycling aluminium (secondary production).
 
-**HVC_primary_fraction**
+**HVC_NSC_fraction**
 The fraction of high value chemicals that are coming from primary production (crude oil or Fischer Tropsch).
+
+**HVC_NSC_CC_fraction**
+The fraction of high value chemicals that are coming from primary production (crude oil or Fischer Tropsch) using CC.
+
+**HVC_MTO_fraction**
+The fraction of high value chemicals that are coming from primary production through methonol to olefin route (MTO).
 
 **HVC_mechanical_recycling_fraction**
 The fraction of high value chemicals that are coming from mechanical recycling.

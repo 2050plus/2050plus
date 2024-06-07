@@ -35,9 +35,12 @@ The config["industry"]["sector_ratios_fraction_future"] parameter determines the
 For each bus, the following industry subcategories
 
 - Electric arc
-- DRI + Electric arc
+- DRI H2 + Electric arc
+- DRI CH4 + Electric arc
 - Integrated steelworks
-- HVC
+- HVC (NSC)
+- HVC (NSC CC)
+- HVC (MTO)
 - HVC (mechanical recycling)
 - HVC (chemical recycling)
 - Ammonia
@@ -72,9 +75,10 @@ with the following carriers are considered:
 - hydrogen
 - heat
 - naphtha
+- ammonia
+- methanol
 - process emission
 - process emission from feedstock
-- (ammonia)
 
 Unit of the output file is MWh/t.
 """
