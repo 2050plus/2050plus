@@ -1188,7 +1188,7 @@ def add_storage_and_grids(n, costs):
             efficiency=costs.at["OCGT_H2", "efficiency"],
             capital_cost=costs.at["OCGT_H2", "fixed"]
             * costs.at["OCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["OCGT_H2", "VOM"],
+            marginal_cost=costs.at["OCGT_H2", "VOM"]*costs.at["OCGT_H2", "efficiency"],
             lifetime=costs.at["OCGT_H2", "lifetime"],
         )
         
@@ -1202,7 +1202,7 @@ def add_storage_and_grids(n, costs):
             efficiency=costs.at["CCGT_H2", "efficiency"],
             capital_cost=costs.at["CCGT_H2", "fixed"]
             * costs.at["CCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["CCGT_H2", "VOM"],
+            marginal_cost=costs.at["CCGT_H2", "VOM"]*costs.at["CCGT_H2", "efficiency"],
             lifetime=costs.at["CCGT_H2", "lifetime"],
         )
         
@@ -1225,7 +1225,7 @@ def add_storage_and_grids(n, costs):
             efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
             capital_cost=costs.at["OCGT_CC", "fixed"]
             * costs.at["OCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["OCGT_CC", "VOM"],
+            marginal_cost=costs.at["OCGT_CC", "VOM"]*costs.at["OCGT_CC", "efficiency"],
             lifetime=costs.at["OCGT_CC", "lifetime"],
         )
         n.madd(
@@ -1242,7 +1242,7 @@ def add_storage_and_grids(n, costs):
             efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
             capital_cost=costs.at["CCGT_CC", "fixed"]
             * costs.at["CCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["CCGT_CC", "VOM"],
+            marginal_cost=costs.at["CCGT_CC", "VOM"]*costs.at["CCGT_CC", "efficiency"],
             lifetime=costs.at["CCGT_CC", "lifetime"],
         )
 
