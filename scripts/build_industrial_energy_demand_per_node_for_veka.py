@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 """
-Build industrial energy demand per model region taking into account data from VLAIO. This is a custom rule
+Build industrial energy demand per model region taking into account VEKA specific needs. This is a custom rule
 designed for VEKA 2050+ project.
 """
 import logging
@@ -13,23 +13,58 @@ import pandas as pd
 
 from _helpers import set_scenario_config
 
+pypsa_map = {
+    "steel": [
+        "DRI CH4 + Electric arc",
+        "DRI H2 + Electric arc",
+        "Electric arc",
+        "Integrated steelworks",
+    ],
+    "hvc": [
+        "HVC",
+        "HVC (chemical recycling)",
+        "HVC (mechanical recycling)",
+    ],
+    "nmm": [
+        "Cement",
+        "Ceramics & other NMM",
+        "Glass production",
+    ],
+    "non_ferrous": [
+        "Alumina production",
+        "Aluminium - primary production",
+        "Aluminium - secondary production",
+        "Other non-ferrous metals",
+    ],
+    "paper": [
+        "Paper production",
+        "Printing and media reproduction",
+        "Pulp production",
+        "Wood and wood products",
+    ],
+    "food": [
+        "Food, beverages and tobacco",
+    ],
+}
+
 
 def build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map):
     """
     Build Flanders energy demand using VLAIO data and energy carrier mapping. Steel is not included
     as it is defined by PyPSA.
     """
+    raise RuntimeError("This function is kept for the record but should not be used.")
 
     vlaio_industries = [
-        "ceramics",
+        # "ceramics",  # Will always be configured through PyPSA
         "chemicals-ammonia",
         "chemicals-chlorine",
-        "chemicals-HVC",
+        # "chemicals-HVC",  # Will always be configured through PyPSA
         "chemicals-others",
-        "food",
-        "glass",
-        "non-ferrous",
-        "paper",
+        # "food",  # Will always be configured through PyPSA
+        # "glass",  # Will always be configured through PyPSA
+        # "non-ferrous",  # Will always be configured through PyPSA
+        # "paper",  # Will always be configured through PyPSA
         # "steel",  # Will always be configured through PyPSA
     ]
 
@@ -75,12 +110,14 @@ def build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map):
         .replace(0, np.nan).dropna(how="all", axis=1).dropna(how="all", axis=0)
     )
 
-    # Add steel demand from PyPSA
-    demand_fl_steel = (
-        demand.query("`TWh/a (MtCO2/a)` == 'BE1 0' and industry.isin(@steel_pypsa)")
+    # Add demand from PyPSA (steel, HVC, non-metallic minerals, non-ferrous, paper and food)
+    pypsa_techs = [i for v in pypsa_map.values() for i in v]
+    demand_fl_pypsa = (
+        demand.query("`TWh/a (MtCO2/a)` == 'BE1 0' and industry.isin(@pypsa_techs)")
         .loc["BE1 0"]
         .replace(0, np.nan).dropna(how="all", axis=1).dropna(how="all", axis=0)
     )
+    raise RuntimeError("This implementation has not been validated.")
 
     # Add current electricity reference
     demand_fl_current_el = (
@@ -92,7 +129,7 @@ def build_flanders_energy_demand(demand, energy_fl_ets, energy_fl_non_ets, map):
         pd.concat([
             demand_fl_ets,
             demand_fl_non_ets,
-            demand_fl_steel,
+            demand_fl_pypsa,
             demand_fl_current_el,
         ])
         .fillna(0)
@@ -110,10 +147,12 @@ def update_flanders_energy_demand(demand, demand_fl):
     Replace energy demand of Flanders in demand using demand_fl. Process emissions from demand are kept as
     VLAIO doesn't easily give access to process emissions.
     """
+    raise RuntimeError("This function is kept for the record but should not be used. Implementation is not validated.")
+
     industry_map = {
         "Ceramics & other NMM": "ceramics",
         "Glass production": "glass",
-        "HVC": "chemicals-HVC",
+        "HVC (NSC)": "chemicals-HVC",
         "Other non-ferrous metals": "non-ferrous",
     }
 
@@ -130,30 +169,11 @@ def update_flanders_energy_demand(demand, demand_fl):
     return pd.concat([demand.drop("BE1 0"), demand_fl, demand_fl_process]).groupby(level=[0, 1]).sum()
 
 
-if __name__ == "__main__":
-    if "snakemake" not in globals():
-        from _helpers import mock_snakemake
-
-        snakemake = mock_snakemake(
-            "build_industrial_energy_demand_per_node_for_vlaio",
-            simpl="181",
-            clusters="39m",
-            planning_horizons=2030,
-            run="electrification",
-            configfiles="config/config.veka.yaml",
-        )
-    set_scenario_config(snakemake)
-
-    # industrial energy demand per node
-    fn = snakemake.input.industrial_energy_demand_per_node_ind
-    demand = pd.read_csv(fn, header=0, index_col=[0, 1])
-
-    steel_pypsa = [
-        "DRI CH4 + Electric arc",
-        "DRI H2 + Electric arc",
-        "Electric arc",
-        "Integrated steelworks",
-    ]
+def override_flanders_data():
+    """
+    This function overrides Flanders data with VLAIO specific data.
+    """
+    raise RuntimeError("This function is kept for the record but should not be used.")
 
     scenario = snakemake.config["industry"].get("vlaio_scenario", "MIX CENTRAL")
     if scenario:
@@ -191,8 +211,36 @@ if __name__ == "__main__":
             .replace("BE1 0", "BE1 2")
         )
         demand_vlaio = demand_vlaio.set_index(["TWh/a (MtCO2/a)", "industry"]).groupby(level=[0, 1]).sum()
+    return demand_vlaio
 
-    fn = snakemake.output.industrial_energy_demand_per_node_for_vlaio
-    demand_vlaio.groupby(by="TWh/a (MtCO2/a)").sum().to_csv(fn, float_format="%.2f")
-    fn = snakemake.output.industrial_energy_demand_per_node_ind_for_vlaio
-    demand_vlaio.to_csv(fn, float_format="%.2f")
+
+if __name__ == "__main__":
+    if "snakemake" not in globals():
+        from _helpers import mock_snakemake
+
+        snakemake = mock_snakemake(
+            "build_industrial_energy_demand_per_node_for_veka",
+            simpl="181",
+            clusters="39m",
+            planning_horizons=2030,
+            run="central",
+            configfiles="config/config.veka.yaml",
+        )
+    set_scenario_config(snakemake)
+
+    # industrial energy demand per node
+    fn = snakemake.input.industrial_energy_demand_per_node_ind
+    demand = pd.read_csv(fn, header=0, index_col=[0, 1])
+
+    logging.info("Moving Cement energy demand from BE1 0 to BE1 2")
+    demand_veka = demand.copy().reset_index()
+    demand_veka.loc[demand_veka["industry"] == "Cement"] = (
+        demand_veka.loc[demand_veka["industry"] == "Cement"]
+        .replace("BE1 0", "BE1 2")
+    )
+    demand_veka = demand_veka.set_index(["TWh/a (MtCO2/a)", "industry"]).groupby(level=[0, 1]).sum()
+
+    fn = snakemake.output.industrial_energy_demand_per_node_for_veka
+    demand_veka.groupby(by="TWh/a (MtCO2/a)").sum().to_csv(fn, float_format="%.2f")
+    fn = snakemake.output.industrial_energy_demand_per_node_ind_for_veka
+    demand_veka.to_csv(fn, float_format="%.2f")

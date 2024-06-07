@@ -669,6 +669,11 @@ industry:
   HVC_production_today: 52.
   MWh_elec_per_tHVC_mechanical_recycling: 0.547
   MWh_elec_per_tHVC_chemical_recycling: 6.9
+  MWh_elec_per_tHVC_MTO: 1.39
+  MWh_MeOH_per_tHVC_MTO: 17.84
+  tCO2_process_per_tHVC_MTO: 0.4
+  HVC_NSC_CC_energy_factor: 1.2
+  HVC_NSC_CC_emission_factor: 0.2
   chlorine_production_today: 9.58
   MWh_elec_per_tCl: 3.6
   MWh_H2_per_tCl: -0.9372

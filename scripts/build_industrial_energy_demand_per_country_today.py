@@ -175,7 +175,7 @@ def separate_basic_chemicals(demand, production):
     demand["Chlorine"] = chlorine.unstack().reindex(index=demand.index, fill_value=0.0)
     demand["Methanol"] = methanol.unstack().reindex(index=demand.index, fill_value=0.0)
 
-    demand["HVC"] = (
+    demand["HVC (NSC)"] = (
         demand["Basic chemicals"]
         - demand["Ammonia"]
         - demand["Methanol"]
@@ -184,7 +184,7 @@ def separate_basic_chemicals(demand, production):
 
     demand.drop(columns="Basic chemicals", inplace=True)
 
-    demand["HVC"].clip(lower=0, inplace=True)
+    demand["HVC (NSC)"].clip(lower=0, inplace=True)
 
     return demand
 

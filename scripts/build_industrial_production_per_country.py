@@ -309,7 +309,7 @@ def separate_basic_chemicals(demand, year):
         / params["basic_chemicals_without_NH3_production_today"]
         / 1e3
     )
-    demand["HVC"] = params["HVC_production_today"] * 1e3 * distribution_key
+    demand["HVC (NSC)"] = params["HVC_production_today"] * 1e3 * distribution_key
     demand["Chlorine"] = params["chlorine_production_today"] * 1e3 * distribution_key
     demand["Methanol"] = params["methanol_production_today"] * 1e3 * distribution_key
 

@@ -479,7 +479,24 @@ def chemicals_industry():
     # MWh/t material
     df.loc[sources, sector] = df.loc[sources, sector] / s_out
 
-    df.rename(columns={sector: "HVC"}, inplace=True)
+    df.rename(columns={sector: "HVC (NSC)"}, inplace=True)
+
+    # HVC MTO
+
+    sector = "HVC (MTO)"
+    df[sector] = 0.0
+    df.loc["elec", sector] = params["MWh_elec_per_tHVC_MTO"]
+    df.loc["methanol", sector] = params["MWh_MeOH_per_tHVC_MTO"]
+    df.loc["process emission", sector] = params["tCO2_process_per_tHVC_MTO"]
+
+    # HVC Naphtha Steam Cracking with CC (NSC CC)
+
+    sector = "HVC (NSC CC)"
+    df[sector] = 0.0
+    index_emissions = [i for i in index if "emission" in i]
+    index_energy = [i for i in index if i not in index_emissions]
+    df.loc[index_energy, sector] = df.loc[index_energy, "HVC (NSC)"] * params["HVC_NSC_CC_energy_factor"]
+    df.loc[index_emissions, sector] = df.loc[index_emissions, "HVC (NSC)"] * params["HVC_NSC_CC_emission_factor"]
 
     # HVC mechanical recycling
 

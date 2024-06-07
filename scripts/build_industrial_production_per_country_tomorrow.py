@@ -123,16 +123,25 @@ if __name__ == "__main__":
     production[key_pri] = fraction_persistent_primary * production[key_pri]
     production[key_sec] = total_aluminium - production[key_pri]
 
+    production["HVC (NSC CC)"] = (
+            get(params["HVC_NSC_CC_fraction"], investment_year)
+            * production["HVC (NSC)"]
+    )
+    production["HVC (MTO)"] = (
+            get(params["HVC_MTO_fraction"], investment_year)
+            * production["HVC (NSC)"]
+    )
+
     production["HVC (mechanical recycling)"] = (
         get(params["HVC_mechanical_recycling_fraction"], investment_year)
-        * production["HVC"]
+        * production["HVC (NSC)"]
     )
     production["HVC (chemical recycling)"] = (
         get(params["HVC_chemical_recycling_fraction"], investment_year)
-        * production["HVC"]
+        * production["HVC (NSC)"]
     )
 
-    production["HVC"] *= get(params["HVC_primary_fraction"], investment_year)
+    production["HVC (NSC)"] *= get(params["HVC_NSC_fraction"], investment_year)
 
     fn = snakemake.output.industrial_production_per_country_tomorrow
     production.to_csv(fn, float_format="%.2f")
