@@ -16,6 +16,9 @@ scenario_dict = {
     "Molecules": {
         "path": "20240607/graph_extraction_st/molecules",
     },
+    "LSC (Least Structural Changes)": {
+        "path": "20240607/graph_extraction_st/lsc",
+    },
 }
 CLIP_VALUE_TWH = 1e-1
 GRAPH_AREA = {"EU27+TYNDP": "tot", "BE": "be", "EU27": "eu27"}
