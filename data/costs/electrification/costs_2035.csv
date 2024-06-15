@@ -129,7 +129,7 @@ H2 (g) fill compressor station,lifetime,20.0,years,Linear interpolation between 
 H2 (g) pipeline,FOM,0.126404494,%/year,Linear interpolation between 2030 and 2040,
 H2 (g) pipeline,electricity-input,0.0185,MW_e/1000km/MW_H2,Linear interpolation between 2030 and 2040,
 H2 (g) pipeline,investment,712.0,EUR/MW/km,Linear interpolation between 2030 and 2040,
-H2 (g) pipeline,lifetime,40.0,years,Linear interpolation between 2030 and 2040,
+H2 (g) pipeline,lifetime,50.0,years,Linear interpolation between 2030 and 2040,
 H2 (g) pipeline repurposed,FOM,2.75,%/year,Linear interpolation between 2030 and 2040,
 H2 (g) pipeline repurposed,electricity-input,0.0185,MW_e/1000km/MW_H2,Linear interpolation between 2030 and 2040,
 H2 (g) pipeline repurposed,investment,105.8799,EUR/MW/km,Linear interpolation between 2030 and 2040,

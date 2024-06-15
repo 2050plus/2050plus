@@ -129,7 +129,7 @@ H2 (g) fill compressor station,lifetime,20,years,"Danish Energy Agency, Technolo
 H2 (g) pipeline,FOM,0.126404494,%/year,Ugent rev 2,Long-term Cost Optimization of a Low-carbon Hydrogen Network for Industrial Decarbonization
 H2 (g) pipeline,electricity-input,0.018,MW_e/1000km/MW_H2,"Danish Energy Agency, Technology Data for Energy Transport (2021), Excel datasheet: H2 140.","Assumption for a 140 bar, 5-20 GW pipeline. Electric compression."
 H2 (g) pipeline,investment,712,EUR/MW/km,Ugent rev 3,ELIA Blueprint Study 2024
-H2 (g) pipeline,lifetime,40,years,Ugent rev 1,Fixed 2030 value based on WB source for 2040/2050
+H2 (g) pipeline,lifetime,50,years,Ugent rev 3,Same as for new H2 (g) pipeline.
 H2 (g) pipeline repurposed,FOM,2.3333,%/year,"Danish Energy Agency, Technology Data for Energy Transport (2021), Excel datasheet: H2 140.",Same as for new H2 (g) pipeline.
 H2 (g) pipeline repurposed,electricity-input,0.018,MW_e/1000km/MW_H2,"Danish Energy Agency, Technology Data for Energy Transport (2021), Excel datasheet: H2 140.","Assumption for a 140 bar, 5-20 GW pipeline. Electric compression."
 H2 (g) pipeline repurposed,investment,105.8799,EUR/MW/km,default,European Hydrogen Backbone Report (June 2021): https://gasforclimate2050.eu/wp-content/uploads/2021/06/EHB_Analysing-the-future-demand-supply-and-transport-of-hydrogen_June-2021.pdf.

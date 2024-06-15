@@ -557,7 +557,13 @@ sector:
     H2 pipeline:
       efficiency_per_1000km: 1 # 0.982
       compression_per_1000km: 0.018
+    H2 pipeline retrofitted:
+      efficiency_per_1000km: 1 # 0.982
+      compression_per_1000km: 0.018
     gas pipeline:
+      efficiency_per_1000km: 1 #0.977
+      compression_per_1000km: 0.01
+    gas pipeline new:
       efficiency_per_1000km: 1 #0.977
       compression_per_1000km: 0.01
     electricity distribution grid:
