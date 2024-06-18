@@ -27,7 +27,7 @@ Mwh_elec_per_tHVC _chemical_recycling,MWh/tHVC,float,"The energy amount of elect
 MWh_elec_per_tHVC_MTO,MWh/tHVC,float,"The energy amount of electricity needed to produce a ton of high value chemicals (HVC) using MTO process. From VLAIO study (Climact).
 MWh_MeOH_per_tHVC_MTO,MWh/tHVC,float,"The energy amount of methanol needed to produce a ton of high value chemicals (HVC) using MTO process. From VLAIO study (Climact).
 tCO2_process_per_tHVC_MTO,MWh/tHVC,float,"The process emissions associated with the production of a ton of high value chemicals (HVC) using MTO process. From VLAIO study (Climact).
-HVC_NSC_CC_energy_factor,--,float,"The fraction of the energy need of high value chemicals (HVC) produced via naphtha steam cracking (NSC) with carbon capture (CC) compared to NSC without CC."
+HVC_NSC_CC_energy_increase,MWh/tHVC,float,"The increase of the electricity need of high value chemicals (HVC) produced via naphtha steam cracking (NSC) with carbon capture (CC) compared to NSC without CC."
 HVC_NSC_CC_emission_factor,--,float,"The fraction of the process emission of high value chemicals (HVC) produced via naphtha steam cracking (NSC) with carbon capture (CC) compared to NSC without CC."
 ,,,
 chlorine_production _today,MtCl/a,float,"The amount of chlorine produced. From `DECHEMA (2017) <https://dechema.de/dechema_media/Downloads/Positionspapiere/Technology_study_Low_carbon_energy_and_feedstock_for_the_European_chemical_industry-p-20002750.pdf>`_, Table 7, page 43"

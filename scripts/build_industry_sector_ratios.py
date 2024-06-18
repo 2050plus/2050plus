@@ -349,14 +349,17 @@ def chemicals_industry():
     sector = "Basic chemicals"
 
     df[sector] = 0.0
+    df_extra = pd.DataFrame(0, columns=[sector], index=index)
 
     s_fec = idees["fec"][3:9]
     assert s_fec.index[0] == sector
 
     sel = ["Lighting", "Air compressors", "Motor drives", "Fans and pumps"]
     df.loc["elec", sector] += s_fec[sel].sum()
+    df_extra.loc["elec", sector] += s_fec[sel].sum()
 
     df.loc["heat", sector] += s_fec["Low enthalpy heat"]
+    df_extra.loc["heat", sector] += s_fec["Low enthalpy heat"]
 
     subsector = "Chemicals: Feedstock (energy used as raw material)"
     # There are Solids, Refinery gas, LPG, Diesel oil, Residual fuel oil,
@@ -460,6 +463,7 @@ def chemicals_industry():
     # convert from ktoe/a to GWh/a
     sources = ["elec", "biomass", "methane", "hydrogen", "heat", "naphtha"]
     df.loc[sources, sector] *= toe_to_MWh
+    df_extra.loc[sources, sector] *= toe_to_MWh
 
     # subtract ammonia energy demand (in ktNH3/a)
     ammonia = pd.read_csv(snakemake.input.ammonia_production, index_col=0)
@@ -469,7 +473,7 @@ def chemicals_industry():
 
     # subtract chlorine demand (in MtCl/a)
     chlorine_total = params["chlorine_production_today"]
-    df.loc["hydrogen", sector] -= chlorine_total * params["MWh_H2_per_tCl"] * 1e3
+    # df.loc["hydrogen", sector] -= chlorine_total * params["MWh_H2_per_tCl"] * 1e3  # Not reported in IDEES
     df.loc["elec", sector] -= chlorine_total * params["MWh_elec_per_tCl"] * 1e3
 
     # subtract methanol demand (in MtMeOH/a)
@@ -479,8 +483,17 @@ def chemicals_industry():
 
     # MWh/t material
     df.loc[sources, sector] = df.loc[sources, sector] / s_out
+    df_extra.loc[sources, sector] = df_extra.loc[sources, sector] / s_out
+
+    # Shift even more to electrified NSC
+    df["HVC (NSC CC)"] = df[sector].copy()  # Save current state as basis for NSC CC
+    methane_reduction = 0.9
+    eff = 0.7  # Efficiency gain of 30% between methane and electricity
+    df.loc["elec", sector] += df.loc["methane", sector] * methane_reduction * eff
+    df.loc["methane", sector] -= df.loc["methane", sector] * methane_reduction
 
     df.rename(columns={sector: "HVC (NSC)"}, inplace=True)
+    df_extra.rename(columns={sector: "HVC (NSC)"}, inplace=True)
 
     # HVC MTO
 
@@ -489,14 +502,13 @@ def chemicals_industry():
     df.loc["elec", sector] = params["MWh_elec_per_tHVC_MTO"]
     df.loc["methanol", sector] = params["MWh_MeOH_per_tHVC_MTO"]
     df.loc["process emission", sector] = params["tCO2_process_per_tHVC_MTO"]
+    df[sector] += df_extra["HVC (NSC)"]
 
     # HVC Naphtha Steam Cracking with CC (NSC CC)
-
+    # Values copied from NSC previously
     sector = "HVC (NSC CC)"
-    df[sector] = 0.0
     index_emissions = [i for i in index if "emission" in i]
-    index_energy = [i for i in index if i not in index_emissions]
-    df.loc[index_energy, sector] = df.loc[index_energy, "HVC (NSC)"] * params["HVC_NSC_CC_energy_factor"]
+    df.loc["elec", sector] += params["HVC_NSC_CC_energy_increase"]
     df.loc[index_emissions, sector] = df.loc[index_emissions, "HVC (NSC)"] * params["HVC_NSC_CC_emission_factor"]
 
     # HVC mechanical recycling
