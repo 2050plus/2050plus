@@ -61,11 +61,10 @@ def add_emission_prices(n, emission_prices={"co2": 0.0}):
 
         for c in n.iterate_components(['Link']):
             for end in [col[3:] for col in c.df.columns if col[:3] == "bus"]:
-                items_new = c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))
-                                       & (c.df.build_year == int(snakemake.wildcards.planning_horizons))]
-
-                items_old = c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))
-                                       & (c.df.build_year != int(snakemake.wildcards.planning_horizons))]
+                dfi = c.df.loc[c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))]]
+                mask = (dfi.build_year == int(snakemake.wildcards.planning_horizons)) | (dfi.lifetime == np.inf)
+                items_new = dfi[mask].index
+                items_old = dfi[~mask].index
 
                 if len(items_new) == 0 and len(items_old) == 0:
                     continue
