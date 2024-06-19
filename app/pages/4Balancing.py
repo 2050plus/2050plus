@@ -44,10 +44,12 @@ df.loc[condition, df.columns[2:]] *= -1
 st.header("Installed capacities per country")
 st.markdown('Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
 
-all = ['EU27 + TYNDP']
+all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
-if not ('EU27 + TYNDP' in country):
+if not ('ENTSO-E area' in country):
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 
 df = (
     df.drop(columns=['country'])

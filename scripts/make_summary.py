@@ -464,6 +464,8 @@ def calculate_nodal_supply_energy(_n, label, nodal_supply_energy,
                 if country_aggregate:
                     if not isinstance(country_aggregate, bool):
                         s = s.loc[s.index.get_level_values("bus").str.contains(country_aggregate)]
+                    else:
+                        s = s.loc[~(s.index.get_level_values("bus").str.contains("FL"))]
                     s = s.groupby(['carrier', 'components', 'technology']).sum()
                 s = s.stack()
 
@@ -503,6 +505,8 @@ def calculate_nodal_supply_energy(_n, label, nodal_supply_energy,
                     if country_aggregate:
                         if not isinstance(country_aggregate, bool):
                             s = s.loc[s.index.get_level_values("location").str.contains(country_aggregate)]
+                        else:
+                            s = s.loc[~(s.index.get_level_values("location").str.contains("FL"))]
                         s = s.groupby(['carrier', 'components', 'technology']).sum()
                     s = s.stack()
 

@@ -57,11 +57,15 @@ st.divider()
 
 st.header("Potentials per country")
 df_tab = data.copy()
-country = st.selectbox('Choose your country:', ['EU27 + TYNDP'] + list(df_tab.country.unique()))
-if country != 'EU27 + TYNDP':
+country = st.selectbox('Choose your country:', ['ENTSO-E area'] + list(df_tab.country.unique()))
+if country != 'ENTSO-E area':
     df_tab = df_tab.set_index('country').loc[country]
 else:
-    df_tab = df_tab.sum(numeric_only=True)
+    df_tab = (
+        df_tab
+        .query("country != 'FL'")
+        .sum(numeric_only=True)
+    )
 
 df_tab = (
     df_tab

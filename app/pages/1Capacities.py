@@ -30,10 +30,12 @@ df = data.copy()
 
 st.header("Installed capacities per country")
 
-all = ['EU27 + TYNDP']
+all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
-if not ('EU27 + TYNDP' in country):
+if not ('ENTSO-E area' in country):
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 
 df = (
     df.drop(columns=['country'])
@@ -72,7 +74,6 @@ df_bar = (df_bar
           .query("sector == @technology")
           .drop(columns=['sector'])
           .set_index('country')
-          # .T
           .rename_axis("Investment year")
           )
 fig_bar = px.bar(

@@ -38,9 +38,11 @@ with col1:
 df = get_df(scenario, year)
 
 with col2:
-    country = st.selectbox('Choose your country:', ['EU27 + TYNDP'] + list(df["country"].unique()))
-if country != 'EU27 + TYNDP':
+    country = st.selectbox('Choose your country:', ['ENTSO-E area'] + list(df["country"].unique()))
+if country != 'ENTSO-E area':
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 df = df.groupby(['carrier']).sum(numeric_only=True)
 
 df_table = (

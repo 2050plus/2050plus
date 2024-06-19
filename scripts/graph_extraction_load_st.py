@@ -12,12 +12,14 @@ import re
 from pathlib import Path
 
 import pandas as pd
+
 from scripts.graph_extraction_utils import CLIP_VALUE_TWH
 from scripts.graph_extraction_utils import NICE_RENAMER
 from scripts.graph_extraction_utils import _load_supply_energy
 from scripts.graph_extraction_utils import query_imp_exp
 
-COST_SEGMENTS = {'prod': 'Energy production', 'sto': 'Storage', 'tran': 'Transmission', 'distr' : 'Distribution' , 'net_imp': "Net_Imports"}
+COST_SEGMENTS = {'prod': 'Energy production', 'sto': 'Storage', 'tran': 'Transmission', 'distr': 'Distribution',
+                 'net_imp': "Net_Imports"}
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,7 @@ def load_supply_energy_df(config, load=True):
     )
 
     for ca in supply_energy_carrier:
-       
+
         # Todo : should we move the HV/LV/imports/exports to the calling function to keep this function read only (no modifications) ?
         if ca == "electricity":
             df_ac = _load_supply_energy(config, load=load, carriers="AC", aggregate=False)
@@ -108,12 +110,17 @@ def load_load_temporal_be(config):
     return _load_load_temporal(config, "BE")
 
 
+def load_load_temporal_fl(config):
+    return _load_load_temporal(config, "FL")
+
+
 def _load_supply_temporal(config, countries=None):
     supply_raw = _load_supply_energy(config, load=False, aggregate=True, temporal=True, countries=countries)
     supply = {}
     for y in [c for c in supply_raw.columns if re.match(r"[0-9]{4}", c)]:
         supply_i = supply_raw.pivot_table(values=y, index=["carrier", "sector"], columns="snapshot")
-        supply_i.columns = pd.to_datetime(pd.DatetimeIndex(supply_i.columns, name='snapshots').strftime(f'{y}-%m-%d-%H'))
+        supply_i.columns = pd.to_datetime(
+            pd.DatetimeIndex(supply_i.columns, name='snapshots').strftime(f'{y}-%m-%d-%H'))
         supply_i = supply_i.loc[supply_i.sum(axis=1) / 1e3 > CLIP_VALUE_TWH, :]
         supply_i = supply_i.loc[(supply_i.std(axis=1) / supply_i.mean(axis=1)).sort_values().index]
         supply[y] = supply_i.reset_index().replace(NICE_RENAMER).T.reset_index()
@@ -128,14 +135,18 @@ def load_supply_temporal_be(config):
     return _load_supply_temporal(config, "BE")
 
 
+def load_supply_temporal_fl(config):
+    return _load_supply_temporal(config, "FL")
+
+
 def load_res_temporal(config):
     res_raw = pd.read_csv(Path(config["path"]["csvs"], "temporal_res_supply.csv"), header=0).replace(NICE_RENAMER)
     res = {}
     for y in res_raw["year"].unique():
         res_i = res_raw.query("year==@y").drop("year", axis=1)
-        res_i= res_i.set_index(['country','carrier'])
+        res_i = res_i.set_index(['country', 'carrier'])
         res_i = res_i.astype(float).abs()
-        res_i = res_i.loc[res_i.sum(axis=1)*8760/res_i.shape[0]>CLIP_VALUE_TWH].reset_index()
+        res_i = res_i.loc[res_i.sum(axis=1) * 8760 / res_i.shape[0] > CLIP_VALUE_TWH].reset_index()
         res_i.index = pd.to_datetime(pd.DatetimeIndex(res_i.index, name='snapshots').strftime(f'{y}-%m-%d-%H'))
         res[str(y)] = res_i
     return res
@@ -152,8 +163,10 @@ def load_balancing_capacities(config):
 def load_balancing_supply(config):
     return pd.read_csv(Path(config["path"]["csvs"], "balancing_supply_countries.csv"))
 
+
 def load_elec_grid(config):
     return pd.read_csv(Path(config["path"]["csvs"], "elec_grid.csv"))
+
 
 # generic function for calling costs
 def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=None):
@@ -225,30 +238,32 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
     return df
 
 
-
 def _load_costs(config, per_segment=False, per_year=False):
     dico = {}
     for co_name, subset in config["countries"].items():
         if per_segment:
             for seg_name, seg in COST_SEGMENTS.items():
                 dico[f"{seg_name}_{co_name}"] = _load_costs_year_segment(config, _countries=subset, cost_segment=seg)
-                
+
                 # adapt net_imp to the format of the rest of the dataframe
                 if seg == "Net_Imports":
-                    df_melted = pd.melt(dico[f"{seg_name}_{co_name}"], id_vars=['index'], var_name='carrier', value_name='value')
+                    df_melted = pd.melt(dico[f"{seg_name}_{co_name}"], id_vars=['index'], var_name='carrier',
+                                        value_name='value')
                     df_pivoted = df_melted.pivot(index='carrier', columns='index', values='value')
                     df_pivoted.reset_index(inplace=True)
                     df_pivoted["cost_segment"] = seg
-                    dico[f"{seg_name}_{co_name}"] = df_pivoted.rename(columns={"carrier": "cost/carrier", 2030 : '2030', 2040 : '2040', 2050 : '2050'})
-                else :
-                    dico[f"{seg_name}_{co_name}"] = dico[f"{seg_name}_{co_name}"].rename(columns={"cost": "cost/carrier"})
+                    dico[f"{seg_name}_{co_name}"] = df_pivoted.rename(
+                        columns={"carrier": "cost/carrier", 2030: '2030', 2040: '2040', 2050: '2050'})
+                else:
+                    dico[f"{seg_name}_{co_name}"] = dico[f"{seg_name}_{co_name}"].rename(
+                        columns={"cost": "cost/carrier"})
                 dico
         elif per_year:
             for y in config["years_str"]:
                 dico[f"{y}_{co_name}"] = _load_costs_year_segment(config, _countries=subset, year=y)
         else:
             logging.warning("Unkown configuration to load costs.")
-    dico = pd.concat(dico.values(), keys=dico.keys()).droplevel(1).reset_index().rename(columns={"index" : "config"})
+    dico = pd.concat(dico.values(), keys=dico.keys()).droplevel(1).reset_index().rename(columns={"index": "config"})
     return dico
 
 
@@ -288,10 +303,6 @@ def load_marginal_prices_t(config):
     return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_t_countries.csv"))
 
 
-def load_marginal_prices_t(config):
-    return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_t_countries.csv"))
-
-
 # %% Load main
 def load_data_st(config):
     logger.info(f"Exporting data to streamlit")
@@ -299,8 +310,10 @@ def load_data_st(config):
     outputs = [
         "load_temporal",
         "load_temporal_be",
+        "load_temporal_fl",
         "supply_temporal",
         "supply_temporal_be",
+        "supply_temporal_fl",
         "supply_energy_df",
         "imports_exports",
         "res_temporal",
@@ -309,7 +322,7 @@ def load_data_st(config):
         "balancing_capacities",
         "balancing_supply",
 
-	# Costs
+        # Costs
         "costs_segments",
         "costs_years",
         "marginal_prices",

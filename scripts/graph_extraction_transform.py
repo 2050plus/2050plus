@@ -13,6 +13,7 @@ from pathlib import Path
 import matplotlib as mpl
 import pandas as pd
 from matplotlib import pyplot as plt
+
 from scripts.graph_extraction_utils import CLIP_VALUE_TWH
 from scripts.graph_extraction_utils import ELEC_RENAMER
 from scripts.graph_extraction_utils import HEAT_RENAMER
@@ -20,17 +21,14 @@ from scripts.graph_extraction_utils import HYDRO
 from scripts.graph_extraction_utils import RES
 from scripts.graph_extraction_utils import TRANSMISSION_RENAMER
 from scripts.graph_extraction_utils import bus_mapper
-from scripts.graph_extraction_utils import remove_prefixes
 from scripts.graph_extraction_utils import groupby_bus
-from scripts.graph_extraction_utils import groupby_buses
+from scripts.graph_extraction_utils import remove_prefixes
 from scripts.graph_extraction_utils import renamer_to_country
-
-from scripts.make_summary import calculate_nodal_capacities
-from scripts.make_summary import calculate_nodal_supply_energy
 from scripts.make_summary import assign_carriers
 from scripts.make_summary import assign_locations
+from scripts.make_summary import calculate_nodal_capacities
+from scripts.make_summary import calculate_nodal_supply_energy
 from scripts.plot_power_network import rename_techs_tyndp
-from scripts.prepare_sector_network import get
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +98,7 @@ RENAMER = {
 }
 
 
-#%%  Extract loads
+# %%  Extract loads
 def extract_loads(n):
     profiles = {}
     for y, ni in n.items():
@@ -174,11 +172,11 @@ def extract_res_potential(n):
     return df_potential
 
 
-#%% Plot functions
+# %% Plot functions
 
-def plot_series(network, carrier="AC", name="test", load_only= True, supply_only = False, path = None,
-                _stop = "-02-01", _start = "-01-01", year = "2013", colors = None,
-                save=True, return_data = False, regionalized=False):
+def plot_series(network, carrier="AC", name="test", load_only=True, supply_only=False, path=None,
+                _stop="-02-01", _start="-01-01", year="2013", colors=None,
+                save=True, return_data=False, regionalized=False):
     n = network.copy()
     assign_locations(n)
     assign_carriers(n)
@@ -198,9 +196,9 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
                     supply,
                     (-1)
                     * c.pnl["p" + str(i)]
-                    .loc[:, c.df.index[c.df["bus" + str(i)].isin(buses)]]
-                    .groupby([c.df.carrier,c.df["bus" + str(i)]], axis=1)
-                    .sum(),
+                      .loc[:, c.df.index[c.df["bus" + str(i)].isin(buses)]]
+                      .T.groupby([c.df.carrier, c.df["bus" + str(i)]])
+                      .sum().T,
                 ),
                 axis=1,
             )
@@ -211,28 +209,27 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
             (
                 supply,
                 ((c.pnl["p"].loc[:, comps]).multiply(c.df.loc[comps, "sign"]))
-                .groupby([c.df.carrier,c.df.bus], axis=1)
-                .sum(),
+                .T.groupby([c.df.carrier, c.df.bus])
+                .sum().T,
             ),
             axis=1,
         )
 
     # Map buses to countries in MultiIndex
-    supply.index = pd.to_datetime(pd.DatetimeIndex(supply.index.values,name='snapshots').strftime(f'{year}-%m-%d-%H'))
+    supply.index = pd.to_datetime(pd.DatetimeIndex(supply.index.values, name='snapshots').strftime(f'{year}-%m-%d-%H'))
     supply.columns = pd.MultiIndex.from_tuples(
-        [(x, n.buses.loc[y,"country"]) for (x,y) in supply.columns.values],
-        names=["carrier","country"])
-    supply = (supply.groupby(level = [0,1], axis = 1)
-              .sum()
-              .stack(level = 1)
-              .sort_index(level=[1,0]))
-    
-    #Group by carriers if not regionalized
+        [(x, n.buses.loc[y, "country"]) for (x, y) in supply.columns.values],
+        names=["carrier", "country"])
+    supply = (supply.T.groupby(level=[0, 1])
+              .sum().T
+              .stack(level=1, future_stack=True)
+              .sort_index(level=[1, 0]))
+
+    # Group by carriers if not regionalized
     if not regionalized:
-       supply = supply.groupby(level=0,axis=0).sum()
-       
-        
-    supply = supply.groupby(rename_techs_tyndp, axis=1).sum()
+        supply = supply.groupby(level=0).sum()
+
+    supply = supply.T.groupby(rename_techs_tyndp).sum().T
 
     both = supply.columns[(supply < 0.0).any() & (supply > 0.0).any()]
 
@@ -249,12 +246,12 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
     negative_supply.columns = negative_supply.columns + suffix
 
     supply = pd.concat((supply, negative_supply), axis=1)
-    
+
     if supply_only:
-        supply = supply.loc[:,~(supply<=0).all(axis=0)]
-        
+        supply = supply.loc[:, ~(supply <= 0).all(axis=0)]
+
     if load_only:
-        supply = - supply.loc[:,(supply<=0).all(axis=0)]
+        supply = - supply.loc[:, (supply <= 0).all(axis=0)]
 
     # 14-21.2 for flaute
     # 19-26.1 for flaute
@@ -269,8 +266,8 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
     if len(to_drop) != 0:
         logger.info(f"Dropping {to_drop.tolist()} from supply")
         supply.drop(columns=to_drop, inplace=True)
-    
-    if not(return_data):
+
+    if not (return_data):
         supply.index.name = None
 
     supply = supply / 1e3
@@ -281,18 +278,17 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
     supply.columns = supply.columns.str.replace("residential ", "")
     supply.columns = supply.columns.str.replace("services ", "")
     supply.columns = supply.columns.str.replace("urban decentral ", "decentral ")
-    
-    supply = supply.groupby(supply.columns, axis=1).sum()
-    new_columns = (supply.std()/supply.mean()).sort_values().index
-    
+
+    supply = supply.T.groupby(supply.columns).sum().T
+    new_columns = (supply.std() / supply.mean()).sort_values().index
+
     if return_data:
         return supply[new_columns]
-        
-    
+
     fig, ax = plt.subplots()
     fig.set_size_inches((8, 5))
 
-    if colors: 
+    if colors:
         (
             supply.loc[start:stop, new_columns].plot(
                 ax=ax,
@@ -305,9 +301,9 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
                 ],
             )
         )
-        loads = n.loads_t.p[n.loads.query('bus in @buses').index].sum(axis=1)/1e3
+        loads = n.loads_t.p[n.loads.query('bus in @buses').index].sum(axis=1) / 1e3
         loads.index = pd.to_datetime(pd.DatetimeIndex(loads.index.values).strftime(f'{year}-%m-%d-%H'))
-        loads[start:stop].plot(ax=ax, color= "k", linestyle='-')
+        loads[start:stop].plot(ax=ax, color="k", linestyle='-')
 
     handles, labels = ax.get_legend_handles_labels()
 
@@ -325,7 +321,7 @@ def plot_series(network, carrier="AC", name="test", load_only= True, supply_only
     ax.legend(new_handles, new_labels, ncol=3, loc="upper left", frameon=False)
     ax.set_xlim([start, stop])
     if load_only or supply_only:
-        ax.set_ylim([supply.sum().min()*2/1e3, supply.sum().max()*2/1e3])
+        ax.set_ylim([supply.sum().min() * 2 / 1e3, supply.sum().max() * 2 / 1e3])
     else:
         ax.set_ylim([-1000, 1900])
     ax.grid(True)
@@ -358,7 +354,7 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
     for y, ni in n.items():
         stats = ni.statistics
         inst_capa_elec_node_i = stats.optimal_capacity(bus_carrier=["AC", "low voltage"], groupby=groupby_bus)
-        
+
         inst_capa_elec_node_i = (inst_capa_elec_node_i
                                  .rename(y)
                                  .reset_index()
@@ -370,7 +366,7 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
                                  .sum(numeric_only=True)
                                  / 1e3  # GW
                                  )
-        
+
         inst_capa_elec_node.append(inst_capa_elec_node_i)
 
     return pd.concat(inst_capa_elec_node, axis=1)
@@ -379,23 +375,24 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
 def extract_balancing_data(method, n):
     balancing_data = []
     techno_to_keep = {"PHS", "hydro", "H2 Fuel Cell", "battery charger",
-                      "home battery charger", "V2G", "BEV charger" ,
+                      "home battery charger", "V2G", "BEV charger",
                       "ground heat pump", "air heat pump", "water tanks charger"}
 
     for y, ni in n.items():
         stats = ni.statistics
 
         data_i = (
-                    getattr(stats, method)(groupby=groupby_bus)
-                    .reset_index()
-                    .drop('component', axis=1)
-                    .rename(columns={"bus": "country", "bus1": "country", 0: y})
-                    .pipe(lambda df: df.assign(carrier=df.carrier.apply(remove_prefixes).apply(lambda x: RENAMER.get(x, x))))
-                    .query("carrier.isin(@techno_to_keep)")
-                    .assign(country=lambda df: df["country"].str.slice(0, 2))
-                    .groupby(["country", "carrier"]).sum(numeric_only=True)
-                    / 1e3 # GW
-                    )
+                getattr(stats, method)(groupby=groupby_bus)
+                .reset_index()
+                .drop('component', axis=1)
+                .rename(columns={"bus": "country", "bus1": "country", 0: y})
+                .pipe(
+                    lambda df: df.assign(carrier=df.carrier.apply(remove_prefixes).apply(lambda x: RENAMER.get(x, x))))
+                .query("carrier.isin(@techno_to_keep)")
+                .assign(country=lambda df: df["country"].map(ni.buses.country))
+                .groupby(["country", "carrier"]).sum(numeric_only=True)
+                / 1e3  # GW
+        )
 
         balancing_data.append(data_i)
 
@@ -403,11 +400,11 @@ def extract_balancing_data(method, n):
 
     return balancing_data
 
+
 def extract_electricity_network(n):
-    
     # DC
     links_DC = []
-    
+
     for y, ni in n.items():
         links_DC_i = ni.links[ni.links['carrier'] == 'DC']
         links_DC_i = links_DC_i[['bus0', 'bus1', 'length', 'p_nom', 'p_nom_max', 'carrier', 'p_nom_opt']]
@@ -415,32 +412,30 @@ def extract_electricity_network(n):
         links_DC_i = links_DC_i.reset_index()
         links_DC_i.rename(columns={'Link': 'Cable'}, inplace=True)
         links_DC_i.set_index(['Cable', 'year'], inplace=True)
-        
+
         links_DC.append(links_DC_i)
-    
+
     links_DC = pd.concat(links_DC)
-    
+
     # AC
     lines_AC = []
-    
+
     for y, ni in n.items():
-        lines_AC_i = ni.lines[['bus0', 'bus1', 'length', 's_nom', 's_nom_max', 'carrier', 's_nom_opt']]
-        lines_AC_i.rename(columns={'s_nom': 'p_nom', 's_nom_max':'p_nom_max', 's_nom_opt':'p_nom_opt'}, inplace=True)
+        lines_AC_i = ni.lines[['bus0', 'bus1', 'length', 's_nom', 's_nom_max', 'carrier', 's_nom_opt']].copy()
+        lines_AC_i.rename(columns={'s_nom': 'p_nom', 's_nom_max': 'p_nom_max', 's_nom_opt': 'p_nom_opt'}, inplace=True)
         lines_AC_i = lines_AC_i.assign(year=str(y))
         lines_AC_i = lines_AC_i.reset_index()
         lines_AC_i.rename(columns={'Line': 'Cable'}, inplace=True)
         lines_AC_i.set_index(['Cable', 'year'], inplace=True)
-    
+
         lines_AC.append(lines_AC_i)
-    
+
     lines_AC = pd.concat(lines_AC)
-    
+
     elec_grid = pd.concat([links_DC, lines_AC])
 
-    elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']] = elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']].div(1e3) 
-    #elec_grid = elec_grid[elec_grid.p_nom_opt > 1e-3] # only keep cables > 1MW
-    
-    
+    elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']] = elec_grid[['p_nom', 'p_nom_max', 'p_nom_opt']].div(1e3)
+
     return elec_grid
 
 
@@ -484,7 +479,7 @@ def extract_res_temporal_energy(config, n):
         units = pd.concat([ni.generators, ni.storage_units, ni.links])
         units_t = pd.concat([ni.generators_t.p, ni.storage_units_t.p, ni.links_t.p1], axis=1)
         res = units.copy().query("carrier in @RES or carrier in @HYDRO or " \
-                          "carrier.str.contains('solar thermal') or carrier.str.contains('solid biomass CHP')")
+                                 "carrier.str.contains('solar thermal') or carrier.str.contains('solid biomass CHP')")
         res_t = units_t[res.index]
         res.loc[res.bus.isna(), "bus"] = res.loc[res.bus.isna(), "bus1"]
         res["country"] = res.bus.map(renamer_to_country)
@@ -492,7 +487,7 @@ def extract_res_temporal_energy(config, n):
 
         res_t.columns = res_t.columns.map(lambda x: (y, res.loc[x].carrier, res.loc[x].country))
         res_t.rename_axis(["year", "carrier", "country"], axis=1, inplace=True)
-        res_t = res_t.groupby(["year", "carrier", "country"], axis=1).sum().abs().astype(float)
+        res_t = res_t.T.groupby(["year", "carrier", "country"]).sum().T.abs().astype(float)
         df.append(res_t)
     df = pd.concat(df, axis=1) / 1e3  # GW
     return df.T
@@ -545,10 +540,8 @@ def calculate_imp_exp(country_map, transmission_t, y):
 
     table_li_co = pd.DataFrame([], index=country_map.index)
     other_bus = pd.DataFrame([], index=transmission_t.columns)
-    mat_imp = pd.DataFrame([], columns=countries, index=countries).rename_axis(
-        index="countries")
-    mat_exp = pd.DataFrame([], columns=countries, index=countries).rename_axis(
-        index="countries")
+    mat_imp = pd.DataFrame([], columns=countries, index=countries).rename_axis(index="countries")
+    mat_exp = pd.DataFrame([], columns=countries, index=countries).rename_axis(index="countries")
     mat_imp["year"] = y
     mat_exp["year"] = y
 
@@ -564,8 +557,10 @@ def calculate_imp_exp(country_map, transmission_t, y):
             imp = ie_raw.where(ie_raw > 0, 0).sum(axis=0)
             exp = ie_raw.mask(ie_raw > 0, 0).sum(axis=0)
 
-            mat_imp.loc[other_bus[co].loc[imp[imp > CLIP_VALUE_TWH].index], co] = imp[imp > CLIP_VALUE_TWH].values
-            mat_exp.loc[other_bus[co].loc[exp[exp < -CLIP_VALUE_TWH].index], co] = -exp[exp < -CLIP_VALUE_TWH].values
+            idx1 = other_bus[co].loc[imp[imp > CLIP_VALUE_TWH].index].replace('', None).dropna()
+            mat_imp.loc[idx1, co] = imp[idx1.index].values
+            idx2 = other_bus[co].loc[exp[exp < -CLIP_VALUE_TWH].index].replace('', None).dropna()
+            mat_exp.loc[idx2, co] = -exp[idx2.index].values
 
     return mat_imp.fillna(0), mat_exp.fillna(0), table_li_co, other_bus
 
@@ -659,44 +654,46 @@ def extract_nodal_costs(config):
                            "level_3": "carrier"})
           )
     df_capa = (pd.read_csv(Path(config["path"]["results_path"], "csvs", "nodal_capacities.csv"),
-                      index_col=[0, 1, 2],
-                      skiprows=3,
-                      header=0)
-          .reset_index()
-          .rename(columns={"planning_horizon": "type",
-                           "level_1": "country",
-                           "level_2": "carrier"})
-          )
+                           index_col=[0, 1, 2],
+                           skiprows=3,
+                           header=0)
+               .reset_index()
+               .rename(columns={"planning_horizon": "type",
+                                "level_1": "country",
+                                "level_2": "carrier"})
+               )
 
     index_elec_capa = df_capa.query('carrier.str.contains("distribution")').index
     index_elec_cost = df.query('carrier.str.contains("distribution") and cost=="capital"').index
     capital_cost = (
-                    (df.loc[index_elec_cost,['2030','2040']].values/
-                     df_capa.loc[index_elec_capa,['2030','2040']].values)
-                    .mean()*config["sector"]["gas_distribution_grid_cost_factor"]
-                    )
+            (df.loc[index_elec_cost, ['2030', '2040']].values /
+             df_capa.loc[index_elec_capa, ['2030', '2040']].values)
+            .mean() * config["sector"]["gas_distribution_grid_cost_factor"]
+    )
     # gas boilers
     cond_str = '((carrier.str.contains("gas boiler") and not(carrier.str.contains("urban central"))) or carrier.str.contains("micro gas"))'
-    df= df.set_index(['type','country','carrier','cost'])
-    df_capa= df_capa.set_index(['type','country','carrier'])
-    index_gas_cost = df.query(cond_str+'and cost=="capital"').index
+    df = df.set_index(['type', 'country', 'carrier', 'cost'])
+    df_capa = df_capa.set_index(['type', 'country', 'carrier'])
+    index_gas_cost = df.query(cond_str + 'and cost=="capital"').index
     index_gas_capa = df_capa.query(cond_str).index
-    distri_gas = capital_cost* df_capa.loc[index_gas_capa, ['2030','2040']]
+    distri_gas = capital_cost * df_capa.loc[index_gas_capa, ['2030', '2040']]
     distri_gas['cost'] = 'capital'
-    distri_gas = distri_gas.reset_index().set_index(['type','country','carrier','cost'])
+    distri_gas = distri_gas.reset_index().set_index(['type', 'country', 'carrier', 'cost'])
 
-    df.loc[index_gas_cost, ['2030','2040']] = df.loc[index_gas_cost, ['2030','2040']]  - distri_gas[['2030','2040']].values
+    df.loc[index_gas_cost, ['2030', '2040']] = df.loc[index_gas_cost, ['2030', '2040']] - distri_gas[
+        ['2030', '2040']].values
 
     assets_distri = df.loc[index_gas_cost].reset_index()
     assets_distri.carrier = 'gas distribution grid'
-    assets_distri[['2030','2040']] = distri_gas.values
-    assets_distri = assets_distri.groupby(["type", "country", "carrier", "cost",]).sum()
-    df = pd.concat([df,assets_distri],axis=0).reset_index()
+    assets_distri[['2030', '2040']] = distri_gas.values
+    assets_distri = assets_distri.groupby(["type", "country", "carrier", "cost", ]).sum()
+    df = pd.concat([df, assets_distri], axis=0).reset_index()
 
     df["country"] = df["country"].str[:2].fillna("EU")
     fuels = df.query(
         "carrier in ['gas','oil','coal','lignite','uranium'] and cost == 'marginal' and type == 'generators'").index
-    biomass = df.query("(carrier.str.contains('biomass') or carrier.str.contains('biogas')) and cost == 'marginal' and type == 'stores'").index
+    biomass = df.query(
+        "(carrier.str.contains('biomass') or carrier.str.contains('biogas')) and cost == 'marginal' and type == 'stores'").index
     df.loc[fuels.union(biomass), "cost"] = "fuel"
     df = df.set_index(["type", "cost", "country", "carrier"])
     df = df.fillna(0).groupby(["type", "cost", "country", "carrier"]).sum()
@@ -719,11 +716,11 @@ def extract_marginal_prices(n, carrier_list=["AC"]):
                 )
                 prices[y] = price_y.mean().groupby(lambda x: x[:2]).mean()
                 prices[f"{y}_std"] = price_y.std().groupby(lambda x: x[:2]).mean()
-                marginal_t = price_y.T.groupby(lambda x : x[:2]).mean().rename_axis(index=["countries"])
+                marginal_t = price_y.T.groupby(lambda x: x[:2]).mean().rename_axis(index=["countries"])
                 marginal_t["year"] = y
 
                 prices_t = pd.concat([prices_t, marginal_t.reset_index().set_index(["year", "countries"])])
-                
+
         prices["carrier"] = ca.replace("AC", "elec")
         prices_t["carrier"] = ca.replace("AC", "elec")
         df.append(prices.reset_index().set_index(["countries", "carrier"]))
@@ -731,8 +728,6 @@ def extract_marginal_prices(n, carrier_list=["AC"]):
     df = pd.concat(df, axis=0)
     df_t = pd.concat(df_t)
     return df, df_t
-
-
 
 
 def extract_nodal_supply_energy(config, n):
@@ -782,7 +777,7 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
                                            carriers=carriers, carriers_renamer=carriers_renamer,
                                            time_aggregate=time_aggregate,
                                            country_aggregate=country_aggregate, fun=remove_prefixes)
-    
+
     idx = ["carrier", "component", "item", "snapshot"]
     if not (country_aggregate):
         idx = ["node"] + idx
@@ -790,18 +785,18 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
     df.columns = df.columns.get_level_values(3)
 
     df = df * 1e-3  # GWh
-    
+
     if not (country_aggregate):
         df = df.reset_index()
         df["node"] = df["node"].map(renamer_to_country)
         # Filter on annual total
         df = df.dropna().loc[(df.groupby(["node", "carrier", "component", "item"])
-                     [config["scenario"]["planning_horizons"]]
-                     .filter(lambda x: (x.sum(axis=0) > 1e2).any()) 
-                     ).index].set_index(idx)
+                              [config["scenario"]["planning_horizons"]]
+                              .filter(lambda x: (x.sum(axis=0) > 1e2).any())
+                              ).index].set_index(idx)
 
     # Convert hourly values back to 1h-consumption for visualisation
-    df = df * len(ni.snapshots) / 8760 
+    df = df * len(ni.snapshots) / 8760
     df = df.merge(sector_mapping, left_on=["carrier", "component", "item"], right_index=True, how="left").dropna(axis=0,
                                                                                                                  subset="sector")
     return df
@@ -992,7 +987,7 @@ def transform_data(config, n, n_ext, color_shift=None):
     carriers_renamer.update(ELEC_RENAMER)
 
     elec_grid = extract_electricity_network(n)
-    
+
     capa_country = extract_country_capacities(config, n_ext)
     n_balancing_capa = extract_balancing_data("optimal_capacity", n)
     n_balancing_supply = extract_balancing_data("supply", n)
@@ -1002,7 +997,6 @@ def transform_data(config, n, n_ext, color_shift=None):
     temporal_res_supply = extract_res_temporal_energy(config, n)
     prod_profiles = extract_profiles(config, n, supply=True)
     load_profiles = extract_profiles(config, n, load=True)
-    # n_loads = extract_loads(n)
     n_res_pot = extract_res_potential(n)
     res_stats = extract_res_statistics(n)
     capa_country = extract_country_capacities(config, n_ext)
@@ -1015,9 +1009,10 @@ def transform_data(config, n, n_ext, color_shift=None):
     temporal_supply_energy = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer)
     temporal_supply_energy_BE = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer,
                                                                country_aggregate="BE")
+    temporal_supply_energy_FL = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer,
+                                                               country_aggregate="FL")
 
     n_gas_out = extract_gas_phase_out(n, config["scenario"]["planning_horizons"][0])
-    # n_profile = extract_production_profiles(n, subset=LONG_LIST_LINKS + LONG_LIST_GENS)
 
     imp_exp = pd.concat([y.reset_index()
                         .set_index(["imports_exports", "countries", "year", "carriers"])
@@ -1035,8 +1030,8 @@ def transform_data(config, n, n_ext, color_shift=None):
         "gas_phase_out": n_gas_out,
         "res_potentials": n_res_pot,
         "power_production_countries": n_power_capa,
-        "balancing_capacities_countries" : n_balancing_capa,
-        "balancing_supply_countries" : n_balancing_supply,
+        "balancing_capacities_countries": n_balancing_capa,
+        "balancing_supply_countries": n_balancing_supply,
 
         # networks
         "grid_capacities_countries": ACDC_countries,
@@ -1052,11 +1047,12 @@ def transform_data(config, n, n_ext, color_shift=None):
         "supply_energy_sectors": nodal_supply_energy,
         "temporal_supply_energy_sectors": temporal_supply_energy,
         "temporal_supply_energy_sectors_BE": temporal_supply_energy_BE,
+        "temporal_supply_energy_sectors_FL": temporal_supply_energy_FL,
 
         # insights
         "costs_countries": n_costs,
         "marginal_prices_countries": marginal_prices,
-        "marginal_prices_t_countries":marginal_prices_t,
+        "marginal_prices_t_countries": marginal_prices_t,
         "res_statistics": res_stats,
         # "loads_profiles": n_loads,
         "generation_profiles": prod_profiles,

@@ -3,13 +3,13 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from st_common import GRAPH_AREA
+from st_common import COSTS_AREA
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
 from st_common import st_side_bar
 
-AREAS = ["EU27+TYNDP", "EU27", "BE"]
+AREAS = ["ENTSO-E area", "EU27", "BE"]
 
 st_page_config(layout="wide")
 scenario = st_side_bar()
@@ -43,7 +43,7 @@ with col1:
     st.text("A negative value means that the area is exporting and thus making a profit")
 with col2:
     selected_area = st.selectbox("Choose area :", AREAS)
-    df_cost_segments = df_cost_segments[df_cost_segments.index.str.endswith(GRAPH_AREA[selected_area])]
+    df_cost_segments = df_cost_segments[df_cost_segments.index.str.endswith(COSTS_AREA[selected_area])]
     st.text("tot includes all modeled countries, so imports and exports = 0")
 
 df_cost_segments = df_cost_segments.groupby(by="cost/carrier").sum().drop(columns=["cost_segment"])
@@ -123,8 +123,10 @@ col1, col2 = st.columns([4, 4])
 with col1:
     country = st.selectbox("Choose your country:", list(df.countries.unique()))
 
-    if not ("EU27 + TYNDP" in country):
+    if not ("ENTSO-E area" in country):
         df1 = df.query("countries in @country").drop(columns="countries").set_index("carrier")
+    else:
+        raise Exception ("Fix me to remove Flanders")
 
     df1 = df1.rename(columns=lambda x: x + " Annual average " if not (x.endswith("_std")) else x.replace("_std",
                                                                                                          " Standard Deviation")).T
@@ -136,8 +138,10 @@ with col1:
 with col2:
     country2 = st.selectbox("Choose your country:", list(df.countries.unique()) + [''])
 
-    if not ("EU27 + TYNDP" in country2):
+    if not ("ENTSO-E area" in country2):
         df2 = df.query("countries in @country2").drop(columns="countries").set_index("carrier")
+    else:
+        raise Exception ("Fix me to remove Flanders")
 
     df2 = df2.rename(columns=lambda x: x + " Annual average " if not (x.endswith("_std")) else x.replace("_std",
                                                                                                          " Standard Deviation")).T

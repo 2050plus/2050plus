@@ -26,7 +26,7 @@ def get_data(scenario):
     return df
 
 df_raw = get_data(scenario)
-all = "EU27 + TYNDP"
+all = "ENTSO-E area"
 country = st.selectbox('Choose your country:', [all] + list(df_raw["node"].unique()))
 
 # %%
@@ -35,7 +35,12 @@ st.header("Loads per carrier")
 if country != all:
     df_ca = df_raw.query("node==@country").drop("node", axis=1).copy()
 else:
-    df_ca = df_raw.groupby(by=["sector", "carrier"]).sum(numeric_only=True).reset_index().copy()
+    df_ca = (
+        df_raw
+        .query("node != 'FL'")
+        .groupby(by=["sector", "carrier"]).sum(numeric_only=True)
+        .reset_index().copy()
+    )
 
 carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(), index=1)
 df_ca = df_ca.query("carrier==@carrier").drop("carrier", axis=1)

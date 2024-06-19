@@ -45,7 +45,7 @@ def query_imp_exp(df, carriers, country, year, imports_exports):
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    country = st.selectbox('Choose your country:', df["countries"].unique(), index=3)
+    country = st.selectbox('Choose your country:', df["countries"].unique(), index=12)
 with col2:
     carrier = st.selectbox('Choose your carrier:', df['carriers'].unique())
 with col3:

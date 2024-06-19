@@ -7,12 +7,12 @@
 Create data ready to present (utils)
 """
 import logging
+import re
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import yaml
-import re
 
 CLIP_VALUE_TWH = 1e-1  # TWh
 CLIP_VALUE_ANNUAL_MWH = 1e3  # MWh
@@ -21,16 +21,16 @@ RES = ["solar", "solar rooftop", "offwind", "offwind-ac", "offwind-dc", "onwind"
 HYDRO = ['ror', 'hydro']
 HEAT_RENAMER = {"residential rural heat": "dec_heat", "services rural heat": "dec_heat",
                 "residential urban decentral heat": "dec_heat", "services urban decentral heat": "dec_heat",
-                "urban central heat": "cent_heat", "rural heat" : 'dec_heat', "urban decentral heat" : "dec_heat"}
-NICE_RENAMER = {'dec_heat' : "Decentralized heat" , 'cent_heat' : "Centralized heat",
-                'elec' : 'Electricity', 'rural heat' : "Decentralized heat" , 'electricity' : 'Electricity',
-                'urban decentral heat' : "Decentralized heat" , 'urban central heat' : "Centralized heat",
-                'methanol': 'Methanol', 'oil' : 'Oil', 'co2' : 'CO2 emissions',
-                "coal" : "Coal", 'gas': 'Methane', 'solid biomass' : 'Solid biomass',
-                "hydro" : "Hydro Dams", "offwind": "Offshore wind", "onwind": "Onshore wind",
-                "solar" : "Solar PV", "solar thermal" : 'Solar thermal', 'ror': "Run-of-the-river",
-                "solid biomass CHP": "Solid biomass CHP", "solid biomass CHP CC" : "Solid biomass CHP CC",
-                "co2 stored" : "CO2 captured", "H2" : "Hydrogen", "NH3": "Ammonia"}
+                "urban central heat": "cent_heat", "rural heat": 'dec_heat', "urban decentral heat": "dec_heat"}
+NICE_RENAMER = {'dec_heat': "Decentralized heat", 'cent_heat': "Centralized heat",
+                'elec': 'Electricity', 'rural heat': "Decentralized heat", 'electricity': 'Electricity',
+                'urban decentral heat': "Decentralized heat", 'urban central heat': "Centralized heat",
+                'methanol': 'Methanol', 'oil': 'Oil', 'co2': 'CO2 emissions',
+                "coal": "Coal", 'gas': 'Methane', 'solid biomass': 'Solid biomass',
+                "hydro": "Hydro Dams", "offwind": "Offshore wind", "onwind": "Onshore wind",
+                "solar": "Solar PV", "solar thermal": 'Solar thermal', 'ror': "Run-of-the-river",
+                "solid biomass CHP": "Solid biomass CHP", "solid biomass CHP CC": "Solid biomass CHP CC",
+                "co2 stored": "CO2 captured", "H2": "Hydrogen", "NH3": "Ammonia"}
 ELEC_RENAMER = {'AC': 'elec', 'DC': 'elec', 'low voltage': 'elec'}
 TRANSMISSION_RENAMER = {"AC": "elec", "DC": "elec", "H2 pipeline": "H2",
                         "H2 pipeline retrofitted": "H2", "gas pipeline": "gas", "gas pipeline new": "gas"}
@@ -128,9 +128,13 @@ def query_imp_exp(df, carriers, countries, year, imports_exports):
     return df_imp_exp
 
 
+bus_map = {"BE1 0": None, "BE1 1": "BX", "BE1 2": "WL", "FL1 0": "FL",
+           "BE1 0 H2": None, "BE1 1 H2": "BX", "BE1 2 H2": "WL", "FL1 0 H2": "FL",
+           "BE1 0 gas": None, "BE1 1 gas": "BX", "BE1 2 gas": "WL", "FL1 0 gas": "FL",}
+rx = re.compile("BE1 [0-2].*")
 def bus_mapper(x, n, column=None):
     if x in n.buses.index:
-        return n.buses.loc[x, column]
+        return bus_map[x] if (column == "country") and rx.fullmatch(x) else n.buses.loc[x, column]
     else:
         return np.nan
 
@@ -187,7 +191,8 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
             )
         else:
             df = (
-                df.groupby(by=idx).sum().reset_index()
+                df.query("node != 'FL'")
+                .groupby(by=idx).sum().reset_index()
                 .reindex(columns=config["excel_columns"]["future_years_sector"])
             )
 
@@ -206,7 +211,7 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
         index = (df
                  .groupby(idx)
                  .sum(numeric_only=True)
-                 .sum(axis=1) >= CLIP_VALUE_TWH 
+                 .sum(axis=1) >= CLIP_VALUE_TWH
                  )
         df = df.set_index(idx).loc[index].reset_index()
     else:
@@ -222,57 +227,10 @@ def groupby_bus(n, c, nice_names=True):
         return [n.df(c).bus, n.df(c).carrier]
     else:
         return [n.df(c).bus1, n.df(c).carrier]
-    
+
+
 def groupby_buses(n, c, nice_names=True):
     if c in n.one_port_components:
         return [n.df(c).bus, n.df(c).carrier]
     else:
         return [n.df(c).bus0, n.df(c).bus1, n.df(c).carrier]
-
-    
-# def extract_production_profiles(n, subset):
-#     profiles = []
-#     for y, ni in n.items():
-#         # Grab data from various sources
-#         n_y_t = pd.concat([
-#             ni.links_t.p_carrier_nom_opt,
-#             ni.generators_t.p,
-#             ni.storage_units_t.p
-#         ], axis=1)
-#         n_y = pd.concat([
-#             ni.links,
-#             ni.generators,
-#             ni.storage_units
-#         ])
-#         n_y = n_y.rename(index=RENAMER)
-#
-#         # sorting the carriers
-#         n_y_t = n_y_t.loc[:, n_y.index]
-#         n_y_t = n_y_t.loc[:, n_y.carrier.isin(subset)]
-#         n_y = n_y.loc[n_y.carrier.isin(subset)]
-#
-#         # mapping the countries
-#         buses_links = [c for c in n_y.columns if "bus" in c]
-#         country_map = n_y[buses_links].applymap(lambda x: bus_mapper(x, ni, column="country"))
-#         n_y_t_co = {}
-#         for co in ni.buses.country.unique():
-#             if co == 'EU':
-#                 continue
-#             carrier_mapping = n_y[country_map.apply(lambda L: L.fillna('').str.contains(co)).any(axis=1)] \
-#                 .groupby("carrier").apply(lambda x: x)
-#             carrier_mapping = dict(zip(carrier_mapping.index.droplevel(0),
-#                                        carrier_mapping.index.droplevel(1)))
-#             n_y_t_co[co] = (n_y_t.loc[:, n_y_t.columns.isin(list(carrier_mapping.keys()))]
-#                             .rename(columns=carrier_mapping)
-#                             .groupby(axis=1, level=0)
-#                             .sum()).T
-#
-#         profiles.append(pd.concat({y: pd.concat(n_y_t_co)}, names=["Year", 'Country', "Carrier"]))
-#
-#     df = pd.concat(profiles)
-#     df.insert(0, column="Annual sum [TWh]", value=df.sum(axis=1) / 1e6 * 8760 / len(ni.snapshots))
-#     df.loc[(slice(None), slice(None), 'Haber-Bosch'), :] *= 4.415385
-#     df.insert(0, column="units", value="MWh_e")
-#     df.loc[(slice(None), slice(None), ['Haber-Bosch', 'ammonia cracker']), 'units'] = 'MWh_lhv,nh3'
-#     df.loc[(slice(None), slice(None), ['Sabatier']), 'units'] = 'MWh_lhv,h2'
-#     return df

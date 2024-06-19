@@ -27,8 +27,8 @@ def main():
     logger.info("Start processing")
 
     config_file = "config/config.veka.yaml"
+    analysis_path = Path("analysis", "20240616")
     scenario = "central"
-    analysis_path = Path("analysis", "20240607")
     dir_export = "graph_data"
 
     # Configuration
@@ -38,9 +38,8 @@ def main():
                                 "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"]
     config["eu27_countries"] = list(set(config["eu27_countries"]).intersection(set(config["countries"])))
     # global variables for which to do work
-    config["countries"] = {"tot": None, "be": ["BE"], "eu27": config["eu27_countries"]}
-    # config["countries"] = {"be": ['BE']}
-    config["imp_exp_carriers"] = ['elec', 'gas', 'H2']
+    config["countries"] = {"tot": None, "be": ["BE"], "fl": ["FL"], "eu27": config["eu27_countries"]}
+    config["imp_exp_carriers"] = ["elec", "gas", "H2"]
     config["carriers_to_plot"] = ["electricity", "heat"]
 
     # Extract data
