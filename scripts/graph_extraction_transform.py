@@ -988,18 +988,13 @@ def transform_data(config, n, n_ext, color_shift=None):
 
     elec_grid = extract_electricity_network(n)
 
-    capa_country = extract_country_capacities(config, n_ext)
     n_balancing_capa = extract_balancing_data("optimal_capacity", n)
     n_balancing_supply = extract_balancing_data("supply", n)
     n_power_capa = extract_inst_capa_elec_node(config, n, carriers_renamer)
 
     # # DataFrames to extract
     temporal_res_supply = extract_res_temporal_energy(config, n)
-    prod_profiles = extract_profiles(config, n, supply=True)
-    load_profiles = extract_profiles(config, n, load=True)
     n_res_pot = extract_res_potential(n)
-    res_stats = extract_res_statistics(n)
-    capa_country = extract_country_capacities(config, n_ext)
     ACDC_grid, ACDC_countries, el_imp_exp = extract_transmission(n_ext)
     H2_grid, H2_countries, H2_imp_exp = extract_transmission(n_ext, carriers=["H2 pipeline", "H2 pipeline retrofitted"])
     gas_grid, gas_countries, gas_imp_exp = extract_transmission(n_ext, carriers=["gas pipeline", "gas pipeline new"])
@@ -1011,8 +1006,6 @@ def transform_data(config, n, n_ext, color_shift=None):
                                                                country_aggregate="BE")
     temporal_supply_energy_FL = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer,
                                                                country_aggregate="FL")
-
-    n_gas_out = extract_gas_phase_out(n, config["scenario"]["planning_horizons"][0])
 
     imp_exp = pd.concat([y.reset_index()
                         .set_index(["imports_exports", "countries", "year", "carriers"])
@@ -1026,8 +1019,6 @@ def transform_data(config, n, n_ext, color_shift=None):
     # Define outputs and export them
     outputs = {
         # assets
-        "units_capacities_countries": capa_country,
-        "gas_phase_out": n_gas_out,
         "res_potentials": n_res_pot,
         "power_production_countries": n_power_capa,
         "balancing_capacities_countries": n_balancing_capa,
@@ -1053,10 +1044,6 @@ def transform_data(config, n, n_ext, color_shift=None):
         "costs_countries": n_costs,
         "marginal_prices_countries": marginal_prices,
         "marginal_prices_t_countries": marginal_prices_t,
-        "res_statistics": res_stats,
-        # "loads_profiles": n_loads,
-        "generation_profiles": prod_profiles,
-        "load_profiles": load_profiles,
         "temporal_res_supply": temporal_res_supply
     }
 
