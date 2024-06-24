@@ -78,7 +78,7 @@ st.table(df_ca
 
 st.divider()
 
-st.header("Load par sector")
+st.header("Load per sector")
 
 if country != all:
     df_se = df_raw.query("node==@country").drop("node", axis=1).copy()

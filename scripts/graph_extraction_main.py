@@ -33,11 +33,12 @@ def main():
     # Configuration
     config = load_config(config_file, analysis_path, dir_export, scenario=scenario)
 
-    config["eu27_countries"] = ["AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "GR", "ES", "FI", "FR", "HR", "HU",
-                                "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"]
+    config["eu27_countries"] = ["AT", "BG", "BX", "CY", "CZ", "DE", "DK", "EE", "GR", "ES", "FI", "FL", "FR", "HR",
+                                "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
+                                "WL"]
     config["eu27_countries"] = list(set(config["eu27_countries"]).intersection(set(config["countries"])))
     # global variables for which to do work
-    config["countries"] = {"tot": None, "be": ["BE"], "fl": ["FL"], "eu27": config["eu27_countries"]}
+    config["countries"] = {"tot": None, "be": ["BX", "FL", "WL"], "fl": ["FL"], "eu27": config["eu27_countries"]}
     config["imp_exp_carriers"] = ["elec", "gas", "H2"]
     config["carriers_to_plot"] = ["electricity", "heat"]
 

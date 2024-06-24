@@ -108,11 +108,6 @@ def remove_prefixes(label):
 
 
 def query_imp_exp(df, carriers, countries, year, imports_exports):
-    if countries is not None:
-        country_list = df.columns.intersection(countries)
-    else:
-        country_list = df.columns.intersection(df.countries.unique())
-
     df_imp_exp = (
         df.query("carriers == @carriers")
         .query("year == @year")
@@ -120,9 +115,15 @@ def query_imp_exp(df, carriers, countries, year, imports_exports):
         .drop(["carriers", "year", "imports_exports"], axis=1)
         .set_index('countries')
     )
+    
+    if countries is not None:
+        country_list = df_imp_exp.columns.intersection(countries)
+    else:
+        country_list = df_imp_exp.columns.intersection(df.countries.unique())
+                   
     if countries is not None:
         df_imp_exp = (df_imp_exp
-        .loc[df_imp_exp.index.symmetric_difference(countries), country_list]
+        .loc[df_imp_exp.index.symmetric_difference(country_list), country_list]
         )
     df_imp_exp = df_imp_exp.sum(axis=1)
     return df_imp_exp

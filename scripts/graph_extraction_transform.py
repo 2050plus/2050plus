@@ -13,7 +13,6 @@ from pathlib import Path
 import matplotlib as mpl
 import pandas as pd
 from matplotlib import pyplot as plt
-
 from scripts.graph_extraction_utils import CLIP_VALUE_TWH
 from scripts.graph_extraction_utils import ELEC_RENAMER
 from scripts.graph_extraction_utils import HEAT_RENAMER
@@ -29,6 +28,8 @@ from scripts.make_summary import assign_locations
 from scripts.make_summary import calculate_nodal_capacities
 from scripts.make_summary import calculate_nodal_supply_energy
 from scripts.plot_power_network import rename_techs_tyndp
+
+from prepare_sector_network import prepare_costs
 
 logger = logging.getLogger(__name__)
 
@@ -641,65 +642,78 @@ def extract_transmission(n, carriers=["AC", "DC"],
     return df, df_co, df_imp_exp
 
 
-def extract_nodal_costs(config):
+def extract_nodal_costs(config, n):
     # Todo : add handling of multiple runs
-    df = (pd.read_csv(Path(config["path"]["results_path"], "csvs", "nodal_costs.csv"),
-                      index_col=[0, 1, 2, 3],
-                      skiprows=3,
-                      header=0)
-          .reset_index()
-          .rename(columns={"planning_horizon": "type",
-                           "level_1": "cost",
-                           "level_2": "country",
-                           "level_3": "carrier"})
-          )
-    df_capa = (pd.read_csv(Path(config["path"]["results_path"], "csvs", "nodal_capacities.csv"),
-                           index_col=[0, 1, 2],
-                           skiprows=3,
-                           header=0)
-               .reset_index()
-               .rename(columns={"planning_horizon": "type",
-                                "level_1": "country",
-                                "level_2": "carrier"})
-               )
+    def costs_groupby(n, c, nice_names=True):
+        if c in n.one_port_components:
+            return [n.df(c).location, n.df(c).carrier]
+        else:
+            return [n.df(c).location, n.df(c).carrier, n.df(c).build_year.astype(int), n.df(c).lifetime]
 
-    index_elec_capa = df_capa.query('carrier.str.contains("distribution")').index
-    index_elec_cost = df.query('carrier.str.contains("distribution") and cost=="capital"').index
-    capital_cost = (
-            (df.loc[index_elec_cost, ['2030', '2040']].values /
-             df_capa.loc[index_elec_capa, ['2030', '2040']].values)
-            .mean() * config["sector"]["gas_distribution_grid_cost_factor"]
-    )
-    # gas boilers
-    cond_str = '((carrier.str.contains("gas boiler") and not(carrier.str.contains("urban central"))) or carrier.str.contains("micro gas"))'
-    df = df.set_index(['type', 'country', 'carrier', 'cost'])
-    df_capa = df_capa.set_index(['type', 'country', 'carrier'])
-    index_gas_cost = df.query(cond_str + 'and cost=="capital"').index
-    index_gas_capa = df_capa.query(cond_str).index
-    distri_gas = capital_cost * df_capa.loc[index_gas_capa, ['2030', '2040']]
-    distri_gas['cost'] = 'capital'
-    distri_gas = distri_gas.reset_index().set_index(['type', 'country', 'carrier', 'cost'])
+    # Prepare costs for
+    costs = prepare_costs(Path(config["path"]["resources_path"], "costs_" + config["years_str"][0] + ".csv"),
+                          config["costs"], 1 / 3)
 
-    df.loc[index_gas_cost, ['2030', '2040']] = df.loc[index_gas_cost, ['2030', '2040']] - distri_gas[
-        ['2030', '2040']].values
+    gas_distribution_old = costs.query('index.str.contains("gas distribution")').eval("investment*FOM/100*1/3").mean()
+    gas_distribution = costs.query('index.str.contains("electricity distribution")').fixed.mean() * config["sector"][
+        "gas_distribution_grid_cost_factor"]
 
-    assets_distri = df.loc[index_gas_cost].reset_index()
-    assets_distri.carrier = 'gas distribution grid'
-    assets_distri[['2030', '2040']] = distri_gas.values
-    assets_distri = assets_distri.groupby(["type", "country", "carrier", "cost", ]).sum()
-    df = pd.concat([df, assets_distri], axis=0).reset_index()
+    df_comp = {}
+    for y, ni in n.items():
+        df_agg = {}
+        for c in ni.iterate_components(["Generator", "Link", "Line", "StorageUnit", "Store"]):
 
-    df["country"] = df["country"].str[:2].fillna("EU")
-    fuels = df.query(
-        "carrier in ['gas','oil','coal','lignite','uranium'] and cost == 'marginal' and type == 'generators'").index
-    biomass = df.query(
-        "(carrier.str.contains('biomass') or carrier.str.contains('biogas')) and cost == 'marginal' and type == 'stores'").index
-    df.loc[fuels.union(biomass), "cost"] = "fuel"
-    df = df.set_index(["type", "cost", "country", "carrier"])
-    df = df.fillna(0).groupby(["type", "cost", "country", "carrier"]).sum()
-    df = df.loc[~df.apply(lambda x: x < 1e3).all(axis=1)]
-    df.insert(0, column="units", value="Euro")
-    return df
+            capex = ni.statistics.capex(comps=c.name, groupby=costs_groupby).rename("capital")
+            opex = ni.statistics.opex(comps=c.name, groupby=costs_groupby).rename("marginal")
+            capacities = ni.statistics.optimal_capacity(comps=c.name, groupby=costs_groupby).rename("capacities")
+            df = pd.concat([capex, opex, capacities], axis=1).fillna(0)
+
+            if c.list_name == "links":
+                df["distribution_cost"] = 0.0
+                ind_gas_distri = (df.query('(carrier.str.contains("gas boiler") or carrier.str.contains("micro CHP"))' \
+                                           ' and not(carrier.str.contains("urban central"))')).index
+                ind_old = df.query("build_year<2030").index
+                df.loc[ind_gas_distri.intersection(ind_old), "distribution_cost"] = gas_distribution_old
+                df.loc[ind_gas_distri.difference(ind_old), "distribution_cost"] = gas_distribution
+                df["capital"] -= df["distribution_cost"] * df.capacities
+                df_gas_distri = df.loc[ind_gas_distri]
+                df_gas_distri.index = df_gas_distri.index.set_levels(
+                    df_gas_distri.index.levels[1] + " gas distribution", level=1)
+                df_gas_distri["capital"] = df_gas_distri["distribution_cost"] * df_gas_distri.capacities
+                df_gas_distri["marginal"] = 0
+                df = pd.concat([df, df_gas_distri])
+                df.index = df.index.droplevel(3)
+            df = pd.melt(df, value_vars=["capital", "marginal"], var_name="cost", value_name=y, ignore_index=False)
+            df = df.groupby(["cost", "location", "carrier"]).sum()
+            df_agg[c.list_name] = df
+        df_comp[y] = pd.concat(df_agg.values(), keys=df_agg.keys())
+        df_comp[y].index = df_comp[y].index.set_names("type", level=0)
+    df_comp = pd.concat(df_comp.values(), axis=1)
+
+    def renamer_to_country_costs(x):
+        rx_eu = re.compile(r"(EU)\s")
+        rx_c = re.compile(r"([A-Z]{2})")
+        if rx_eu.match(x):
+            return rx_eu.match(x).group(1)
+        elif rx_c.match(x):
+            return rx_c.match(x).group(1)
+        else:
+            return "EU"
+
+    df_comp.reset_index(inplace=True)
+    df_comp.rename(columns={"location": "country"}, inplace=True)
+    df_comp.country = df_comp.country.map(renamer_to_country_costs)
+    fuels = df_comp.query(
+        "carrier in ['gas','oil','coal','lignite','uranium','H2'] and cost == 'marginal' and type == 'generators'").index
+    biomass = df_comp.query("(carrier.str.contains('biomass') or carrier.str.contains('biogas')) and"
+                            " cost == 'marginal' and type == 'stores'").index
+    df_comp.loc[fuels.union(biomass), "cost"] = "fuel"
+    df_comp = df_comp.set_index(["type", "cost", "country", "carrier"])
+    df_comp = df_comp.fillna(0).groupby(["type", "cost", "country", "carrier"]).sum()
+    df_comp = df_comp.loc[~df_comp.apply(lambda x: x < 1e3).all(axis=1)]
+    df_comp.insert(0, column="units", value="Euro")
+
+    return df_comp
 
 
 def extract_marginal_prices(n, carrier_list=["AC"]):
@@ -714,9 +728,10 @@ def extract_marginal_prices(n, carrier_list=["AC"]):
                 price_y = (
                     ni.buses_t.marginal_price[ni.buses.query("carrier == @ca ").index]
                 )
-                prices[y] = price_y.mean().groupby(lambda x: x[:2]).mean()
-                prices[f"{y}_std"] = price_y.std().groupby(lambda x: x[:2]).mean()
-                marginal_t = price_y.T.groupby(lambda x: x[:2]).mean().rename_axis(index=["countries"])
+                prices[y] = price_y.mean().groupby(lambda x: bus_mapper(x, ni, column="country")).mean()
+                prices[f"{y}_std"] = price_y.std().groupby(lambda x: bus_mapper(x, ni, column="country")).mean()
+                marginal_t = price_y.T.groupby(lambda x: bus_mapper(x, ni, column="country")).mean().rename_axis(
+                    index=["countries"])
                 marginal_t["year"] = y
 
                 prices_t = pd.concat([prices_t, marginal_t.reset_index().set_index(["year", "countries"])])
@@ -998,7 +1013,7 @@ def transform_data(config, n, n_ext, color_shift=None):
     ACDC_grid, ACDC_countries, el_imp_exp = extract_transmission(n_ext)
     H2_grid, H2_countries, H2_imp_exp = extract_transmission(n_ext, carriers=["H2 pipeline", "H2 pipeline retrofitted"])
     gas_grid, gas_countries, gas_imp_exp = extract_transmission(n_ext, carriers=["gas pipeline", "gas pipeline new"])
-    n_costs = extract_nodal_costs(config)
+    n_costs = extract_nodal_costs(config, n)
     marginal_prices, marginal_prices_t = extract_marginal_prices(n, carrier_list=["gas", "AC", "H2"])
     nodal_supply_energy = extract_nodal_supply_energy(config, n)
     temporal_supply_energy = extract_temporal_supply_energy(config, n, carriers_renamer=carriers_renamer)

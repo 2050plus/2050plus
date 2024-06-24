@@ -47,15 +47,6 @@ def load_supply_energy_df(config, load=True):
             df = pd.concat([df_ac, df_low])
             del df["carrier"]
             df = df.groupby(by=["sector", "node"]).sum().reset_index()
-
-            # if not (load) and countries:
-            #     df_imp = _load_imp_exp(config, export=False, countries=countries, carriers='elec',
-            #                            years=config["scenario"]["planning_horizons"])
-            #     df_exp = _load_imp_exp(config, export=True, countries=countries, carriers='elec',
-            #                            years=config["scenario"]["planning_horizons"])
-            #     df_net_imp = (df_imp[config["scenario"]["planning_horizons"]] - df_exp[
-            #         config["scenario"]["planning_horizons"]]).sum()
-            #     df = pd.concat([df, pd.DataFrame(['Net Imports'] + df_net_imp.values.tolist(), index=df.columns).T])
             df.drop(df.query('sector in ["V2G", "Battery charging", "Hydroelectricity"]').index, inplace=True)
             df["carrier"] = ca
             dfl.append(df)
@@ -196,7 +187,7 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
         countries = list(set(_countries).intersection(set(df.country.unique())))
 
     else:
-        countries = prices.countries.unique()
+        countries = None
 
     cost_mapping = pd.read_csv(
         Path(config["path"]["analysis_path"].resolve().parents[1], "data", "cost_mapping.csv"), index_col=[0, 1],
@@ -253,7 +244,8 @@ def _load_costs(config, per_segment=False, per_year=False):
                     df_pivoted.reset_index(inplace=True)
                     df_pivoted["cost_segment"] = seg
                     dico[f"{seg_name}_{co_name}"] = df_pivoted.rename(
-                        columns={"carrier": "cost/carrier", 2030: '2030', 2040: '2040', 2050: '2050'})
+                        columns={"carrier": "cost/carrier", 2030: '2030', 2035: '2035', 2040: '2040',
+                                 2045: '2045', 2050: '2050'})
                 else:
                     dico[f"{seg_name}_{co_name}"] = dico[f"{seg_name}_{co_name}"].rename(
                         columns={"cost": "cost/carrier"})
@@ -284,12 +276,14 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
     """
     imp_exp = []
     df = pd.read_csv(Path(config["path"]["csvs"], "imports_exports.csv"), header=0)
+    if countries is None:
+        countries  = df.columns[df.columns.str.match('[A-Z]{2}')]
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)
         imp_exp.append(df_carrier.rename(y))
     imp_exp = pd.concat(imp_exp, axis=1)
-
+    imp_exp.index.rename('countries',inplace=True)
     return (
         imp_exp.loc[~(imp_exp == 0).all(axis=1)].reset_index()
     )

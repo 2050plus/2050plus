@@ -42,13 +42,15 @@ with col1:
         df_cost_segments = df_cost_segments.query("cost_segment != 'Net_Imports'")
     st.text("A negative value means that the area is exporting and thus making a profit")
 with col2:
-    selected_area = st.selectbox("Choose area :", AREAS)
+    selected_area = st.selectbox("Choose area :", COSTS_AREA)
     df_cost_segments = df_cost_segments[df_cost_segments.index.str.endswith(COSTS_AREA[selected_area])]
     st.text("tot includes all modeled countries, so imports and exports = 0")
 
 df_cost_segments = df_cost_segments.groupby(by="cost/carrier").sum().drop(columns=["cost_segment"])
 
 df_cost_segments = df_cost_segments.div(1e9)
+
+df_cost_segments.loc["Total"] = df_cost_segments.sum()
 
 fig = px.bar(
     df_cost_segments,
@@ -83,8 +85,8 @@ with col1:
     selected_year = st.selectbox("Choose year :", list(df_cost_years.year.unique()))
     df_cost_years = df_cost_years.query("year in @selected_year")
 with col2:
-    selected_area = st.selectbox("Choose area  :", list(AREAS))
-    selected_area_ = GRAPH_AREA[selected_area]
+    selected_area = st.selectbox("Choose area  :", list(COSTS_AREA))
+    selected_area_ = COSTS_AREA[selected_area]
     df_cost_years = df_cost_years.query("area in @selected_area_")
 
 df_cost_years = df_cost_years.drop(columns=["year", "area"])
@@ -115,13 +117,13 @@ st.header("Marginal price of methane, electricity and hydrogen")
 st.markdown(
     "The marginal price represents the cost of an additional unit of an energy carrier at one country at a given time. Please note that the shown value does not take into account taxes nor trading dynamic.")
 
-st.subheader("Compare two countries over years")
+st.subheader("Compare two areas over years")
 
 df = get_data(scenario, "marginal_prices.csv")
 
 col1, col2 = st.columns([4, 4])
 with col1:
-    country = st.selectbox("Choose your country:", list(df.countries.unique()))
+    country = st.selectbox("Choose your area:", list(df.countries.unique()))
 
     if not ("ENTSO-E area" in country):
         df1 = df.query("countries in @country").drop(columns="countries").set_index("carrier")
@@ -159,12 +161,12 @@ df_t = get_data(scenario, "marginal_prices_t.csv")
 
 col1, col2, col3 = st.columns([0.2, 0.2, .5])
 with col1:
-    carrier = st.selectbox("Choose your carrier:", list(df_t.carrier.unique()), index=1)
+    carrier = st.selectbox("Choose areas to compare:", list(df_t.carrier.unique()), index=1)
 with col2:
     year = st.selectbox("Choose year to select:", list(df_t.year.unique()))
 with col3:
     countries_to_display = st.multiselect("Choose your carrier:", list(df.countries.unique()),
-                                          default=["GB", "FR", "BE", "LU", "DE", "NL"])
+                                          default=["GB", "FL", "FR", "LU", "DE", "NL"])
 
 df_t = (
     df_t.query("carrier == @carrier and year==@year and countries in @countries_to_display")
@@ -178,6 +180,6 @@ fig = px.box(df_t)
 fig.update_traces(hovertemplate="%{y:,.0f}",
                   line=dict(width=1))
 fig.update_yaxes(title_text=f"Marginal price for {carrier} [€/MWh]")
-fig.update_xaxes(title_text="Countries")
+fig.update_xaxes(title_text="Areas")
 
 st.plotly_chart(fig)
