@@ -8,16 +8,16 @@ swoosh = Image.open(Path(base_path, "assets", "img", "swoosh.png"))
 network_path = Path(base_path, "assets", "data")
 scenario_dict = {
     "Central": {
-        "path": "20240607/graph_extraction_st/central",
+        "path": "20240619/graph_extraction_st/central",
     },
     "Electrification": {
-        "path": "20240607/graph_extraction_st/electrification",
+        "path": "20240619/graph_extraction_st/electrification",
     },
     "Molecules": {
-        "path": "20240607/graph_extraction_st/molecules",
+        "path": "20240619/graph_extraction_st/molecules",
     },
     "LSC (Least Structural Changes)": {
-        "path": "20240607/graph_extraction_st/lsc",
+        "path": "20240619/graph_extraction_st/lsc",
     },
 }
 CLIP_VALUE_TWH = 1e-1
