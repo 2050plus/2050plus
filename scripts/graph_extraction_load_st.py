@@ -185,7 +185,6 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
     if _countries:
         df = df.query("country in @_countries")
         countries = list(set(_countries).intersection(set(df.country.unique())))
-
     else:
         countries = None
 
@@ -277,7 +276,7 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
     imp_exp = []
     df = pd.read_csv(Path(config["path"]["csvs"], "imports_exports.csv"), header=0)
     if countries is None:
-        countries  = df.columns[df.columns.str.match('[A-Z]{2}')]
+        countries = df.columns[df.columns.str.match('[A-Z]{2}')]
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)

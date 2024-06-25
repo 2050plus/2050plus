@@ -83,7 +83,18 @@ st.header("Load per sector")
 if country != all:
     df_se = df_raw.query("node==@country").drop("node", axis=1).copy()
 else:
-    df_se = df_raw.groupby(by=["sector", "carrier"]).sum(numeric_only=True).reset_index().copy()
+    df_se = df_raw.query("node!='FL'").groupby(by=["sector", "carrier"]).sum(numeric_only=True).reset_index().copy()
+
+# Add Industry (with and without CC)
+df_ind = (
+    df_se
+    .query("sector.str.contains('Industry') and not carrier.str.contains('CO2')")
+    .assign(sector="Industry (with and without CC)")
+    .groupby(by=["sector", "carrier"]).sum()
+    .reset_index()
+)
+df_se = pd.concat([df_se, df_ind])
+
 
 sector = st.selectbox('Choose your sector:', df_se["sector"].unique(), index=8)
 df_se = df_se.query("sector==@sector").drop("sector", axis=1)

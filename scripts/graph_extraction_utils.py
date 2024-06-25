@@ -133,6 +133,8 @@ bus_map = {"BE1 0": None, "BE1 1": "BX", "BE1 2": "WL", "FL1 0": "FL",
            "BE1 0 H2": None, "BE1 1 H2": "BX", "BE1 2 H2": "WL", "FL1 0 H2": "FL",
            "BE1 0 gas": None, "BE1 1 gas": "BX", "BE1 2 gas": "WL", "FL1 0 gas": "FL",}
 rx = re.compile("BE1 [0-2].*")
+
+
 def bus_mapper(x, n, column=None):
     if x in n.buses.index:
         return bus_map[x] if (column == "country") and rx.fullmatch(x) else n.buses.loc[x, column]
@@ -192,7 +194,7 @@ def _load_supply_energy(config, load=True, carriers=None, countries=None, aggreg
             )
         else:
             df = (
-                df.query("node != 'FL'")
+                df.query("node != 'FL'")  # Flanders already removed from temporal
                 .groupby(by=idx).sum().reset_index()
                 .reindex(columns=config["excel_columns"]["future_years_sector"])
             )

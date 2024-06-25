@@ -100,27 +100,6 @@ RENAMER = {
 
 
 # %%  Extract loads
-def extract_loads(n):
-    profiles = {}
-    for y, ni in n.items():
-        loads_t = ni.loads_t.p.T
-        loads_t.index.names = ["Load"]
-        loads_t["country"] = ni.buses.loc[ni.loads.loc[loads_t.index].bus].country.values
-        loads_t.reset_index(inplace=True)
-        loads_t["Load"].mask(loads_t["Load"].str.contains("NH3"), "NH3 for sectors", inplace=True)
-        loads_t["Load"].mask(loads_t["Load"].str.contains("H2"), "H2 for sectors", inplace=True)
-        loads_t["Load"].where(loads_t["Load"].str.contains("sectors"), "Electricity demand for sectors", inplace=True)
-
-        loads_t = loads_t.groupby(["country", "Load"]).sum()
-        loads_t.insert(0, column="Annual sum [TWh]", value=loads_t.sum(axis=1) / 1e6 * 8760 / len(ni.snapshots))
-        profiles[y] = loads_t
-
-    df = pd.concat(profiles, names=["Years"])
-    df.insert(0, column="units", value="MW_e")
-    df.loc[(slice(None), slice(None), "H2 for sectors"), "units"] = "MW_lhv,h2"
-    df.loc[(slice(None), slice(None), "NH3 for sectors"), "units"] = "MW_lhv,nh3"
-    return df
-
 
 def extract_res_potential(n):
     """
@@ -441,37 +420,6 @@ def extract_electricity_network(n):
 
 
 # %%
-def extract_res_statistics(n):
-    df = []
-    for y, ni in n.items():
-        res = ni.generators.copy().query("carrier in @RES")
-        res_t = ni.generators_t.p[res.index]
-        res["year"] = y
-        cf = (res_t / (res["p_nom_opt"])).mean()
-        p_tot = res_t.sum() * ni.snapshot_weightings.generators.mean()
-        opex = p_tot * ni.generators.marginal_cost
-        capex = res.capital_cost * res.p_nom_opt
-
-        res.loc[cf.index, "cf"] = cf
-        res.loc[cf.index, "p_tot"] = p_tot
-        res.loc[cf.index, "opex"] = opex
-        res.loc[cf.index, "capex"] = capex
-        res.loc[cf.index, "totex"] = res.loc[cf.index,
-        "capex"] + res.loc[cf.index, "opex"]
-
-        LCOE = res.groupby(by=["carrier"]).totex.sum() / \
-               res.groupby(by=["carrier"]).p_tot.sum()
-        LCOE = LCOE.rename("carrier").to_frame().rename(
-            columns={"carrier": "LCOE"})
-        res = res.reset_index().merge(LCOE, on="carrier").set_index(["Generator", "year"])
-        res = res.loc[:,
-              ["carrier", "bus", "capital_cost", "marginal_cost", "p_nom_opt", "build_year", "p_nom", "cf", "p_tot",
-               "p_nom_max", "LCOE", "opex", "capex", "totex"]]
-        res = res.sort_values(by="carrier")
-        df.append(res)
-
-    return pd.concat(df)
-
 
 def extract_res_temporal_energy(config, n):
     HYDRO
@@ -492,48 +440,6 @@ def extract_res_temporal_energy(config, n):
         df.append(res_t)
     df = pd.concat(df, axis=1) / 1e3  # GW
     return df.T
-
-
-def extract_country_capacities(config, n):
-    # TODO : dictionnary is useless here
-    df = {}
-    df["nodal_capacities"] = pd.DataFrame(columns=config["scenario"]["planning_horizons"], dtype=float)
-
-    # Duplicates scripts.make_summary.calculate_nodal_capacites
-    for y, ni in n.items():
-        df["nodal_capacities"] = calculate_nodal_capacities(ni, y, df["nodal_capacities"],
-                                                            _opt_name={"Store": "e", "Line": "s", "Transformer": "s",
-                                                                       "Link": "p_carrier"})
-
-    df_capa = (df["nodal_capacities"]
-               .rename(RENAMER)
-               .reset_index()
-               .rename(columns={"level_0": "unit_type",
-                                "level_1": "node",
-                                "level_2": "carrier"}))
-
-    df_capa.node = df_capa.node.apply(lambda x: x[:2])
-
-    # add extraction and storage suffixes
-    dico = {"generators": "_extraction", "stores": "_stores"}
-    for d, suffix in dico.items():
-        to_modify = df_capa.query(
-            "unit_type in [@d] and carrier in ['gas', 'oil', 'coal/lignite', 'uranium', 'solid biomass']").index
-        df_capa.loc[to_modify, ["carrier"]] += suffix
-
-    df_capa = df_capa.groupby(["unit_type", "node", "carrier"]).sum().reset_index(["carrier", "unit_type"])
-
-    df_capa = df_capa.drop(columns="unit_type").groupby(["node", "carrier"]).sum() / 1e3
-
-    df_capa.loc[(slice(None), "Haber-Bosch"), :] *= 4.415385
-    df_capa["units"] = "GW_e"
-    df_capa.loc[(slice(None), ["Haber-Bosch", "ammonia cracker"]), "units"] = "GW_lhv,nh3"
-    df_capa.loc[(slice(None), ["Sabatier"]), "units"] = "GW_lhv,h2"
-    df_capa.loc[(slice(None), ["H2"]), "units"] = "GWh_lhv,h2"
-    df_capa.loc[(slice(None), ["battery", "home battery"]), "units"] = "GWh_e"
-    df_capa.loc[(slice(None), ["gas_extraction", "oil_extraction",
-                               "coal/lignite_extraction", "uranium_extraction"]), "units"] = "GW_lhv"
-    return df_capa
 
 
 def calculate_imp_exp(country_map, transmission_t, y):
@@ -639,6 +545,8 @@ def extract_transmission(n, carriers=["AC", "DC"],
     df_imp_exp = pd.concat([df_imp, df_exp])
     df_imp_exp["carriers"] = TRANSMISSION_RENAMER.get(carriers[0])
 
+    # FixMe Remove double counting in df (FLanders)
+    logger.warning("Function output double count Flanders transmission capacities in df")
     return df, df_co, df_imp_exp
 
 
@@ -757,7 +665,7 @@ def extract_nodal_supply_energy(config, n):
 
     df = df.reset_index()
     df["node"] = df["node"].map(renamer_to_country)
-    df = df.dropna().set_index(idx)
+    df = df.dropna(how="all").set_index(idx)
 
     df = df * 1e-6  # TWh
     df["units"] = "TWh"
@@ -815,40 +723,6 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
     df = df.merge(sector_mapping, left_on=["carrier", "component", "item"], right_index=True, how="left").dropna(axis=0,
                                                                                                                  subset="sector")
     return df
-
-
-def extract_gas_phase_out(n, year):
-    dimensions = ["country", "build_year"]
-    n_cgt = (
-        n[year].links[n[year].links.carrier.str.contains("CGT")]
-        .merge(
-            n[year].buses["country"].reset_index(),
-            left_on="bus1",
-            right_on="Bus",
-            how="left"
-        )
-        .groupby(by=dimensions)
-        ["p_carrier_nom_opt"]
-        .sum(numeric_only=True)
-        .reset_index()
-    )
-    n_cgt.loc[n_cgt["build_year"] < year, "build_year"] = "hist"
-    n_cgt = (
-                n_cgt
-                .groupby(by=dimensions)
-                .sum()
-                .reset_index()
-                .pivot(index="country", columns="build_year", values="p_carrier_nom_opt")
-            ) / 1e3  # GW
-    n_cgt["units"] = "GW_e"
-
-    if year in n_cgt.columns:
-        sorting = year
-    else:
-        sorting = "hist"
-
-    n_cgt = n_cgt.sort_values(by=sorting, ascending=False)
-    return n_cgt[n_cgt[sorting] >= 5].fillna(0)
 
 
 def get_state_of_charge_t(n, carrier):
@@ -956,26 +830,6 @@ def extract_series(config, n, carriers=["electricity"], load=False, supply=False
     return plots
 
 
-def extract_profiles(config, n, regionalized=False, supply=False, load=False):
-    production_profiles = []
-    assert (supply or load), "No data to return"
-
-    for carrier in config["carriers_to_plot"]:
-        df = []
-        for y, ni in n.items():
-            df.append(plot_series(ni, carrier=carrier, name=carrier, year=str(y),
-                                  return_data=True, supply_only=supply,
-                                  load_only=load, regionalized=regionalized))
-        df = pd.concat(df)
-        df["carrier"] = carrier
-        production_profiles.append(df)
-    production_profiles = (pd.concat(production_profiles)
-                           .reset_index()
-                           .set_index(["carrier", "snapshots", "country"] if regionalized else ["carrier", "snapshots"])
-                           )
-    return production_profiles
-
-
 def export_csvs_figures(csvs, outputs, figures):
     csvs.mkdir(parents=True, exist_ok=True)
 
@@ -1043,9 +897,6 @@ def transform_data(config, n, n_ext, color_shift=None):
         "grid_capacities_countries": ACDC_countries,
         "H2_network_capacities_countries": H2_countries,
         "gas_network_capacities_countries": gas_countries,
-        "grid_capacities": ACDC_grid,
-        "H2_network_capacities": H2_grid,
-        "gas_network_capacities": gas_grid,
         "elec_grid": elec_grid,
 
         # energy balance
