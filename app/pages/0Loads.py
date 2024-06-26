@@ -25,6 +25,7 @@ def get_data(scenario):
     )
     return df
 
+
 df_raw = get_data(scenario)
 all = "ENTSO-E area"
 country = st.selectbox('Choose your country:', [all] + list(df_raw["node"].unique()))
@@ -69,12 +70,12 @@ st.plotly_chart(
 )
 
 st.subheader(f"Annual load per sector for {carrier}")
-st.table(df_ca
-         .rename(mapper=lambda x: x + " [TWh]", axis=1)
-         .style
-         .format(precision=2, thousands=",", decimal='.')
-         )
-
+st.dataframe(df_ca
+             .rename(mapper=lambda x: x + " [TWh]", axis=1)
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )
 
 st.divider()
 
@@ -85,7 +86,7 @@ if country != all:
 else:
     df_se = df_raw.query("node!='FL'").groupby(by=["sector", "carrier"]).sum(numeric_only=True).reset_index().copy()
 
-# Add Industry (with and without CC)
+# Add Industry (with and without CC) and Heat production (central and decentral)
 df_ind = (
     df_se
     .query("sector.str.contains('Industry') and not carrier.str.contains('CO2')")
@@ -93,8 +94,14 @@ df_ind = (
     .groupby(by=["sector", "carrier"]).sum()
     .reset_index()
 )
-df_se = pd.concat([df_se, df_ind])
-
+df_heat = (
+    df_se
+    .query("sector.str.contains('heat production') and not carrier.str.contains('CO2')")
+    .assign(sector="Heat production (central and decentral)")
+    .groupby(by=["sector", "carrier"]).sum()
+    .reset_index()
+)
+df_se = pd.concat([df_se, df_ind, df_heat])
 
 sector = st.selectbox('Choose your sector:', df_se["sector"].unique(), index=8)
 df_se = df_se.query("sector==@sector").drop("sector", axis=1)
@@ -123,8 +130,9 @@ st.plotly_chart(
 )
 
 st.subheader(f"Annual load per carrier for {sector}")
-st.table(df_se
-         .rename(mapper=lambda x: x + " [TWh]", axis=1)
-         .style
-         .format(precision=2, thousands=",", decimal='.')
-         )
+st.dataframe(df_se
+             .rename(mapper=lambda x: x + " [TWh]", axis=1)
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )

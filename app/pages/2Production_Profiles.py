@@ -14,9 +14,11 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Production profiles per carrier")
-st.markdown("The production 3-hourly profiles for every carrier, year and subsector. This data is currently shown at system level (ENTSO-E area) and Belgium (BE) due to the very large quantity of data that needs to be handled for every country in the system. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
+st.markdown(
+    "The production 3-hourly profiles for every carrier, year and subsector. This data is currently shown at system level (ENTSO-E area) and Belgium (BE) due to the very large quantity of data that needs to be handled for every country in the system. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
 
 selected_area = st.selectbox('Choose area :', PROFILES_AREA)
+
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_data(scenario, year, selected_area):
@@ -74,9 +76,10 @@ df_table = ((df.sum() / 1e3
 
 total = (df_table.sum())
 
-df_table.loc['Total']= total
-st.table(
+df_table.loc['Total'] = total
+st.dataframe(
     df_table
     .style
-    .format(precision=2, thousands=",", decimal='.')
+    .format(precision=2, thousands=",", decimal='.'),
+    use_container_width=True
 )

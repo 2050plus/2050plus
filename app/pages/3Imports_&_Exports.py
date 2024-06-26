@@ -79,6 +79,7 @@ df_imp_exp_.rename(mapper=lambda x: x + " [TWh]", axis=1, inplace=True)
 
 st.subheader(f"Annual {carrier} exchange volumes of {country} for {year} ")
 
-st.table(df_imp_exp_
-         .style
-         .format(precision=2, thousands=",", decimal='.'))
+st.dataframe(df_imp_exp_
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True)

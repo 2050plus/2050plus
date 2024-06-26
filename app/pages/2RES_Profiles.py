@@ -13,7 +13,8 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Renewable production per carrier")
-st.markdown("The RES production 3-hourly profiles for every carrier, year and subsector. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
+st.markdown(
+    "The RES production 3-hourly profiles for every carrier, year and subsector. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
@@ -55,7 +56,7 @@ df_table = (
 )
 
 st.subheader(f"Renewable annual production for {country}")
-st.table(df_table)
+st.dataframe(df_table, use_container_width=True)
 st.subheader(f"Renewable production profiles for {country}")
 
 carrier = st.selectbox('Choose your carrier:', list(df.index.unique()))

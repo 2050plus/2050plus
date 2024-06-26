@@ -12,7 +12,8 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Renewable production potentials")
-st.markdown("The total potential for RES power production capacity considered by the model for the various technologies and countries.")
+st.markdown(
+    "The total potential for RES power production capacity considered by the model for the various technologies and countries.")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
@@ -79,4 +80,4 @@ df_tab = (df_tab
           .format(precision=2, thousands=",", decimal='.')
           )
 
-st.table(df_tab)
+st.dataframe(df_tab, use_container_width=True)
