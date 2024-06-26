@@ -71,8 +71,8 @@ st.plotly_chart(
     fig,
     use_container_width=True
 )
-df_cost_segments.index.set_names("Costs per type/carrier [B€/year]",inplace=True)
-st.dataframe(df_cost_segments.style.format(precision=2, thousands=",", decimal='.'))
+df_cost_segments.index.set_names("Costs per type/carrier [B€/year]", inplace=True)
+st.dataframe(df_cost_segments.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)
 
 # %% Cost year
 st.header("Cost by year")
@@ -114,9 +114,10 @@ st.plotly_chart(
     use_container_width=True
 )
 
-df_cost_years.index.set_names("Costs per unit segment/type [B€/year]",inplace=True)
-st.dataframe(df_cost_years.assign(total=df_cost_years.sum(axis=1)).style.format(precision=2, thousands=",", decimal='.'))
-
+df_cost_years.index.set_names("Costs per unit segment/type [B€/year]", inplace=True)
+st.dataframe(
+    df_cost_years.assign(total=df_cost_years.sum(axis=1)).style.format(precision=2, thousands=",", decimal='.'),
+    use_container_width=True)
 
 # %%
 st.header("Marginal price of methane, electricity and hydrogen")
@@ -134,30 +135,32 @@ with col1:
     if not ("ENTSO-E area" in country):
         df1 = df.query("countries in @country").drop(columns="countries").set_index("carrier")
     else:
-        raise Exception ("Fix me to remove Flanders")
+        raise Exception("Fix me to remove Flanders")
 
     df1 = df1.rename(columns=lambda x: x + " Annual average " if not (x.endswith("_std")) else x.replace("_std",
                                                                                                          " Standard Deviation")).T
     df1 = df1.rename(columns=lambda x: x + " [€/MWh]")
 
-    st.table(df1
-             .style
-             .format(precision=2, thousands=",", decimal='.'))
+    st.dataframe(df1
+                 .style
+                 .format(precision=2, thousands=",", decimal='.'),
+                 use_container_width=True)
 with col2:
     country2 = st.selectbox("Choose your country:", list(df.countries.unique()) + [''])
 
     if not ("ENTSO-E area" in country2):
         df2 = df.query("countries in @country2").drop(columns="countries").set_index("carrier")
     else:
-        raise Exception ("Fix me to remove Flanders")
+        raise Exception("Fix me to remove Flanders")
 
     df2 = df2.rename(columns=lambda x: x + " Annual average " if not (x.endswith("_std")) else x.replace("_std",
                                                                                                          " Standard Deviation")).T
     df2 = df2.rename(columns=lambda x: x + " [€/MWh]")
 
-    st.table(df2
-             .style
-             .format(precision=2, thousands=",", decimal='.'))
+    st.dataframe(df2
+                 .style
+                 .format(precision=2, thousands=",", decimal='.'),
+                 use_container_width=True)
 
 # %% Box plot for costs
 

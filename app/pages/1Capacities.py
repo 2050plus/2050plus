@@ -12,7 +12,9 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Power production installed capacities")
-st.markdown("The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+st.markdown(
+    "The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_df(scenario):
@@ -42,7 +44,7 @@ df = (
     .groupby(['sector'])
     .sum(numeric_only=True)
     .rename(index={"sector": "Technologies"})
-    
+
 )
 
 fig = px.bar(
@@ -62,6 +64,13 @@ st.plotly_chart(
     fig
     , use_container_width=True
 )
+
+st.dataframe(df
+             .rename(mapper=lambda x: x + " [GW]", axis=1)
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )
 
 st.divider()
 

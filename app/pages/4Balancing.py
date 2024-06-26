@@ -13,11 +13,15 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Balancing capacities")
-st.markdown("The balancing capacities installed per country, technologies and year. Balancing units can help balancing the network, either by increasing production or by shifting consumption.")
+st.markdown(
+    "The balancing capacities installed per country, technologies and year. Balancing units can help balancing the network, either by increasing production or by shifting consumption.")
 with st.expander("**Why balancing the network is important ?**"):
-    st.write("Electricity as such cannot be stored. For the electricity grid to function, electricity consumption must always be equal to electricity production. As soon as an individual consumes 1 kilowatt, 1 kilowatt must simultaneously be produced by a generating unit on the grid. Thermal power stations (gas, coal, etc.), dams and nuclear power stations are called controllable: their output can be adjusted according to demand. They can be load following, i.e. they can adapt to fluctuations in demand. On the other hand, wind turbines and solar panels are called intermittent: their production depends on weather conditions and day/night cycles.")
-    st.write("Without controllable means, production would not be able to adapt to consumption. When consumption exceeds production, the frequency of the electricity grid (50 Hz) drops. This is the result of the slowing down of all the generators in the electricity network, which are under pressure to meet demand. Various measures, such as load shedding, are planned to reduce some of the consumption. If this is not sufficient, the frequency will continue to decrease until the safety shutdown of production units and the collapse of the electrical grid (example: 2003 blackout in Italy).")
-    st.write("In a 100% renewable energy system, there are no longer controllable units such as gas, coal and nuclear power stations that can adapt to fluctuations in demand. Other balancing capacity is therefore required. These can either increase production (e.g. hydro), shift consumption to a more favourable time when production is higher (e.g. heat pumps, BEV chargers), or convert electricity to store it during periods of surplus for redistribution during periods of shortage (e.g. PHS, battery chargers).")
+    st.write(
+        "Electricity as such cannot be stored. For the electricity grid to function, electricity consumption must always be equal to electricity production. As soon as an individual consumes 1 kilowatt, 1 kilowatt must simultaneously be produced by a generating unit on the grid. Thermal power stations (gas, coal, etc.), dams and nuclear power stations are called controllable: their output can be adjusted according to demand. They can be load following, i.e. they can adapt to fluctuations in demand. On the other hand, wind turbines and solar panels are called intermittent: their production depends on weather conditions and day/night cycles.")
+    st.write(
+        "Without controllable means, production would not be able to adapt to consumption. When consumption exceeds production, the frequency of the electricity grid (50 Hz) drops. This is the result of the slowing down of all the generators in the electricity network, which are under pressure to meet demand. Various measures, such as load shedding, are planned to reduce some of the consumption. If this is not sufficient, the frequency will continue to decrease until the safety shutdown of production units and the collapse of the electrical grid (example: 2003 blackout in Italy).")
+    st.write(
+        "In a 100% renewable energy system, there are no longer controllable units such as gas, coal and nuclear power stations that can adapt to fluctuations in demand. Other balancing capacity is therefore required. These can either increase production (e.g. hydro), shift consumption to a more favourable time when production is higher (e.g. heat pumps, BEV chargers), or convert electricity to store it during periods of surplus for redistribution during periods of shortage (e.g. PHS, battery chargers).")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
@@ -42,7 +46,8 @@ st.write()
 df.loc[condition, df.columns[2:]] *= -1
 
 st.header("Installed capacities per country")
-st.markdown('Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
+st.markdown(
+    'Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
 
 all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
@@ -90,7 +95,7 @@ df2 = (df2
        .query("carrier == @technology")
        .drop(columns=['carrier'])
        .set_index('country')
-       .rename(columns = lambda x : x + ' [GWh]')
+       .rename(columns=lambda x: x + ' [GWh]')
        )
 
 st.write("Energy output by country")
