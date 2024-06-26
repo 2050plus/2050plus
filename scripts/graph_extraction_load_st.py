@@ -188,11 +188,8 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
     else:
         countries = None
 
-    cost_mapping = pd.read_csv(
-        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "cost_mapping.csv"), index_col=[0, 1],
-        header=0).dropna()
     df = (
-        df.merge(cost_mapping, left_on=["carrier", "type"], right_index=True, how="left")
+        df
         .groupby(["cost_segment", "cost"]).sum(numeric_only=True)
         .reset_index()
     )
@@ -218,7 +215,19 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
             df.loc[df.query("'fuel' in cost").index, config["years_str"]] += net_cost.sum(axis=1).astype(float).values
         if cost_segment == "Net_Imports":
             df = net_cost.reset_index()
-
+            df_melted = pd.melt(df, id_vars=['index'], var_name='cost', value_name='value')
+            df_pivoted = df_melted.pivot(index='cost', columns='index', values='value')
+            df_pivoted.reset_index(inplace=True)
+            df_pivoted.columns=df_pivoted.columns.astype(str)
+            df = df_pivoted.copy()
+            df["cost_segment"] = cost_segment
+         
+        df.loc[df.cost=="fuel","cost"] = "marginal"
+        df_tot = (df.groupby("cost_segment")
+                  .sum()
+                  .reset_index()
+                  .assign(cost_segment=cost_segment,cost="total"))
+        df = pd.concat([df,df_tot])
     else:
         df = (
             df.pivot(columns="cost", values=year, index="cost_segment")
@@ -233,22 +242,7 @@ def _load_costs(config, per_segment=False, per_year=False):
     for co_name, subset in config["countries"].items():
         if per_segment:
             for seg_name, seg in COST_SEGMENTS.items():
-                dico[f"{seg_name}_{co_name}"] = _load_costs_year_segment(config, _countries=subset, cost_segment=seg)
-
-                # adapt net_imp to the format of the rest of the dataframe
-                if seg == "Net_Imports":
-                    df_melted = pd.melt(dico[f"{seg_name}_{co_name}"], id_vars=['index'], var_name='carrier',
-                                        value_name='value')
-                    df_pivoted = df_melted.pivot(index='carrier', columns='index', values='value')
-                    df_pivoted.reset_index(inplace=True)
-                    df_pivoted["cost_segment"] = seg
-                    dico[f"{seg_name}_{co_name}"] = df_pivoted.rename(
-                        columns={"carrier": "cost/carrier", 2030: '2030', 2035: '2035', 2040: '2040',
-                                 2045: '2045', 2050: '2050'})
-                else:
-                    dico[f"{seg_name}_{co_name}"] = dico[f"{seg_name}_{co_name}"].rename(
-                        columns={"cost": "cost/carrier"})
-                dico
+                dico[f"{seg_name}_{co_name}"] = _load_costs_year_segment(config, _countries=subset, cost_segment=seg).rename(columns={"cost": "cost/carrier"})              
         elif per_year:
             for y in config["years_str"]:
                 dico[f"{y}_{co_name}"] = _load_costs_year_segment(config, _countries=subset, year=y)
