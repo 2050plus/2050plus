@@ -151,171 +151,8 @@ def extract_res_potential(n):
     df_potential["units"] = "GW_e"
     return df_potential
 
-
-# %% Plot functions
-
-def plot_series(network, carrier="AC", name="test", load_only=True, supply_only=False, path=None,
-                _stop="-02-01", _start="-01-01", year="2013", colors=None,
-                save=True, return_data=False, regionalized=False):
-    n = network.copy()
-    assign_locations(n)
-    assign_carriers(n)
-    assert not (load_only and supply_only), "Cannot have both supply-only and load-only modes"
-
-    if carrier == "electricity":
-        buses = n.buses.query("'AC' in carrier or index.str.contains('low voltage')").index
-    else:
-        buses = n.buses.index[n.buses.carrier.str.contains(carrier)]
-
-    supply = pd.DataFrame(index=n.snapshots)
-    for c in n.iterate_components(n.branch_components):
-        n_port = 3 if c.name == "Link" else 2
-        for i in range(n_port):
-            supply = pd.concat(
-                (
-                    supply,
-                    (-1)
-                    * c.pnl["p" + str(i)]
-                      .loc[:, c.df.index[c.df["bus" + str(i)].isin(buses)]]
-                      .T.groupby([c.df.carrier, c.df["bus" + str(i)]])
-                      .sum().T,
-                ),
-                axis=1,
-            )
-
-    for c in n.iterate_components(n.one_port_components):
-        comps = c.df.index[c.df.bus.isin(buses)]
-        supply = pd.concat(
-            (
-                supply,
-                ((c.pnl["p"].loc[:, comps]).multiply(c.df.loc[comps, "sign"]))
-                .T.groupby([c.df.carrier, c.df.bus])
-                .sum().T,
-            ),
-            axis=1,
-        )
-
-    # Map buses to countries in MultiIndex
-    supply.index = pd.to_datetime(pd.DatetimeIndex(supply.index.values, name='snapshots').strftime(f'{year}-%m-%d-%H'))
-    supply.columns = pd.MultiIndex.from_tuples(
-        [(x, n.buses.loc[y, "country"]) for (x, y) in supply.columns.values],
-        names=["carrier", "country"])
-    supply = (supply.T.groupby(level=[0, 1])
-              .sum().T
-              .stack(level=1, future_stack=True)
-              .sort_index(level=[1, 0]))
-
-    # Group by carriers if not regionalized
-    if not regionalized:
-        supply = supply.groupby(level=0).sum()
-
-    supply = supply.T.groupby(rename_techs_tyndp).sum().T
-
-    both = supply.columns[(supply < 0.0).any() & (supply > 0.0).any()]
-
-    positive_supply = supply[both]
-    negative_supply = supply[both]
-
-    positive_supply[positive_supply < 0.0] = 0.0
-    negative_supply[negative_supply > 0.0] = 0.0
-
-    supply[both] = positive_supply
-
-    suffix = " charging"
-
-    negative_supply.columns = negative_supply.columns + suffix
-
-    supply = pd.concat((supply, negative_supply), axis=1)
-
-    if supply_only:
-        supply = supply.loc[:, ~(supply <= 0).all(axis=0)]
-
-    if load_only:
-        supply = - supply.loc[:, (supply <= 0).all(axis=0)]
-
-    # 14-21.2 for flaute
-    # 19-26.1 for flaute
-
-    start = year + _start
-    stop = year + _stop
-
-    threshold = 10e3
-
-    to_drop = supply.columns[(abs(supply) < threshold).all()]
-
-    if len(to_drop) != 0:
-        logger.info(f"Dropping {to_drop.tolist()} from supply")
-        supply.drop(columns=to_drop, inplace=True)
-
-    if not (return_data):
-        supply.index.name = None
-
-    supply = supply / 1e3
-
-    supply.rename(
-        columns={"electricity": "electric demand", "heat": "heat demand"}, inplace=True
-    )
-    supply.columns = supply.columns.str.replace("residential ", "")
-    supply.columns = supply.columns.str.replace("services ", "")
-    supply.columns = supply.columns.str.replace("urban decentral ", "decentral ")
-
-    supply = supply.T.groupby(supply.columns).sum().T
-    new_columns = (supply.std() / supply.mean()).sort_values().index
-
-    if return_data:
-        return supply[new_columns]
-
-    fig, ax = plt.subplots()
-    fig.set_size_inches((8, 5))
-
-    if colors:
-        (
-            supply.loc[start:stop, new_columns].plot(
-                ax=ax,
-                kind="area",
-                stacked=True,
-                linewidth=0.0,
-                color=[
-                    colors[i.replace(suffix, "")]
-                    for i in new_columns
-                ],
-            )
-        )
-        loads = n.loads_t.p[n.loads.query('bus in @buses').index].sum(axis=1) / 1e3
-        loads.index = pd.to_datetime(pd.DatetimeIndex(loads.index.values).strftime(f'{year}-%m-%d-%H'))
-        loads[start:stop].plot(ax=ax, color="k", linestyle='-')
-
-    handles, labels = ax.get_legend_handles_labels()
-
-    handles.reverse()
-    labels.reverse()
-
-    new_handles = []
-    new_labels = []
-
-    for i, item in enumerate(labels):
-        if "charging" not in item:
-            new_handles.append(handles[i])
-            new_labels.append(labels[i])
-
-    ax.legend(new_handles, new_labels, ncol=3, loc="upper left", frameon=False)
-    ax.set_xlim([start, stop])
-    if load_only or supply_only:
-        ax.set_ylim([supply.sum().min() * 2 / 1e3, supply.sum().max() * 2 / 1e3])
-    else:
-        ax.set_ylim([-1000, 1900])
-    ax.grid(True)
-    ax.set_ylabel("Power [GW]")
-    fig.tight_layout()
-
-    if save:
-        if path:
-            fig.savefig(path, transparent=True)
-    else:
-        return fig
-
-
 # %%
+
 
 def extract_inst_capa_elec_node(config, n, carriers_renamer):
     inst_capa_elec_node = []
@@ -620,7 +457,14 @@ def extract_nodal_costs(config, n):
     df_comp = df_comp.fillna(0).groupby(["type", "cost", "country", "carrier"]).sum()
     df_comp = df_comp.loc[~df_comp.apply(lambda x: x < 1e3).all(axis=1)]
     df_comp.insert(0, column="units", value="Euro")
-
+    
+    
+    cost_mapping = pd.read_csv(
+        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "cost_mapping.csv"), index_col=[0, 1],
+        header=0).dropna()
+    df_comp = (
+        df_comp.merge(cost_mapping, left_on=["carrier", "type"], right_index=True, how="left")
+        )
     return df_comp
 
 
@@ -700,7 +544,7 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
                                            carriers=carriers, carriers_renamer=carriers_renamer,
                                            time_aggregate=time_aggregate,
                                            country_aggregate=country_aggregate, fun=remove_prefixes)
-
+        logger.info(f"Calculated nodal supply for year {y}")
     idx = ["carrier", "component", "item", "snapshot"]
     if not (country_aggregate):
         idx = ["node"] + idx
@@ -816,20 +660,6 @@ def extract_graphs(config, n, color_shift=None):
     return n_sto, n_h2
 
 
-def extract_series(config, n, carriers=["electricity"], load=False, supply=False):
-    with plt.style.context(["ggplot"]):
-        df = config["plotting"]
-        plots = {}
-        # TODO : add multiple carriers
-        for carrier in carriers:
-            for y, ni in n.items():
-                with pd.option_context("mode.chained_assignment", None):
-                    plots[y] = plot_series(ni, carrier=carrier, name=carrier, year=str(y),
-                                           load_only=load, supply_only=supply, colors=df["tech_colors"],
-                                           path=Path(config["path"]["csvs"], f"series_AC_{y}.png"), save=False)
-    return plots
-
-
 def export_csvs_figures(csvs, outputs, figures):
     csvs.mkdir(parents=True, exist_ok=True)
 
@@ -882,8 +712,6 @@ def transform_data(config, n, n_ext, color_shift=None):
 
     # Figures to extract
     n_sto, n_h2 = extract_graphs(config, n, color_shift)
-    series_production = extract_series(config, n, supply=True)
-    series_consumption = extract_series(config, n, load=True)
 
     # Define outputs and export them
     outputs = {
@@ -916,8 +744,6 @@ def transform_data(config, n, n_ext, color_shift=None):
     figures = {
         "storage_unit": n_sto,
         "h2_production": n_h2,
-        "series_production": series_production,
-        "series_consumption": series_consumption,
     }
 
     export_csvs_figures(config["path"]["csvs"], outputs, figures)

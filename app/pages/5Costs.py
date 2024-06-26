@@ -56,7 +56,7 @@ fig = px.bar(
     df_cost_segments,
     width=1000,
     height=400,
-    title="Cost for the different carriers [Billion € / y]",
+    title=f"{selected_cost_segment} costs for {selected_area} [Billion € / y]",
     barmode="group",
     text_auto=".3s"
 )
@@ -71,6 +71,8 @@ st.plotly_chart(
     fig,
     use_container_width=True
 )
+df_cost_segments.index.set_names("Costs per type/carrier [B€/year]",inplace=True)
+st.dataframe(df_cost_segments.style.format(precision=2, thousands=",", decimal='.'))
 
 # %% Cost year
 st.header("Cost by year")
@@ -97,7 +99,7 @@ fig = px.bar(
     df_cost_years,
     width=1000,
     height=400,
-    title="Cost for the different segments [Billion € / y]",
+    title=f"{selected_year} costs for {selected_area} [Billion € / y]",
     text_auto=".3s"
 )
 
@@ -111,6 +113,10 @@ st.plotly_chart(
     fig,
     use_container_width=True
 )
+
+df_cost_years.index.set_names("Costs per unit segment/type [B€/year]",inplace=True)
+st.dataframe(df_cost_years.assign(total=df_cost_years.sum(axis=1)).style.format(precision=2, thousands=",", decimal='.'))
+
 
 # %%
 st.header("Marginal price of methane, electricity and hydrogen")

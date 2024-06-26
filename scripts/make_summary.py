@@ -515,8 +515,6 @@ def calculate_nodal_supply_energy(_n, label, nodal_supply_energy,
                 )
 
                 nodal_supply_energy.loc[s.index, label] = s
-        if country_aggregate:
-            print(f"Did carrier {i} for year {label[-1]}")
     return nodal_supply_energy
 
 
