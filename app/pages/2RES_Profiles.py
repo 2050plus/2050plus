@@ -12,7 +12,7 @@ from st_common import st_side_bar
 st_page_config(layout="wide")
 scenario = st_side_bar()
 
-st.title("Renewable production per carrier")
+st.title("Renewable production profiles per carrier")
 st.markdown(
     "The RES production 3-hourly profiles for every carrier, year and subsector. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
 
@@ -49,15 +49,10 @@ df = df.groupby(['carrier']).sum(numeric_only=True)
 df_table = (
     (df.sum(axis=1) / 1e3  # TWh
      * 3)
-    .rename(f"Annual production [TWh]")
-    .to_frame()
+    .to_frame(name=year)
     .style
     .format(precision=2, thousands=",", decimal='.')
 )
-
-st.subheader(f"Renewable annual production for {country}")
-st.dataframe(df_table, use_container_width=True)
-st.subheader(f"Renewable production profiles for {country}")
 
 carrier = st.selectbox('Choose your carrier:', list(df.index.unique()))
 if carrier != 'all':
@@ -80,3 +75,6 @@ st.plotly_chart(
     fig
     , use_container_width=True
 )
+
+df_table.index.name = "Production [TWh]"
+st.dataframe(df_table, use_container_width=True)

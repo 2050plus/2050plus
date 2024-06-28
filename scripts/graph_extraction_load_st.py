@@ -155,10 +155,6 @@ def load_balancing_supply(config):
     return pd.read_csv(Path(config["path"]["csvs"], "balancing_supply_countries.csv"))
 
 
-def load_elec_grid(config):
-    return pd.read_csv(Path(config["path"]["csvs"], "elec_grid.csv"))
-
-
 # generic function for calling costs
 def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=None):
     """

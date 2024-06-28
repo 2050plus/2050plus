@@ -46,10 +46,11 @@ else:
 carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(), index=1)
 df_ca = df_ca.query("carrier==@carrier").drop("carrier", axis=1)
 
-df_ca = df_ca.groupby(by="sector").sum()
+df_ca = df_ca.groupby(by="sector").sum().sort_values(by="2050", ascending=False)
 
 df_ca_tot = pd.DataFrame(df_ca.sum().rename("Total")).T
 df_ca = pd.concat([df_ca, df_ca_tot])
+df_ca.index.name = "Annual load [TWh]"
 
 fig = px.bar(
     df_ca,
@@ -69,9 +70,7 @@ st.plotly_chart(
     , use_container_width=True
 )
 
-st.subheader(f"Annual load per sector for {carrier}")
 st.dataframe(df_ca
-             .rename(mapper=lambda x: x + " [TWh]", axis=1)
              .style
              .format(precision=2, thousands=",", decimal='.'),
              use_container_width=True
@@ -106,10 +105,11 @@ df_se = pd.concat([df_se, df_ind, df_heat])
 sector = st.selectbox('Choose your sector:', df_se["sector"].unique(), index=8)
 df_se = df_se.query("sector==@sector").drop("sector", axis=1)
 
-df_se = df_se.groupby(by="carrier").sum()
+df_se = df_se.groupby(by="carrier").sum().sort_values(by="2050", ascending=False)
 
 df_se_tot = pd.DataFrame(df_se.sum().rename("Total")).T
 df_se = pd.concat([df_se, df_se_tot])
+df_se.index.name = "Annual load [TWh]"
 
 fig = px.bar(
     df_se,
@@ -129,9 +129,7 @@ st.plotly_chart(
     , use_container_width=True
 )
 
-st.subheader(f"Annual load per carrier for {sector}")
 st.dataframe(df_se
-             .rename(mapper=lambda x: x + " [TWh]", axis=1)
              .style
              .format(precision=2, thousands=",", decimal='.'),
              use_container_width=True
