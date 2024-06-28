@@ -36,6 +36,7 @@ df = df.groupby("country").sum()
 carrier = st.multiselect('Choose your carrier:', list(df.columns.unique()), default=list(df.columns.unique())[2:4])
 df = df.loc[:, carrier]
 carrier_list = ' & '.join(list(map(str.capitalize, carrier)))
+df.index.name = "Potential [GW]"
 
 fig = px.bar(
     df,
@@ -53,6 +54,13 @@ st.plotly_chart(
     fig
     , use_container_width=True
 )
+
+st.dataframe(df
+            .rename(mapper=lambda x: x.capitalize() + " [GW]", axis=1)
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )
 
 st.divider()
 

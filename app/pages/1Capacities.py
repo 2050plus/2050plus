@@ -44,8 +44,8 @@ df = (
     .groupby(['sector'])
     .sum(numeric_only=True)
     .rename(index={"sector": "Technologies"})
-
 )
+df.index.name = "Capacity [GW]"
 
 fig = px.bar(
     df,
@@ -66,7 +66,6 @@ st.plotly_chart(
 )
 
 st.dataframe(df
-             .rename(mapper=lambda x: x + " [GW]", axis=1)
              .style
              .format(precision=2, thousands=",", decimal='.'),
              use_container_width=True
@@ -85,6 +84,8 @@ df_bar = (df_bar
           .set_index('country')
           .rename_axis("Investment year")
           )
+df_bar.index.name = "Capacity [GW]"
+
 fig_bar = px.bar(
     df_bar,
     title=f"{technology.capitalize()} installed capacities [GW]",
@@ -99,9 +100,7 @@ fig_bar.update_traces(hovertemplate="%{y:,.1f}",
 fig_bar.update_layout(hovermode="x unified",
                       legend_title_text='Technologies')
 
-col1, col2 = st.columns([0.35, 0.6])
-with col1:
-    st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), width=500)
-with col2:
-    st.plotly_chart(fig_bar
+st.plotly_chart(fig_bar
                     , use_container_width=True)
+
+st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)

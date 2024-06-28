@@ -78,13 +78,10 @@ fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified",
                   legend_title_text='Technologies')
 
-st.plotly_chart(
-    fig
-    # , use_container_width=True
-)
+st.plotly_chart(fig, use_container_width=True)
 
 # %%
-st.header("Actual annual energy output per technology")
+st.header("Annual energy output per technology")
 
 data2 = get_df(scenario, "supply")
 df2 = data2.copy()
@@ -95,10 +92,8 @@ df2 = (df2
        .query("carrier == @technology")
        .drop(columns=['carrier'])
        .set_index('country')
-       .rename(columns=lambda x: x + ' [GWh]')
        )
-
-st.write("Energy output by country")
+df2.index.name = "Energy output [GWh]"
 
 fig_bar = px.bar(
     df2,
@@ -113,12 +108,9 @@ fig_bar.update_traces(hovertemplate="%{y:,.1f}")
 fig_bar.update_layout(hovermode="x unified",
                       legend_title_text='Technologies')
 
-col1, col2 = st.columns([0.35, 0.6])
-with col1:
-    st.dataframe(df2.style.format(precision=2, thousands=",", decimal='.'), width=500)
-with col2:
-    st.plotly_chart(fig_bar
-                    , use_container_width=True)
+st.plotly_chart(fig_bar, use_container_width=True)
+
+st.dataframe(df2.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)
 
 # # %%
 # st.header("Focus on EV batteries (BEVs)")

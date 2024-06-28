@@ -30,6 +30,9 @@ def get_data(scenario, path):
 
 # %% Cost segment
 st.header("Cost by unit segment")
+st.markdown("* ENTSO-E area includes all modeled countries, so imports and exports = 0.\n"
+            "* A negative value means that the area is exporting and thus making a profit.")
+
 
 df_cost_segments = get_data(scenario, "costs_segments.csv").set_index("config")
 col1, col2 = st.columns([4, 4])
@@ -40,11 +43,10 @@ with col1:
         df_cost_segments = df_cost_segments.query("cost_segment in @selected_cost_segment")
     else:
         df_cost_segments = df_cost_segments.query("cost_segment != 'Net_Imports'")
-    st.text("A negative value means that the area is exporting and thus making a profit")
+
 with col2:
     selected_area = st.selectbox("Choose area :", COSTS_AREA)
     df_cost_segments = df_cost_segments[df_cost_segments.index.str.endswith(COSTS_AREA[selected_area])]
-    st.text("tot includes all modeled countries, so imports and exports = 0")
 
 df_cost_segments = df_cost_segments.groupby(by="cost/carrier").sum().drop(columns=["cost_segment"])
 
