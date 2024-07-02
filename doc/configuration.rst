@@ -564,7 +564,7 @@ The list of available biomass is given by the category in `ENSPRESO_BIOMASS <htt
 .. _adjustments_cf:
 
 ``adjustments``
-=============
+===============
 
 .. literalinclude:: ../config/config.default.yaml
    :language: yaml

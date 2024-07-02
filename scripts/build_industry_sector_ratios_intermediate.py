@@ -6,6 +6,81 @@
 Build specific energy consumption by carrier and industries and by country,
 that interpolates between the current average energy consumption (from
 2015-2020) and the ideal future best-in-class consumption.
+
+Relevant Settings
+-----------------
+
+.. code:: yaml
+
+    industry:
+        sector_ratios_fraction_future:
+        ammonia:
+
+Inputs
+------
+
+- ``resources/industry_sector_ratios.csv``
+- ``resources/industrial_energy_demand_per_country_today.csv``
+- ``resources/industrial_production_per_country.csv``
+
+Outputs
+-------
+
+- ``resources/industry_sector_ratios_{planning_horizons}.csv``
+
+Description
+-------
+
+The config["industry"]["sector_ratios_fraction_future"] parameter determines the progress towards the future best-in-class consumption.
+For each bus, the following industry subcategories
+
+- Electric arc
+- DRI H2 + Electric arc
+- DRI CH4 + Electric arc
+- Integrated steelworks
+- HVC (NSC)
+- HVC (NSC CC)
+- HVC (MTO)
+- HVC (mechanical recycling)
+- HVC (chemical recycling)
+- Ammonia
+- Chlorine
+- Methanol
+- Other chemicals
+- Pharmaceutical products etc.
+- Cement
+- Ceramics & other NMM
+- Glass production
+- Pulp production
+- Paper production
+- Printing and media reproduction
+- Food, beverages and tobacco
+- Alumina production
+- Aluminium - primary production
+- Aluminium - secondary production
+- Other non-ferrous metals
+- Transport Equipment
+- Machinery Equipment
+- Textiles and leather
+- Wood and wood products
+- Other Industrial Sectors
+
+with the following carriers are considered:
+
+- elec
+- coal
+- coke
+- biomass
+- methane
+- hydrogen
+- heat
+- naphtha
+- ammonia
+- methanol
+- process emission
+- process emission from feedstock
+
+Unit of the output file is MWh/t.
 """
 
 import pandas as pd

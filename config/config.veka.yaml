@@ -20,8 +20,8 @@ remote:
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
-  prefix: "VEKA"
-  name: "electrification"
+  prefix: "VEKA2"
+  name: "all"
   scenarios:
     enable: true
     file: config/scenarios.veka.yaml
@@ -47,7 +47,9 @@ scenario:
   - 3H-T-H-B-I-A
   planning_horizons:
   - 2030
+  - 2035
   - 2040
+  - 2045
   - 2050
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#countries
@@ -82,8 +84,8 @@ co2_budget:
   2025: 0.6092
   2030: 0.52
   2035: 0.42
-  2040: 0.342
-  2045: 0.284
+  2040: 0.317
+  2045: 0.213
   2050: 0.11
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#electricity
@@ -106,7 +108,7 @@ electricity:
     H2: 168
 
   extendable_carriers:
-    Generator: [solar, onwind, offwind-ac, offwind-dc, OCGT]
+    Generator: [solar, solar-hsat, onwind, offwind-ac, offwind-dc, offwind-float, OCGT, CCGT]
     StorageUnit: [] # battery, H2
     Store: [battery, H2]
     Link: [] # H2 pipeline
@@ -186,7 +188,8 @@ renewable:
       method: wind
       turbine: NREL_ReferenceTurbine_2020ATB_5.5MW
       add_cutout_windspeed: true
-    capacity_per_sqkm: 6
+    capacity_per_sqkm: 5.6  # allows to get without unfeasibility in any country
+                            # at least 7GW offshore in Belgium, without considering historic assets for any country
     correction_factor: 0.8855
     corine: [44, 255]
     luisa: false # [0, 5230]
@@ -202,7 +205,8 @@ renewable:
       method: wind
       turbine: NREL_ReferenceTurbine_2020ATB_5.5MW
       add_cutout_windspeed: true
-    capacity_per_sqkm: 6
+    capacity_per_sqkm: 5.6 # allows to get without unfeasibility in any country
+                            # at least 7GW offshore in Belgium, without considering historic assets for any country
     correction_factor: 0.8855
     corine: [44, 255]
     luisa: false # [0, 5230]
@@ -372,7 +376,7 @@ sector:
   industry: true
   agriculture: true
   district_heating:
-    potential: 0.6
+    potential: 0.3
     progress:
       2020: 0.0
       2025: 0.15
@@ -402,29 +406,29 @@ sector:
   bev_avail_mean: 0.4
   v2g: false
   land_transport_fuel_cell_share:
-    2020: 0
-    #2025: 0
-    2030: 0
-    #2035: 0
-    2040: 0
-    #2045: 0
-    2050: 0
-  land_transport_electric_share: #total demand -15% in 2030, -40% in 2040, -66% in 2050
-    2020: 0
-    #2025: 0.1
-    2030: 0.17
-    #2035: 0.4
-    2040: 0.036
-    #2045: 0.
-    2050: 0.34
-  land_transport_ice_share: #total demand -15% in 2030, -40% in 2040, -66% in 2050
-    2020: 1
-    #2025: 0.9
-    2030: 0.68
-    #2035: 0.6
-    2040: 0.24
-    #2045: 0.2
-    2050: 0
+    2020: 0.000
+    2025: 0.004
+    2030: 0.008
+    2035: 0.041
+    2040: 0.075
+    2045: 0.102
+    2050: 0.129
+  land_transport_electric_share: # total demand -5% in 2030, -26% in 2040, -34% in 2050
+    2020: 0.003
+    2025: 0.106
+    2030: 0.212
+    2035: 0.368
+    2040: 0.524
+    2045: 0.592
+    2050: 0.659
+  land_transport_ice_share: # total demand -5% in 2030, -26% in 2040, -34% in 2050
+    2020: 0.997
+    2025: 0.890
+    2030: 0.780
+    2035: 0.591
+    2040: 0.401
+    2045: 0.306
+    2050: 0.212
   transport_fuel_cell_efficiency: 0.5
   transport_internal_combustion_efficiency: 0.3
   agriculture_machinery_electric_share: 0
@@ -506,7 +510,7 @@ sector:
   CC_turbine: true
   SMR: true
   SMR_cc: true
-  regional_methanol_demand: false
+  regional_methanol_demand: true
   regional_oil_demand: true
   regional_coal_demand: false
   regional_co2_sequestration_potential:
@@ -533,7 +537,7 @@ sector:
   - nearshore    # within 50 km of sea
   - offshore
   ammonia: true
-  min_part_load_fischer_tropsch: 0.7
+  min_part_load_fischer_tropsch: 0.5
   min_part_load_methanolisation: 0.3
   min_part_load_methanation: 0.3
   use_fischer_tropsch_waste_heat: true
@@ -553,16 +557,26 @@ sector:
     H2 pipeline:
       efficiency_per_1000km: 1 # 0.982
       compression_per_1000km: 0.018
+    H2 pipeline retrofitted:
+      efficiency_per_1000km: 1 # 0.982
+      compression_per_1000km: 0.018
     gas pipeline:
       efficiency_per_1000km: 1 #0.977
       compression_per_1000km: 0.01
+    gas pipeline new:
+      efficiency_per_1000km: 1 #0.977
+      compression_per_1000km: 0.01
+    electricity distribution grid:
+      efficiency_static: 0.97
   H2_network: true
   gas_network: true
   H2_retrofit: true
   H2_retrofit_capacity_per_CH4: 0.6
+  H2_import: true
   gas_network_connectivity_upgrade: 1
   gas_distribution_grid: true
-  gas_distribution_grid_cost_factor: 0.115741 # = 500/4320 (default/PATH2050)
+  gas_distribution_grid_cost_factor: 0.611140680431766 # ratio between historical distribution gas network price 
+                                                       # and revised value for electricity ditribution network
   biomass_spatial: true
   biomass_transport: true
   biogas_upgrading_cc: true
@@ -594,13 +608,13 @@ sector:
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#industry
 industry:
   St_primary_fraction:
-    2020: 0.6
-    2025: 0.6
-    2030: 0.6
-    2035: 0.6
-    2040: 0.6
-    2045: 0.6
-    2050: 0.6
+    2020: 0.7
+    2025: 0.7
+    2030: 0.7
+    2035: 0.7
+    2040: 0.7
+    2045: 0.7
+    2050: 0.7
   DRI_H2_fraction:
     2020: 0
     2025: 0
@@ -641,30 +655,46 @@ industry:
   #2020 recycling rates based on Agora https://static.agora-energiewende.de/fileadmin/Projekte/2021/2021_02_EU_CEAP/A-EW_254_Mobilising-circular-economy_study_WEB.pdf
   #fractions refer to the total primary HVC production in 2020
   #assumes 6.7 Mtplastics produced from recycling in 2020
-  HVC_primary_fraction:
-    2020: 1.0
-    2025: 0.9
-    2030: 0.8
-    2035: 0.7
-    2040: 0.6
-    2045: 0.5
-    2050: 0.4
+  HVC_NSC_fraction:
+    2020: 1.00
+    2025: 0.97
+    2030: 0.886
+    2035: 0.72
+    2040: 0.56
+    2045: 0.41
+    2050: 0.2666666667
+  HVC_NSC_CC_fraction:
+    2020: 0.00
+    2025: 0.00
+    2030: 0.047
+    2035: 0.12
+    2040: 0.207
+    2045: 0.28
+    2050: 0.2666666667
+  HVC_MTO_fraction:
+    2020: 0.00
+    2025: 0.00
+    2030: 0.00
+    2035: 0.058
+    2040: 0.10
+    2045: 0.14
+    2050: 0.2666666667
   HVC_mechanical_recycling_fraction:
-    2020: 0.12
-    2025: 0.15
-    2030: 0.18
-    2035: 0.21
-    2040: 0.24
-    2045: 0.27
-    2050: 0.30
-  HVC_chemical_recycling_fraction:
-    2020: 0.0
-    2025: 0.0
-    2030: 0.04
+    2020: 0.00
+    2025: 0.03
+    2030: 0.058
     2035: 0.08
-    2040: 0.12
-    2045: 0.16
-    2050: 0.20
+    2040: 0.10
+    2045: 0.12
+    2050: 0.14
+  HVC_chemical_recycling_fraction:
+    2020: 0.00
+    2025: 0.00
+    2030: 0.009
+    2035: 0.02
+    2040: 0.033
+    2045: 0.05
+    2050: 0.06
   sector_ratios_fraction_future:
     2020: 0.0
     2025: 0.1
@@ -677,12 +707,18 @@ industry:
   HVC_production_today: 52.
   MWh_elec_per_tHVC_mechanical_recycling: 0.547
   MWh_elec_per_tHVC_chemical_recycling: 6.9
+  MWh_elec_per_tHVC_MTO: 1.39
+  MWh_MeOH_per_tHVC_MTO: 17.84
+  tCO2_process_per_tHVC_MTO: 0.4
+  HVC_NSC_CC_energy_increase: 1.1
+  HVC_NSC_CC_emission_factor: 0.2
   chlorine_production_today: 9.58
   MWh_elec_per_tCl: 3.6
   MWh_H2_per_tCl: -0.9372
   methanol_production_today: 1.5
   MWh_elec_per_tMeOH: 0.167
   MWh_CH4_per_tMeOH: 10.25
+  MWh_MeOH_per_tMeOH: 5.528
   hotmaps_locate_missing: false
   reference_year: 2015
 
@@ -704,18 +740,8 @@ costs:
     "CO2 intensity": 0
     "discount rate": 0.07
   # Marginal and capital costs can be overwritten
-  # capital_cost:
-  #   onwind: 500
-#  marginal_cost:
-#    solar: 0.01
-#    onwind: 0.015
-#    offwind: 0.015
-#    hydro: 0.
-#    H2: 0.
-#    electrolysis: 0.
-#    fuel cell: 0.
-#    battery: 0.
-#    battery inverter: 0.
+  capital_cost: {}
+  marginal_cost: {}
   emission_prices:
     electricity:
       enable: false
@@ -725,7 +751,9 @@ costs:
       enable: true
       co2:
         2030: 131
+        2035: 150.5
         2040: 170
+        2045: 182
         2050: 194
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#clustering
@@ -822,6 +850,7 @@ solving:
       AggFill: 0
       PreDual: 0
       GURO_PAR_BARDENSETHRESH: 200
+      WaitTime: 60
     gurobi-numeric-focus:
       NumericFocus: 3       # Favour numeric stability over speed
       method: 2             # barrier
@@ -855,8 +884,8 @@ solving:
     cbc-default: {} # Used in CI
     glpk-default: {} # Used in CI
 
-  mem_mb: 30000 #memory in MB; 20 GB enough for 50+B+I+H2; 100 GB for 181+B+I+H2
-  runtime: 10h #runtime in humanfriendly style https://humanfriendly.readthedocs.io/en/latest/
+  mem_mb: 400000 #memory in MB; 20 GB enough for 50+B+I+H2; 100 GB for 181+B+I+H2
+  runtime: 1000h #runtime in humanfriendly style https://humanfriendly.readthedocs.io/en/latest/
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#plotting
 plotting:
@@ -1129,6 +1158,7 @@ plotting:
     methanolisation: '#83d6d5'
     methanol: '#468c8b'
     shipping methanol: '#468c8b'
+    industry methanol: '#467b8c'
     # co2
     CC: '#f29dae'
     CCS: '#f29dae'

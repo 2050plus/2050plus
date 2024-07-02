@@ -110,7 +110,7 @@ electricity:
     H2: 168
 
   extendable_carriers:
-    Generator: [solar, onwind, offwind-ac, offwind-dc, OCGT]
+    Generator: [solar, solar-hsat, onwind, offwind-ac, offwind-dc, offwind-float, OCGT, CCGT]
     StorageUnit: [] # battery, H2
     Store: [battery, H2]
     Link: [] # H2 pipeline
@@ -538,7 +538,7 @@ sector:
   - nearshore    # within 50 km of sea
     # - offshore
   ammonia: false
-  min_part_load_fischer_tropsch: 0.7
+  min_part_load_fischer_tropsch: 0.5
   min_part_load_methanolisation: 0.3
   min_part_load_methanation: 0.3
   use_fischer_tropsch_waste_heat: true
@@ -561,10 +561,13 @@ sector:
     gas pipeline:
       efficiency_per_1000km: 1 #0.977
       compression_per_1000km: 0.01
+    electricity distribution grid:
+      efficiency_static: 0.97
   H2_network: true
   gas_network: false
   H2_retrofit: false
   H2_retrofit_capacity_per_CH4: 0.6
+  H2_import: true
   gas_network_connectivity_upgrade: 1
   gas_distribution_grid: true
   gas_distribution_grid_cost_factor: 1.0
@@ -666,12 +669,18 @@ industry:
   HVC_production_today: 52.
   MWh_elec_per_tHVC_mechanical_recycling: 0.547
   MWh_elec_per_tHVC_chemical_recycling: 6.9
+  MWh_elec_per_tHVC_MTO: 1.39
+  MWh_MeOH_per_tHVC_MTO: 17.84
+  tCO2_process_per_tHVC_MTO: 0.4
+  HVC_NSC_CC_energy_factor: 1.1
+  HVC_NSC_CC_emission_factor: 0.2
   chlorine_production_today: 9.58
   MWh_elec_per_tCl: 3.6
   MWh_H2_per_tCl: -0.9372
   methanol_production_today: 1.5
   MWh_elec_per_tMeOH: 0.167
   MWh_CH4_per_tMeOH: 10.25
+  MWh_MeOH_per_tMeOH: 5.528
   hotmaps_locate_missing: false
   reference_year: 2015
 
@@ -694,16 +703,16 @@ costs:
   # Marginal and capital costs can be overwritten
   # capital_cost:
   #   onwind: 500
-  marginal_cost:
-    solar: 0.01
-    onwind: 0.015
-    offwind: 0.015
-    hydro: 0.
-    H2: 0.
-    electrolysis: 0.
-    fuel cell: 0.
-    battery: 0.
-    battery inverter: 0.
+#  marginal_cost:
+#    solar: 0.01
+#    onwind: 0.015
+#    offwind: 0.015
+#    hydro: 0.
+#    H2: 0.
+#    electrolysis: 0.
+#    fuel cell: 0.
+#    battery: 0.
+#    battery inverter: 0.
   emission_prices:
     enable: false
     co2: 0.
@@ -796,6 +805,7 @@ solving:
       AggFill: 0
       PreDual: 0
       GURO_PAR_BARDENSETHRESH: 200
+      WaitTime: 60
     gurobi-numeric-focus:
       NumericFocus: 3       # Favour numeric stability over speed
       method: 2             # barrier
@@ -1103,6 +1113,7 @@ plotting:
     methanolisation: '#83d6d5'
     methanol: '#468c8b'
     shipping methanol: '#468c8b'
+    industry methanol: '#467b8c'
     # co2
     CC: '#f29dae'
     CCS: '#f29dae'

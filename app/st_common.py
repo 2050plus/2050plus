@@ -7,21 +7,24 @@ base_path = Path(__file__).parent
 swoosh = Image.open(Path(base_path, "assets", "img", "swoosh.png"))
 network_path = Path(base_path, "assets", "data")
 scenario_dict = {
-    "1. Average": {
-        "path": "20240131/VEKA_av_bio_fix_nuc_bev_ccl",
+    "Central": {
+        "path": "20240619/graph_extraction_st/central",
     },
-    "1. Electrification": {
-        "path": "20240131/VEKA_el_bio_fix_nuc_bev_ccl",
+    "Electrification": {
+        "path": "20240619/graph_extraction_st/electrification",
     },
-    "2. Electrification": {
-        "path": "20240425/electrification",
+    "Molecules": {
+        "path": "20240619/graph_extraction_st/molecules",
     },
-    "2. (rerun) Electrification": {
-        "path": "20240514/electrification",
-    }
+    "LSC (Least Structural Changes)": {
+        "path": "20240619/graph_extraction_st/lsc",
+    },
 }
 CLIP_VALUE_TWH = 1e-1
-GRAPH_AREA = {"EU27+TYNDP": "tot", "BE": "be", "EU27": "eu27"}
+COSTS_AREA = {"ENTSO-E area": "tot", "EU27": "eu27", "BE": "be", "FL": "fl", "DE": "de", "FR": "fr", "GB": "gb",
+              "LU": "lu", "NL": "nl"}
+PROFILES_AREA = ["ENTSO-E area", "BE", "FL"]
+YEARS = ["2030", "2035", "2040", "2045", "2050"]
 
 
 def st_page_config(layout=None):
@@ -54,6 +57,6 @@ def st_side_bar():
         scenario = st.selectbox(
             "Select your scenario",
             scenario_dict.keys(),
-            index=3
+            index=0
         )
     return scenario

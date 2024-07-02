@@ -13,18 +13,22 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Balancing capacities")
-st.markdown("The balancing capacities installed per country, technologies and year. Balancing units can help balancing the network, either by increasing production or by shifting consumption.")
+st.markdown(
+    "The balancing capacities installed per country, technologies and year. Balancing units can help balancing the network, either by increasing production or by shifting consumption.")
 with st.expander("**Why balancing the network is important ?**"):
-    st.write("Electricity as such cannot be stored. For the electricity grid to function, electricity consumption must always be equal to electricity production. As soon as an individual consumes 1 kilowatt, 1 kilowatt must simultaneously be produced by a generating unit on the grid. Thermal power stations (gas, coal, etc.), dams and nuclear power stations are called controllable: their output can be adjusted according to demand. They can be load following, i.e. they can adapt to fluctuations in demand. On the other hand, wind turbines and solar panels are called intermittent: their production depends on weather conditions and day/night cycles.")
-    st.write("Without controllable means, production would not be able to adapt to consumption. When consumption exceeds production, the frequency of the electricity grid (50 Hz) drops. This is the result of the slowing down of all the generators in the electricity network, which are under pressure to meet demand. Various measures, such as load shedding, are planned to reduce some of the consumption. If this is not sufficient, the frequency will continue to decrease until the safety shutdown of production units and the collapse of the electrical grid (example: 2003 blackout in Italy).")
-    st.write("In a 100% renewable energy system, there are no longer controllable units such as gas, coal and nuclear power stations that can adapt to fluctuations in demand. Other balancing capacity is therefore required. These can either increase production (e.g. hydro), shift consumption to a more favourable time when production is higher (e.g. heat pumps, BEV chargers), or convert electricity to store it during periods of surplus for redistribution during periods of shortage (e.g. PHS, battery chargers).")
+    st.write(
+        "Electricity as such cannot be stored. For the electricity grid to function, electricity consumption must always be equal to electricity production. As soon as an individual consumes 1 kilowatt, 1 kilowatt must simultaneously be produced by a generating unit on the grid. Thermal power stations (gas, coal, etc.), dams and nuclear power stations are called controllable: their output can be adjusted according to demand. They can be load following, i.e. they can adapt to fluctuations in demand. On the other hand, wind turbines and solar panels are called intermittent: their production depends on weather conditions and day/night cycles.")
+    st.write(
+        "Without controllable means, production would not be able to adapt to consumption. When consumption exceeds production, the frequency of the electricity grid (50 Hz) drops. This is the result of the slowing down of all the generators in the electricity network, which are under pressure to meet demand. Various measures, such as load shedding, are planned to reduce some of the consumption. If this is not sufficient, the frequency will continue to decrease until the safety shutdown of production units and the collapse of the electrical grid (example: 2003 blackout in Italy).")
+    st.write(
+        "In a 100% renewable energy system, there are no longer controllable units such as gas, coal and nuclear power stations that can adapt to fluctuations in demand. Other balancing capacity is therefore required. These can either increase production (e.g. hydro), shift consumption to a more favourable time when production is higher (e.g. heat pumps, BEV chargers), or convert electricity to store it during periods of surplus for redistribution during periods of shortage (e.g. PHS, battery chargers).")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_df(scenario, mode):
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st",
+            Path(network_path, scenario_dict[scenario]["path"],
                  "balancing_" + mode + ".csv"),
             header=0,
         )
@@ -42,12 +46,15 @@ st.write()
 df.loc[condition, df.columns[2:]] *= -1
 
 st.header("Installed capacities per country")
-st.markdown('Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
+st.markdown(
+    'Negative values correspond to assets helping to balance the grid by consuming energy, positive value to assets helping to balance the grid by producing energy')
 
-all = ['EU27 + TYNDP']
+all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
-if not ('EU27 + TYNDP' in country):
+if not ('ENTSO-E area' in country):
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 
 df = (
     df.drop(columns=['country'])
@@ -71,13 +78,10 @@ fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified",
                   legend_title_text='Technologies')
 
-st.plotly_chart(
-    fig
-    # , use_container_width=True
-)
+st.plotly_chart(fig, use_container_width=True)
 
 # %%
-st.header("Actual annual energy output per technology")
+st.header("Annual energy output per technology")
 
 data2 = get_df(scenario, "supply")
 df2 = data2.copy()
@@ -88,10 +92,8 @@ df2 = (df2
        .query("carrier == @technology")
        .drop(columns=['carrier'])
        .set_index('country')
-       .rename(columns = lambda x : x + ' [GWh]')
        )
-
-st.write("Energy output by country")
+df2.index.name = "Energy output [GWh]"
 
 fig_bar = px.bar(
     df2,
@@ -106,12 +108,9 @@ fig_bar.update_traces(hovertemplate="%{y:,.1f}")
 fig_bar.update_layout(hovermode="x unified",
                       legend_title_text='Technologies')
 
-col1, col2 = st.columns([0.35, 0.6])
-with col1:
-    st.dataframe(df2.style.format(precision=2, thousands=",", decimal='.'), width=500)
-with col2:
-    st.plotly_chart(fig_bar
-                    , use_container_width=True)
+st.plotly_chart(fig_bar, use_container_width=True)
+
+st.dataframe(df2.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)
 
 # # %%
 # st.header("Focus on EV batteries (BEVs)")

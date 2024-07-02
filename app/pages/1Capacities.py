@@ -12,13 +12,15 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Power production installed capacities")
-st.markdown("The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+st.markdown(
+    "The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_df(scenario):
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "power_capacities.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "power_capacities.csv"),
             header=0,
         )
     )
@@ -30,18 +32,20 @@ df = data.copy()
 
 st.header("Installed capacities per country")
 
-all = ['EU27 + TYNDP']
+all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
-if not ('EU27 + TYNDP' in country):
+if not ('ENTSO-E area' in country):
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 
 df = (
     df.drop(columns=['country'])
     .groupby(['sector'])
     .sum(numeric_only=True)
     .rename(index={"sector": "Technologies"})
-    
 )
+df.index.name = "Capacity [GW]"
 
 fig = px.bar(
     df,
@@ -61,6 +65,12 @@ st.plotly_chart(
     , use_container_width=True
 )
 
+st.dataframe(df
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )
+
 st.divider()
 
 st.header("Split of capacities per country")
@@ -72,9 +82,10 @@ df_bar = (df_bar
           .query("sector == @technology")
           .drop(columns=['sector'])
           .set_index('country')
-          # .T
           .rename_axis("Investment year")
           )
+df_bar.index.name = "Capacity [GW]"
+
 fig_bar = px.bar(
     df_bar,
     title=f"{technology.capitalize()} installed capacities [GW]",
@@ -89,9 +100,7 @@ fig_bar.update_traces(hovertemplate="%{y:,.1f}",
 fig_bar.update_layout(hovermode="x unified",
                       legend_title_text='Technologies')
 
-col1, col2 = st.columns([0.35, 0.6])
-with col1:
-    st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), width=500)
-with col2:
-    st.plotly_chart(fig_bar
+st.plotly_chart(fig_bar
                     , use_container_width=True)
+
+st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)

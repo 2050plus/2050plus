@@ -218,7 +218,7 @@ def get_feature_for_hac(n, buses_i=None, feature=None):
     return feature_data
 
 
-def distribute_clusters(n, n_clusters, focus_weights=None, solver_name="scip"):
+def distribute_clusters(n, n_clusters, focus_weights=None, solver_name="scip", solver_options={}):
     """
     Determine the number of clusters per country.
     """
@@ -267,12 +267,13 @@ def distribute_clusters(n, n_clusters, focus_weights=None, solver_name="scip"):
     m.objective = (clusters * clusters - 2 * clusters * L * n_clusters).sum()
     if solver_name == "gurobi":
         logging.getLogger("gurobipy").propagate = False
+        solver_options["WaitTime"] = 60
     elif solver_name not in ["scip", "cplex", "xpress", "copt", "mosek"]:
         logger.info(
             f"The configured solver `{solver_name}` does not support quadratic objectives. Falling back to `scip`."
         )
         solver_name = "scip"
-    m.solve(solver_name=solver_name)
+    m.solve(solver_name=solver_name, **solver_options)
     return m.solution["n"].to_series().astype(int)
 
 

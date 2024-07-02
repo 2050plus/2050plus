@@ -54,19 +54,31 @@ def add_emission_prices(n, emission_prices={"co2": 0.0}):
     logger.info("Add emission prices")
     for i, ep_ in emission_prices.items():
         ep = ep_.get(int(snakemake.wildcards.planning_horizons), 0)
+        idx_p = snakemake.params.planning_horizons.index(int(snakemake.wildcards.planning_horizons)) - 1
+        planning_horizons_p = snakemake.params.planning_horizons[idx_p] if idx_p >= 0 else None
+        ep_p = ep_.get(planning_horizons_p, 0)
         bus_map = n.buses.index.to_series() == f"{i} atmosphere"
 
         for c in n.iterate_components(['Link']):
             for end in [col[3:] for col in c.df.columns if col[:3] == "bus"]:
-                items = c.df.index[c.df["bus" + str(end)].map(bus_map).fillna(False)]
+                dfi = c.df.loc[c.df.index[(c.df["bus" + str(end)].map(bus_map).fillna(False))]]
+                mask = (dfi.build_year == int(snakemake.wildcards.planning_horizons)) | (dfi.lifetime == np.inf)
+                items_new = dfi[mask].index
+                items_old = dfi[~mask].index
 
-                if len(items) == 0:
+                if len(items_new) == 0 and len(items_old) == 0:
                     continue
 
+                if int(snakemake.params.planning_horizons[0]) == int(snakemake.wildcards.planning_horizons):
+                    items_new = items_new.union(items_old)
+                    items_old = pd.Index([])
+
                 mapping = {'1': ''}
-                c_ep = ep * c.df.loc[items, "efficiency" + mapping.get(end, end)]
-                c.df.loc[items, "marginal_cost"] += c_ep.clip(lower=0)
-                c.pnl["marginal_cost"] += c_ep[c.pnl["marginal_cost"].columns]
+                c_ep = ep * c.df.loc[items_new, "efficiency" + mapping.get(end, end)]
+                c.df.loc[items_new, "marginal_cost"] += c_ep.clip(lower=0)
+
+                c_ep_p = (ep - ep_p) * c.df.loc[items_old, "efficiency" + mapping.get(end, end)]
+                c.df.loc[items_old, "marginal_cost"] += c_ep_p.clip(lower=0)
 
 
 def add_land_use_constraint(n, planning_horizons, config):
@@ -142,7 +154,7 @@ def add_land_use_constraint_perfect(n):
 def _add_land_use_constraint(n):
     # warning: this will miss existing offwind which is not classed AC-DC and has carrier 'offwind'
 
-    for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc"]:
+    for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc", "solar_rooftop"]:
         extendable_i = (n.generators.carrier == carrier) & n.generators.p_nom_extendable
         n.generators.loc[extendable_i, "p_nom_min"] = 0
 
@@ -177,7 +189,7 @@ def _add_land_use_constraint_m(n, planning_horizons, config):
     grouping_years = config["existing_capacities"]["grouping_years_power"]
     current_horizon = snakemake.wildcards.planning_horizons
 
-    for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc"]:
+    for carrier in ["solar", "onwind", "offwind-ac", "offwind-dc", "solar rooftop"]:
         extendable_i = (n.generators.carrier == carrier) & n.generators.p_nom_extendable
         n.generators.loc[extendable_i, "p_nom_min"] = 0
 
@@ -468,49 +480,72 @@ def add_CCL_constraints(n, config):
     for c in n.iterate_components(["Generator", "Link"]):
         p_nom = n.model[f"{c.name}-p_nom"]
         comp = c.df.query("p_nom_extendable").rename_axis(index=f"{c.name}-ext")
-    
+
         # Constraint for technologies aggregation
         # Does not allow cross-component aggregation
         if config["solving"]["agg_p_nom_limits"]["agg_carriers"]:
             renamer = config["solving"]["agg_p_nom_limits"]['agg_carriers']
             comp = comp.replace(renamer)
-        
-        # Deal with bus0 and bus1 for Links
+
+        # Deal with mulitiple buses for Links
+        # Convention is that buses are aggregated to bus1 and are expressed as p1 (output) in agg_p_nom_minmax
+        # /!\ Buses/carriers on which to aggregate given in config / agg_buses 
+        #   must be in line with the values in agg_p_nom_minmax /!\
         if c.name == "Link":
             if config["solving"]["agg_p_nom_limits"]["agg_buses"]:
+                # Get buses used for the groupby/aggregation of p_nom_opt
                 comp_bus = comp.apply(lambda x: x[config["solving"]["agg_p_nom_limits"]["agg_buses"]
                                       .get(x['carrier'], 'bus1')], axis=1)
+                # Get efficiencies used for the correction of p_nom_minmax (if agg_bus != bus0)
+                eff = (
+                    comp
+                    .apply(
+                        lambda x: x["efficiency" + config["solving"]["agg_p_nom_limits"]["agg_buses"]
+                        .get(x['carrier'], 'bus1')[-1].replace('1', '')]
+                        , axis=1)
+                    .replace(0, 1)
+                )
             else:
+                # By default, aggregate on bus1 and take efficiency for bus1
                 comp_bus = comp.bus1
+                eff = c.df.efficiency1
+        # For Generators, only bus is needed
         else:
             comp_bus = comp.bus
-            
+
         # Grouping per country
-        grouper = pd.concat([comp_bus.map(n.buses.country).rename('bus'), comp.carrier], axis=1)
-        lhs = p_nom.groupby(grouper).sum().rename(bus="country")
-    
+        grouper = pd.concat([comp_bus.map(n.buses.country).rename('country'), comp.carrier], axis=1)
+        lhs = p_nom.groupby(grouper).sum()
+
+        # Since the condition is fixed on the model for p_nom, agg_p_nom_minmax has to be corrected
+        # so that min/max values correspond to the configured bus
+        if c.name == "Link":
+            eff = eff.groupby([grouper.country, grouper.carrier, ]).mean()
+            carrier_comp_idx = agg_p_nom_minmax[agg_p_nom_minmax.index.isin(comp.carrier.unique(), level=1)].index
+            agg_p_nom_minmax.loc[carrier_comp_idx] = agg_p_nom_minmax.loc[carrier_comp_idx].div(
+                eff[carrier_comp_idx], axis=0)
+
         if config["solving"]["agg_p_nom_limits"]["include_existing"]:
             comp_cst = c.df.query("~p_nom_extendable").rename_axis(index=f"{c.name}-cst")
             comp_cst = comp_cst[
                 (comp_cst["build_year"] + comp_cst["lifetime"]) >= int(snakemake.wildcards.planning_horizons)]
             if config["solving"]["agg_p_nom_limits"]["agg_carriers"]:
                 comp_cst = comp_cst.replace(renamer)
-                
+
             # Deal with bus0 and bus1 for Links
             if c.name == "Link":
                 if config["solving"]["agg_p_nom_limits"]["agg_buses"]:
                     comp_bus_cst = comp_cst.apply(lambda x: x[config["solving"]["agg_p_nom_limits"]["agg_buses"]
-                                               .get(x['carrier'], 'bus1')], axis=1)
+                                                  .get(x['carrier'], 'bus1')], axis=1)
                 else:
                     comp_bus_cst = comp_cst.bus1
             else:
                 comp_bus_cst = comp_cst.bus
-                
+
             rhs_cst = (
-                pd.concat([comp_bus_cst.map(n.buses.country).rename('bus'), comp_cst[["carrier", "p_nom"]]], axis=1)
-                .groupby(["bus", "carrier"]).sum()
+                pd.concat([comp_bus_cst.map(n.buses.country).rename('country'), comp_cst[["carrier", "p_nom"]]], axis=1)
+                .groupby(["country", "carrier"]).sum()
             )
-            rhs_cst.index = rhs_cst.index.rename({"bus": "country"})
             rhs_min = agg_p_nom_minmax["min"].dropna()
             idx_min = rhs_min.index.join(rhs_cst.index, how="left")
             rhs_min = rhs_min.reindex(idx_min).fillna(0)
@@ -519,13 +554,13 @@ def add_CCL_constraints(n, config):
             minimum = xr.DataArray(rhs).rename(dim_0="group")
         else:
             minimum = xr.DataArray(agg_p_nom_minmax["min"].dropna()).rename(dim_0="group")
-    
+
         index = minimum.indexes["group"].intersection(lhs.indexes["group"])
         if not index.empty:
             n.model.add_constraints(
                 lhs.sel(group=index) >= minimum.loc[index], name=f"agg_p_nom_min-{c.name}"
             )
-    
+
         if config["solving"]["agg_p_nom_limits"]["include_existing"]:
             rhs_max = agg_p_nom_minmax["max"].dropna()
             idx_max = rhs_max.index.join(rhs_cst.index, how="left")
@@ -535,7 +570,7 @@ def add_CCL_constraints(n, config):
             maximum = xr.DataArray(rhs).rename(dim_0="group")
         else:
             maximum = xr.DataArray(agg_p_nom_minmax["max"].dropna()).rename(dim_0="group")
-    
+
         index = maximum.indexes["group"].intersection(lhs.indexes["group"])
         if not index.empty:
             n.model.add_constraints(
