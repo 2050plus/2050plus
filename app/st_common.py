@@ -21,7 +21,8 @@ scenario_dict = {
     },
 }
 CLIP_VALUE_TWH = 1e-1
-COSTS_AREA = {"ENTSO-E area": "tot", "BE": "be", "EU27": "eu27", "FL": "fl"}
+COSTS_AREA = {"ENTSO-E area": "tot", "EU27": "eu27", "BE": "be", "FL": "fl", "DE": "de", "FR": "fr", "GB": "gb",
+              "LU": "lu", "NL": "nl"}
 PROFILES_AREA = ["ENTSO-E area", "BE", "FL"]
 YEARS = ["2030", "2035", "2040", "2045", "2050"]
 
