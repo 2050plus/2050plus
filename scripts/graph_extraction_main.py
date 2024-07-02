@@ -33,14 +33,13 @@ def main():
     # Configuration
     config = load_config(config_file, analysis_path, dir_export, scenario=scenario)
 
-    config["eu27_countries"] = ["AT", "BG", "BX", "CY", "CZ", "DE", "DK", "EE", "GR", "ES", "FI", "FL", "FR", "HR",
-                                "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
-                                "WL"]
+    config["eu27_countries"] = ["AT", "BG", "BE", "CY", "CZ", "DE", "DK", "EE", "GR", "ES", "FI", "FR", "HR",
+                                "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",]
     config["eu27_countries"] = list(set(config["eu27_countries"]).intersection(set(config["countries"])))
     # global variables for which to do work
-    config["countries"] = {"tot": None, "be": ["BX", "FL", "WL"], "fl": ["FL"], "eu27": config["eu27_countries"]}
+    config["countries"] = {"tot": None, "eu27": config["eu27_countries"], "be": ["BE"], "fl": ["FL"],
+                           "fr": ["FR"], "de": ["DE"], "gb": ["GB"], "nl": ["NL"], "lu": ["LU"]}
     config["imp_exp_carriers"] = ["elec", "gas", "H2"]
-    config["carriers_to_plot"] = ["electricity", "heat"]
 
     # Extract data
     n, n_ext = extract_data(config, )

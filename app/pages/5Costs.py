@@ -9,13 +9,13 @@ from st_common import scenario_dict
 from st_common import st_page_config
 from st_common import st_side_bar
 
-AREAS = ["ENTSO-E area", "EU27", "BE"]
-
 st_page_config(layout="wide")
 scenario = st_side_bar()
 
-st.title("Costs")
+FORMATTER = {"total": "Total", "capital": "CAPEX", "marginal": "OPEX", "elec": "Electricity",
+             "gas": "Methane", "H2": "Hydrogen"}
 
+st.title("Costs")
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_data(scenario, path):
@@ -24,6 +24,8 @@ def get_data(scenario, path):
             Path(network_path, scenario_dict[scenario]["path"], path),
             header=0
         )
+        .replace(FORMATTER)
+        .rename(columns=FORMATTER)
     )
     return df
 
@@ -41,18 +43,19 @@ with col1:
                                          ["Total"] + list(df_cost_segments.cost_segment.unique()))
     if selected_cost_segment != "Total":
         df_cost_segments = df_cost_segments.query("cost_segment in @selected_cost_segment")
-    else:
-        df_cost_segments = df_cost_segments.query("cost_segment != 'Net_Imports'")
 
 with col2:
     selected_area = st.selectbox("Choose area :", COSTS_AREA)
     df_cost_segments = df_cost_segments[df_cost_segments.index.str.endswith(COSTS_AREA[selected_area])]
 
+df_cost_segments = df_cost_segments.query("`cost/carrier` != 'Total'")
+if selected_cost_segment != "Net_Imports":
+    df_cost_segments.loc[df_cost_segments["cost_segment"] == "Net_Imports", "cost/carrier"] = "Imports"
 df_cost_segments = df_cost_segments.groupby(by="cost/carrier").sum().drop(columns=["cost_segment"])
+df_cost_segments.loc["Total"] = df_cost_segments.sum()
+df_cost_segments = df_cost_segments.replace(0, None).dropna(how="all").fillna(0)
 
 df_cost_segments = df_cost_segments.div(1e9)
-
-df_cost_segments.loc["Total"] = df_cost_segments.sum()
 
 fig = px.bar(
     df_cost_segments,
@@ -118,7 +121,7 @@ st.plotly_chart(
 
 df_cost_years.index.set_names("Costs per unit segment/type [B€/year]", inplace=True)
 st.dataframe(
-    df_cost_years.assign(total=df_cost_years.sum(axis=1)).style.format(precision=2, thousands=",", decimal='.'),
+    df_cost_years.assign(Total=df_cost_years.sum(axis=1)).style.format(precision=2, thousands=",", decimal='.'),
     use_container_width=True)
 
 # %%
