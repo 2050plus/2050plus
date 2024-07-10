@@ -23,11 +23,7 @@ from scripts.graph_extraction_utils import bus_mapper
 from scripts.graph_extraction_utils import groupby_bus
 from scripts.graph_extraction_utils import remove_prefixes
 from scripts.graph_extraction_utils import renamer_to_country
-from scripts.make_summary import assign_carriers
-from scripts.make_summary import assign_locations
-from scripts.make_summary import calculate_nodal_capacities
 from scripts.make_summary import calculate_nodal_supply_energy
-from scripts.plot_power_network import rename_techs_tyndp
 
 from prepare_sector_network import prepare_costs
 
@@ -150,6 +146,7 @@ def extract_res_potential(n):
     )
     df_potential["units"] = "GW_e"
     return df_potential
+
 
 # %%
 
@@ -463,7 +460,7 @@ def extract_nodal_costs(config, n):
         header=0).dropna()
     df_comp = (
         df_comp.merge(cost_mapping, left_on=["carrier", "type"], right_index=True, how="left")
-        )
+    )
     return df_comp
 
 
@@ -677,6 +674,18 @@ def export_csvs_figures(csvs, outputs, figures):
     return
 
 
+def extract_geo_buses(n):
+    buses = (
+        next(iter(n.values())).buses
+        .query("carrier=='AC'")
+        [["x", "y", "country"]]
+        .rename(columns={"x": "lon", "y": "lat"})
+        .drop(["BE1 0", "BE1 2"])  # Keep only one coordinate set for Belgium
+    )
+    buses = buses.set_index("country")
+    return buses
+
+
 def transform_data(config, n, n_ext, color_shift=None):
     logger.info("Transforming data")
 
@@ -709,6 +718,8 @@ def transform_data(config, n, n_ext, color_shift=None):
                         .set_index(["imports_exports", "countries", "year", "carriers"])
                          for y in [el_imp_exp, H2_imp_exp, gas_imp_exp]])
 
+    buses = extract_geo_buses(n)
+
     # Figures to extract
     n_sto, n_h2 = extract_graphs(config, n, color_shift)
 
@@ -737,7 +748,10 @@ def transform_data(config, n, n_ext, color_shift=None):
         "costs_countries": n_costs,
         "marginal_prices_countries": marginal_prices,
         "marginal_prices_t_countries": marginal_prices_t,
-        "temporal_res_supply": temporal_res_supply
+        "temporal_res_supply": temporal_res_supply,
+
+        # geo
+        "buses": buses,
     }
 
     figures = {
