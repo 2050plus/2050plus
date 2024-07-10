@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 from PIL import Image
 
@@ -41,6 +42,11 @@ def st_page_config(layout=None):
             "About": "# Experimental Climact data explorer for PyPSA app",
         },
     )
+
+
+@st.cache_data
+def get_buses():
+    return pd.read_csv(Path(network_path, scenario_dict["Central"]["path"], "buses.csv"), index_col=0)
 
 
 # @st.cache_data

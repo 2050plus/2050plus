@@ -289,6 +289,10 @@ def load_marginal_prices_t(config):
     return pd.read_csv(Path(config["path"]["csvs"], "marginal_prices_t_countries.csv"))
 
 
+def load_buses(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "buses.csv"))
+
+
 # %% Load main
 def load_data_st(config):
     logger.info(f"Exporting data to streamlit")
@@ -313,6 +317,9 @@ def load_data_st(config):
         "costs_years",
         "marginal_prices",
         "marginal_prices_t",
+
+        # Geo
+        "buses",
     ]
 
     dir = config["path"]["streamlit"]

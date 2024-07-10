@@ -80,5 +80,6 @@ merger-todos.md
 !/data/cost_mapping.csv
 !/data/sector_mapping.csv
 !/data/vlaio/
+!/data/agg_p_nom_minmax_ext.csv
 .idea/
 .DS_Store
