@@ -676,12 +676,14 @@ def export_csvs_figures(csvs, outputs, figures):
 
 def extract_geo_buses(n):
     buses = (
-        next(iter(n.values())).buses
-        .query("carrier=='AC'")
-        [["x", "y", "country"]]
-        .rename(columns={"x": "lon", "y": "lat"})
-        .drop(["BE1 0", "BE1 2"])  # Keep only one coordinate set for Belgium
+        next(iter(n.values())).buses.query("carrier=='AC'")[["x", "y", "country"]]
+        .rename(columns={"x": "lon", "y": "lat"},)
+        .drop(["FL1 0", "DK1 0", "ES3 0", "GB5 0", "IT6 0"])
     )
+    buses.loc["BE1 0", "country"] = "FL"
+    buses.loc["BE1 1", "country"] = "BX"
+    buses.loc["BE1 2", "country"] = "WL"
+    buses.loc["BE"] = pd.concat([buses.loc["BE1 1", ["lat", "lon"]], pd.Series("BE", index=["country"])])
     buses = buses.set_index("country")
     return buses
 
