@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -76,6 +77,42 @@ st.plotly_chart(
     fig
     , use_container_width=True
 )
+
+buses = get_buses()
+df_map = (
+    pd.concat([df_imp_x.T, df_exp_x.T])
+    .groupby("year").sum().T
+    .join(buses)
+    .reset_index()
+    .rename(columns={'index': "country"})
+    .melt(id_vars=["country", "lat", "lon"], value_name="Exchange [GW]", var_name="year")
+)
+df_map["Exchange abs [GW]"] = abs(df_map["Exchange [GW]"])
+df_map["Balance"] = df_map["Exchange [GW]"].apply(lambda x: "Export" if x < 0 else "Import")
+fig_map = px.scatter_mapbox(
+    df_map,
+    lat="lat",
+    lon="lon",
+    size="Exchange abs [GW]",
+    color="Balance",
+    mapbox_style="carto-positron",
+    zoom=4,
+    height=700,
+    hover_name="country",
+    animation_frame="year",
+    title=f"Net balance of imports and exports for {country} for {carrier} [TWh]",
+)
+fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
+fig_map.update_layout(updatemenus=[{"y": 0.07}])
+fig_map.add_scattermapbox(
+    lat=[buses.loc[country, "lat"]],
+    lon=[buses.loc[country, "lon"]],
+    name=country,
+    hovertext=country,
+    hovertemplate='',
+    marker_color="red"
+)
+st.plotly_chart(fig_map, use_container_width=True)
 
 total_imp = (df_imp_x.sum())
 try:
