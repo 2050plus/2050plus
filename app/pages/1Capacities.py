@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -86,11 +87,9 @@ df_bar = (df_bar
           )
 df_bar.index.name = "Capacity [GW]"
 
-buses = pd.read_csv("/tmp/buses.csv", index_col=0)
-
 df_map = (
     df_bar
-    .join(buses)
+    .join(get_buses())
     .reset_index()
     .rename(columns={"Capacity [GW]": "country"})
     .melt(id_vars=["country", "lat", "lon"], value_name="Capacity [GW]", var_name="year")
