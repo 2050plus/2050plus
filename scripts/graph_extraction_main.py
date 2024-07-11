@@ -14,6 +14,7 @@ See also :
 import logging
 from pathlib import Path
 
+
 from scripts.graph_extraction_extract import extract_data
 from scripts.graph_extraction_load_st import load_data_st
 from scripts.graph_extraction_transform import transform_data

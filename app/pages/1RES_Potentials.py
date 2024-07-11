@@ -58,6 +58,7 @@ fig_map = px.scatter_mapbox(
     height=700,
     hover_name="country",
     title=f"Cumulated potentials ({carrier_list}) [GW]",
+    hover_data={"Potential [GW]": ":.2f"}
 )
 st.plotly_chart(fig_map, use_container_width=True)
 

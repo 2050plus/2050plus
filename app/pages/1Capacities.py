@@ -104,7 +104,8 @@ fig_map = px.scatter_mapbox(
     height=700,
     hover_name="country",
     animation_frame="year",
-    title=f"{technology.capitalize()} installed capacities [GW]"
+    title=f"{technology.capitalize()} installed capacities [GW]",
+    hover_data={"Capacity [GW]": ":.2f"}
 )
 fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
 fig_map.update_layout(updatemenus=[{"y": 0.07}])

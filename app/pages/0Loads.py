@@ -73,6 +73,7 @@ fig_map = px.scatter_mapbox(
     hover_name="country",
     animation_frame="year",
     title=f"Cumulated load for {carrier} [TWh]",
+    hover_data={"Load [TWh]": ":.2f"}
 )
 fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
 fig_map.update_layout(updatemenus=[{"y": 0.07}])

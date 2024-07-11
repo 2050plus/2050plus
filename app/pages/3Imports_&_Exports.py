@@ -101,6 +101,7 @@ fig_map = px.scatter_mapbox(
     hover_name="country",
     animation_frame="year",
     title=f"Net balance of imports and exports for {country} for {carrier} [TWh]",
+    hover_data={"Exchange [GW]": ":.2f", "Exchange abs [GW]": None},
 )
 fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
 fig_map.update_layout(updatemenus=[{"y": 0.07}])
