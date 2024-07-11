@@ -94,7 +94,9 @@ fig_map = px.scatter_mapbox(
     lat="lat",
     lon="lon",
     size="Exchange abs [GW]",
-    color="Balance",
+    color="Exchange [GW]",
+    color_continuous_scale="RdYlBu",
+    color_continuous_midpoint=0,
     mapbox_style="carto-positron",
     zoom=4,
     height=700,
@@ -111,7 +113,8 @@ fig_map.add_scattermapbox(
     name=country,
     hovertext=country,
     hovertemplate='',
-    marker_color="red"
+    marker_color="lightgreen",
+    marker_size=10,
 )
 st.plotly_chart(fig_map, use_container_width=True)
 
