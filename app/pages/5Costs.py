@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from st_common import COSTS_AREA
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -16,6 +17,7 @@ FORMATTER = {"total": "Total", "capital": "CAPEX", "marginal": "OPEX", "elec": "
              "gas": "Methane", "H2": "Hydrogen"}
 
 st.title("Costs")
+
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_data(scenario, path):
@@ -34,7 +36,6 @@ def get_data(scenario, path):
 st.header("Cost by unit segment")
 st.markdown("* ENTSO-E area includes all modeled countries, so imports and exports = 0.\n"
             "* A negative value means that the area is exporting and thus making a profit.")
-
 
 df_cost_segments = get_data(scenario, "costs_segments.csv").set_index("config")
 col1, col2 = st.columns([4, 4])
@@ -171,29 +172,67 @@ with col2:
 
 st.subheader("Compare variability through Europe")
 
-df_t = get_data(scenario, "marginal_prices_t.csv")
+df_t_ = get_data(scenario, "marginal_prices_t.csv")
 
 col1, col2, col3 = st.columns([0.2, 0.2, .5])
 with col1:
-    carrier = st.selectbox("Choose areas to compare:", list(df_t.carrier.unique()), index=1)
+    carrier = st.selectbox("Choose areas to compare:", list(df_t_.carrier.unique()), index=1)
 with col2:
-    year = st.selectbox("Choose year to select:", list(df_t.year.unique()))
+    year = st.selectbox("Choose year to select:", list(df_t_.year.unique()))
 with col3:
     countries_to_display = st.multiselect("Choose your carrier:", list(df.countries.unique()),
                                           default=["GB", "FL", "FR", "LU", "DE", "NL"])
 
-df_t = (
-    df_t.query("carrier == @carrier and year==@year and countries in @countries_to_display")
+df_t_ = (
+    df_t_.query("carrier == @carrier and year==@year")
     .drop(columns=["carrier", "year"])
     .set_index(["countries"])
-    .rename_axis(columns=["marginal price"])
+    .rename_axis(columns=["Local marginal price [€/MWh]"])
     .T
 )
+df_t_.index = pd.DatetimeIndex(df_t_.index)
+df_t = df_t_[countries_to_display]
 
 fig = px.box(df_t)
 fig.update_traces(hovertemplate="%{y:,.0f}",
                   line=dict(width=1))
-fig.update_yaxes(title_text=f"Marginal price for {carrier} [€/MWh]")
+fig.update_yaxes(title_text=f"Local marginal price for {carrier} [€/MWh]")
 fig.update_xaxes(title_text="Areas")
 
 st.plotly_chart(fig)
+
+df_map = (
+    df_t_
+    .resample("D").mean()
+    .rename_axis(index="snapshot")
+    .melt(value_name="LMP [€/MWh]", var_name="country", ignore_index=False)
+    .merge(get_buses(), left_on="country", right_index=True)
+)
+df_map.index = pd.DatetimeIndex(df_map.index).strftime(f"{year}-%m-%d")
+fig_map = px.scatter_mapbox(
+    df_map.reset_index(),
+    lat="lat",
+    lon="lon",
+    size="LMP [€/MWh]",
+    color="LMP [€/MWh]",
+    color_continuous_scale="bluered",
+    range_color=[0, 100],
+    mapbox_style="carto-positron",
+    zoom=2.6,
+    height=700,
+    hover_name="country",
+    animation_frame="snapshot",
+    title=f"Daily average local marginal price for {carrier} in {year} [€/MWh]",
+    hover_data={"LMP [€/MWh]": ":.2f"}
+)
+fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07,}])
+fig_map.update_layout(updatemenus=[{
+    "y": 0.07,
+    "buttons": [{'args': [None, {'frame': {'duration': 100, 'redraw': True}, 'mode': 'immediate', 'fromcurrent': True,
+                                 'transition': {'duration': 100, 'easing': 'linear'}}], 'label': '&#9654;',
+                 'method': 'animate'},
+                {'args': [[None], {'frame': {'duration': 0, 'redraw': True}, 'mode': 'immediate', 'fromcurrent': True,
+                                   'transition': {'duration': 0, 'easing': 'linear'}}], 'label': '&#9724;',
+                 'method': 'animate'}],
+}])
+st.plotly_chart(fig_map, use_container_width=True)
