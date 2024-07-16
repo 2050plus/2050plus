@@ -13,7 +13,7 @@ SPDX-License-Identifier: CC-BY-4.0
 [![REUSE status](https://api.reuse.software/badge/github.com/pypsa/pypsa-eur)](https://api.reuse.software/info/github.com/pypsa/pypsa-eur)
 [![Stack Exchange questions](https://img.shields.io/stackexchange/stackoverflow/t/pypsa)](https://stackoverflow.com/questions/tagged/pypsa)
 
-# [Fork] PyPSA-Eur: A Sector-Coupled Open Optimisation Model of the European Energy System
+# [Fork] PyPSA-Eur: A Sector-Coupled Open Optimisation Model of the European Energy System (configured for Flanders)
 
 Original repository : [https://github.com/PyPSA/pypsa-eur](https://github.com/PyPSA/pypsa-eur)
 
