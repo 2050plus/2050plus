@@ -145,10 +145,12 @@ def define_spatial(nodes, options):
 
     if options["regional_methanol_demand"]:
         spatial.methanol.demand_locations = nodes
+        spatial.methanol.industry = nodes + " industry methanol"
         spatial.methanol.shipping = nodes + " shipping methanol"
     else:
         spatial.methanol.demand_locations = ["EU"]
         spatial.methanol.shipping = ["EU shipping methanol"]
+        spatial.methanol.industry = ["EU industry methanol"]
 
     # oil
     spatial.oil = SimpleNamespace()
@@ -994,6 +996,16 @@ def insert_electricity_distribution_grid(n, costs):
         capital_cost=costs.at["electricity distribution grid", "fixed"] * cost_factor,
     )
 
+    # deduct distribution losses from electricity demand as these are included in total load
+    # https://nbviewer.org/github/Open-Power-System-Data/datapackage_timeseries/blob/2020-10-06/main.ipynb
+    if (
+        efficiency := options["transmission_efficiency"]
+        .get("electricity distribution grid", {})
+        .get("efficiency_static")
+    ):
+        logger.info(f"Deducting distribution losses from electricity demand: {100*(1-efficiency)}%")
+        n.loads_t.p_set.loc[:, n.loads.carrier == "electricity"] *= efficiency
+
     # this catches regular electricity load and "industry electricity" and
     # "agriculture machinery electric" and "agriculture electricity"
     loads = n.loads.index[n.loads.carrier.str.contains("electric")]
@@ -1025,9 +1037,9 @@ def insert_electricity_distribution_grid(n, costs):
     else:
         pop_solar = pop_layout.total.rename(index=lambda x: x + " solar")
 
-    # add max solar rooftop potential assuming 0.1 kW/m2 and 10 m2/person,
-    # i.e. 1 kW/person (population data is in thousands of people) so we get MW
-    potential = 0.1 * 10 * pop_solar
+    # add max solar rooftop potential assuming 0.1 kW/m2 and 20 m2/person,
+    # i.e. 2 kW/person (population data is in thousands of people) so we get MW
+    potential = 0.1 * 20 * pop_solar
 
     n.madd(
         "Generator",
@@ -1176,7 +1188,7 @@ def add_storage_and_grids(n, costs):
             efficiency=costs.at["OCGT_H2", "efficiency"],
             capital_cost=costs.at["OCGT_H2", "fixed"]
             * costs.at["OCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["OCGT_H2", "VOM"],
+            marginal_cost=costs.at["OCGT_H2", "VOM"]*costs.at["OCGT_H2", "efficiency"],
             lifetime=costs.at["OCGT_H2", "lifetime"],
         )
         
@@ -1190,7 +1202,7 @@ def add_storage_and_grids(n, costs):
             efficiency=costs.at["CCGT_H2", "efficiency"],
             capital_cost=costs.at["CCGT_H2", "fixed"]
             * costs.at["CCGT_H2", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["CCGT_H2", "VOM"],
+            marginal_cost=costs.at["CCGT_H2", "VOM"]*costs.at["CCGT_H2", "efficiency"],
             lifetime=costs.at["CCGT_H2", "lifetime"],
         )
         
@@ -1213,7 +1225,7 @@ def add_storage_and_grids(n, costs):
             efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
             capital_cost=costs.at["OCGT_CC", "fixed"]
             * costs.at["OCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["OCGT_CC", "VOM"],
+            marginal_cost=costs.at["OCGT_CC", "VOM"]*costs.at["OCGT_CC", "efficiency"],
             lifetime=costs.at["OCGT_CC", "lifetime"],
         )
         n.madd(
@@ -1230,7 +1242,7 @@ def add_storage_and_grids(n, costs):
             efficiency3=costs.at['gas','CO2 intensity']* (options["cc_fraction"]),
             capital_cost=costs.at["CCGT_CC", "fixed"]
             * costs.at["CCGT_CC", "efficiency"],  # NB: fixed cost is per MWel
-            marginal_cost=costs.at["CCGT_CC", "VOM"],
+            marginal_cost=costs.at["CCGT_CC", "VOM"]*costs.at["CCGT_CC", "efficiency"],
             lifetime=costs.at["CCGT_CC", "lifetime"],
         )
 
@@ -1344,6 +1356,20 @@ def add_storage_and_grids(n, costs):
         p_nom = gas_input_nodes[input_types].sum(axis=1).rename(lambda x: x + " gas")
         n.generators.loc[gas_i, "p_nom_extendable"] = False
         n.generators.loc[gas_i, "p_nom"] = p_nom
+
+        if options.get("H2_imports", True):
+            logger.info("Add hydrogen imports at LNG terminal locations.")
+            
+            h2_import_nodes = gas_input_nodes.query("lng>0").index
+            h2_buses = spatial.h2.locations.intersection(h2_import_nodes) + ' H2'
+            n.madd(
+                "Generator",
+                h2_import_nodes + " H2 import",
+                bus=h2_buses,
+                p_nom_extendable=True,
+                carrier="H2",
+                marginal_cost=costs.at["hydrogen", "fuel"],
+            )
 
         # add existing gas storage capacity
         gas_i = n.stores.carrier == "gas"
@@ -1514,14 +1540,14 @@ def add_storage_and_grids(n, costs):
             bus1=spatial.nodes,
             bus2="co2 atmosphere",
             bus3=spatial.co2.nodes,
-            marginal_cost=costs.at["coal", "efficiency"]
+            marginal_cost=costs.at["coal_cc", "efficiency"]
             * costs.at["coal", "VOM"],  # NB: VOM is per MWel
-            capital_cost=costs.at["coal", "efficiency"] * costs.at["coal", "fixed"]
+            capital_cost=costs.at["coal_cc", "efficiency"] * costs.at["coal", "fixed"]
             + costs.at["biomass CHP capture", "fixed"]
             * costs.at["coal", "CO2 intensity"],  # NB: fixed cost is per MWel
             p_nom_extendable=True,
             carrier="coal",
-            efficiency=costs.at["coal", "efficiency"],
+            efficiency=costs.at["coal_cc", "efficiency"],
             efficiency2=costs.at["coal", "CO2 intensity"]
             * (1 - costs.at["biomass CHP capture", "capture_rate"]),
             efficiency3=costs.at["coal", "CO2 intensity"]
@@ -2730,57 +2756,97 @@ def add_industry(n, costs):
             p_set=p_set_hydrogen,
         )
 
+    n.madd(
+        "Bus",
+        spatial.methanol.nodes,
+        carrier="methanol",
+        location=spatial.methanol.locations,
+        unit="MWh_LHV",
+    )
+
+    n.madd(
+        "Store",
+        spatial.methanol.nodes,
+        suffix=" Store",
+        bus=spatial.methanol.nodes,
+        e_nom_extendable=True,
+        e_cyclic=True,
+        carrier="methanol",
+    )
+
+    n.madd(
+        "Bus",
+        spatial.methanol.industry,
+        carrier="industry methanol",
+        location=spatial.methanol.demand_locations,
+        unit="MWh_LHV",
+    )
+
+    p_set_methanol = (
+            industrial_demand["methanol"]
+            .rename(lambda x: x + " industry methanol")
+            / nhours
+    )
+
+    if not options["regional_methanol_demand"]:
+        p_set_methanol = p_set_methanol.sum()
+
+    n.madd(
+        "Load",
+        spatial.methanol.industry,
+        bus=spatial.methanol.industry,
+        carrier="industry methanol",
+        p_set=p_set_methanol,
+    )
+
+    n.madd(
+        "Link",
+        spatial.methanol.industry,
+        bus0=spatial.methanol.nodes,
+        bus1=spatial.methanol.industry,
+        bus2="co2 atmosphere",
+        carrier="industry methanol",
+        p_nom_extendable=True,
+        efficiency2=1
+                    / options[
+                        "MWh_MeOH_per_tCO2"
+                    ],
+        # CO2 intensity methanol based on stoichiometric calculation with 22.7 GJ/t methanol (32 g/mol), CO2 (44 g/mol), 277.78 MWh/TJ = 0.218 t/MWh
+    )
+
+    n.madd(
+        "Link",
+        spatial.h2.locations + " methanolisation",
+        bus0=spatial.h2.nodes,
+        bus1=spatial.methanol.nodes,
+        bus2=nodes,
+        bus3=spatial.co2.nodes,
+        carrier="methanolisation",
+        p_nom_extendable=True,
+        p_min_pu=options.get("min_part_load_methanolisation", 0),
+        capital_cost=costs.at["methanolisation", "fixed"]
+        * options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
+        marginal_cost=options["MWh_MeOH_per_MWh_H2"]
+        * costs.at["methanolisation", "VOM"],
+        lifetime=costs.at["methanolisation", "lifetime"],
+        efficiency=options["MWh_MeOH_per_MWh_H2"],
+        efficiency2=-options["MWh_MeOH_per_MWh_H2"] / options["MWh_MeOH_per_MWh_e"],
+        efficiency3=-options["MWh_MeOH_per_MWh_H2"] / options["MWh_MeOH_per_tCO2"],
+    )
+
     if shipping_methanol_share:
-        n.madd(
-            "Bus",
-            spatial.methanol.nodes,
-            carrier="methanol",
-            location=spatial.methanol.locations,
-            unit="MWh_LHV",
-        )
-
-        n.madd(
-            "Store",
-            spatial.methanol.nodes,
-            suffix=" Store",
-            bus=spatial.methanol.nodes,
-            e_nom_extendable=True,
-            e_cyclic=True,
-            carrier="methanol",
-        )
-
-        n.madd(
-            "Link",
-            spatial.h2.locations + " methanolisation",
-            bus0=spatial.h2.nodes,
-            bus1=spatial.methanol.nodes,
-            bus2=nodes,
-            bus3=spatial.co2.nodes,
-            carrier="methanolisation",
-            p_nom_extendable=True,
-            p_min_pu=options.get("min_part_load_methanolisation", 0),
-            capital_cost=costs.at["methanolisation", "fixed"]
-            * options["MWh_MeOH_per_MWh_H2"],  # EUR/MW_H2/a
-            marginal_cost=options["MWh_MeOH_per_MWh_H2"]
-            * costs.at["methanolisation", "VOM"],
-            lifetime=costs.at["methanolisation", "lifetime"],
-            efficiency=options["MWh_MeOH_per_MWh_H2"],
-            efficiency2=-options["MWh_MeOH_per_MWh_H2"] / options["MWh_MeOH_per_MWh_e"],
-            efficiency3=-options["MWh_MeOH_per_MWh_H2"] / options["MWh_MeOH_per_tCO2"],
-        )
-
         efficiency = (
             options["shipping_oil_efficiency"] / options["shipping_methanol_efficiency"]
         )
 
-        p_set_methanol = (
+        p_set_methanol_shipping = (
             shipping_methanol_share
             * p_set.rename(lambda x: x + " shipping methanol")
             * efficiency
         )
 
         if not options["regional_methanol_demand"]:
-            p_set_methanol = p_set_methanol.sum()
+            p_set_methanol_shipping = p_set_methanol_shipping.sum()
 
         n.madd(
             "Bus",
@@ -2795,7 +2861,7 @@ def add_industry(n, costs):
             spatial.methanol.shipping,
             bus=spatial.methanol.shipping,
             carrier="shipping methanol",
-            p_set=p_set_methanol,
+            p_set=p_set_methanol_shipping,
         )
 
         n.madd(
@@ -3130,14 +3196,7 @@ def add_industry(n, costs):
             p_set=p_set,
         )
 
-    primary_steel = get(
-        snakemake.config["industry"]["St_primary_fraction"], investment_year
-    )
-    dri_h2_steel = get(snakemake.config["industry"]["DRI_H2_fraction"], investment_year)
-    dri_ch4_steel = get(snakemake.config["industry"]["DRI_CH4_fraction"], investment_year)
-    bof_steel = primary_steel - dri_h2_steel - dri_ch4_steel
-
-    if bof_steel > 0:
+    if (industrial_demand["coke"].sum() + industrial_demand["coal"].sum()) != 0:
         add_carrier_buses(n, "coal")
 
         mwh_coal_per_mwh_coke = 1.366  # from eurostat energy balance

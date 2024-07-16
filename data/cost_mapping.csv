@@ -26,6 +26,7 @@ Fischer-Tropsch,links,Energy production
 H2 Electrolysis,links,Energy production
 H2 Fuel Cell,links,Energy production
 Haber-Bosch,links,Energy production
+H2,generators,Energy production
 OCGT,links,Energy production
 SMR,links,Energy production
 SMR CC,links,Energy production
@@ -49,6 +50,10 @@ nuclear (SMR),links,Energy production
 oil,links,Energy production
 process emissions,links,Energy production
 process emissions CC,links,Energy production
+CCGT CC,links,Energy production
+OCGT CC,links,Energy production
+CCGT H2,links,Energy production
+OCGT H2,links,Energy production
 residential rural biomass boiler,links,Energy production
 residential rural gas boiler,links,Energy production
 residential rural ground heat pump,links,Energy production
@@ -162,4 +167,6 @@ allam,links,Energy production
 biogas to gas CC,links,Energy production
 co2 sequestered,links,Energy production
 Li ion,stores,Storage
-gas distribution grid,links,Distribution
+rural gas boiler gas distribution,links,Distribution
+urban decentral gas boiler gas distribution,links,Distribution
+industry methanol,links,Energy production

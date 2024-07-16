@@ -4,6 +4,37 @@
 # SPDX-License-Identifier: MIT
 """
 Build industrial energy demand per model region.
+
+Inputs
+------
+
+- ``resources/industrial_energy_demand_today_elec_s{simpl}_{clusters}.csv``
+- ``resources/industry_sector_ratios_{planning_horizons}.csv``
+- ``resources/industrial_production_elec_s{simpl}_{clusters}_{planning_horizons}.csv``
+
+Outputs
+-------
+
+- ``resources/industrial_energy_demand_elec_s{simpl}_{clusters}_{planning_horizons}.csv``
+
+Description
+-------
+This rule aggregates the energy demand of the industrial sectors per model region.
+For each bus, the following carriers are considered:
+- electricity
+- coal
+- coke
+- solid biomass
+- methane
+- hydrogen
+- low-temperature heat
+- naphtha
+- ammonia
+- methanol
+- process emission
+- process emission from feedstock
+
+which can later be used as values for the industry load.
 """
 
 import pandas as pd
@@ -46,6 +77,7 @@ if __name__ == "__main__":
         .T.groupby(level=0)
         .sum()
     )
+    nodal_df_full = nodal_sector_ratios.multiply(nodal_production_stacked).T
 
     rename_sectors = {
         "elec": "electricity",
@@ -53,10 +85,27 @@ if __name__ == "__main__":
         "heat": "low-temperature heat",
     }
     nodal_df.rename(columns=rename_sectors, inplace=True)
+    nodal_df_full.rename(columns=rename_sectors, inplace=True)
 
     nodal_df["current electricity"] = nodal_today["electricity"]
+    nodal_df_full = (
+        pd.concat([
+            nodal_df_full,
+            (
+                nodal_today
+                .assign(industry="all")
+                .set_index("industry", append=True)
+                .rename(columns={"electricity": "current electricity"})
+                ["current electricity"]
+            )
+        ])
+        .fillna(0)
+    )
 
     nodal_df.index.name = "TWh/a (MtCO2/a)"
+    nodal_df_full.index.names = ["TWh/a (MtCO2/a)", "industry"]
 
     fn = snakemake.output.industrial_energy_demand_per_node
     nodal_df.to_csv(fn, float_format="%.2f")
+    fn = snakemake.output.industrial_energy_demand_per_node_ind
+    nodal_df_full.to_csv(fn, float_format="%.2f")

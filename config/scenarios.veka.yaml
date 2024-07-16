@@ -11,31 +11,41 @@
 #   electricity:
 #       renewable_carriers: [wind, solar] # override the list of renewable carriers
 
+# =============
+# | Scenarios |
+# =============
+
 central: {}
 
 electrification:
   costs:
     costs_dir: data/costs/electrification
   sector:
-    land_transport_fuel_cell_share:
+    land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
         2030: 0
+        2035: 0
         2040: 0
+        2045: 0
         2050: 0
-    land_transport_electric_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
-        2020: 0.01
-        2030: 0.16
-        2040: 0.36
-        2050: 0.46
-    land_transport_ice_share: #total demand -0% in 2030, -19% in 2040, -27% in 2050
-        2020: 0.99
-        2030: 0.84
-        2040: 0.45
-        2050: 0.27
+    land_transport_electric_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
+        2020: 0.003
+        2030: 0.220
+        2035: 0.411
+        2040: 0.602
+        2045: 0.697
+        2050: 0.792
+    land_transport_ice_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
+        2020: 0.997
+        2030: 0.780
+        2035: 0.589
+        2040: 0.398
+        2045: 0.303
+        2050: 0.208
   industry:
     St_primary_fraction:
-        2020: 0.6
-        2025: 0.6
+        2020: 0.7
+        2025: 0.7
         2030: 0.5
         2035: 0.3
         2040: 0.3
@@ -57,10 +67,428 @@ electrification:
         2040: 0
         2045: 0
         2050: 0
-molecule:
+    HVC_NSC_fraction:
+      2020: 1.00
+      2025: 0.97
+      2030: 0.93
+      2035: 0.90
+      2040: 0.87
+      2045: 0.83
+      2050: 0.80
+    HVC_NSC_CC_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.00
+      2040: 0.00
+      2045: 0.00
+      2050: 0.00
+    HVC_MTO_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.00
+      2040: 0.00
+      2045: 0.00
+      2050: 0.00
+    HVC_mechanical_recycling_fraction:
+      2020: 0.00
+      2025: 0.03
+      2030: 0.06
+      2035: 0.09
+      2040: 0.11
+      2045: 0.14
+      2050: 0.16
+    HVC_chemical_recycling_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.01
+      2035: 0.01
+      2040: 0.02
+      2045: 0.03
+      2050: 0.04
+
+molecules:
   costs:
-    costs_dir: data/costs/molecule
+    costs_dir: data/costs/molecules
+  sector:
+    land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0
+        2030: 0.020
+        2035: 0.096
+        2040: 0.173
+        2045: 0.229
+        2050: 0.286
+    land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.003
+        2030: 0.206
+        2035: 0.326
+        2040: 0.445
+        2045: 0.488
+        2050: 0.531
+    land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.997
+        2030: 0.774
+        2035: 0.578
+        2040: 0.382
+        2045: 0.283
+        2050: 0.183
+  industry:
+    St_primary_fraction:
+        2020: 0.7
+        2025: 0.7
+        2030: 0.7
+        2035: 0.7
+        2040: 0.7
+        2045: 0.7
+        2050: 0.7
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.01
+        2035: 0.05
+        2040: 0.2
+        2045: 0.525
+        2050: 1
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.04
+        2035: 0.15
+        2040: 0.2
+        2045: 0.175
+        2050: 0
+    HVC_NSC_fraction:
+      2020: 1.00
+      2025: 0.96
+      2030: 0.871
+      2035: 0.62
+      2040: 0.396
+      2045: 0.19
+      2050: 0.00
+    HVC_NSC_CC_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.046
+      2035: 0.08
+      2040: 0.131
+      2045: 0.18
+      2050: 0.225
+    HVC_MTO_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.18
+      2040: 0.307
+      2045: 0.42
+      2050: 0.525
+    HVC_mechanical_recycling_fraction:
+      2020: 0.00
+      2025: 0.04
+      2030: 0.064
+      2035: 0.08
+      2040: 0.097
+      2045: 0.11
+      2050: 0.125
+    HVC_chemical_recycling_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.019
+      2035: 0.04
+      2040: 0.069
+      2045: 0.10
+      2050: 0.125
 
 lsc:
+  renewable:
+    onwind:
+        capacity_per_sqkm: 2.1
   costs:
     costs_dir: data/costs/lsc
+  sector:
+    land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0
+        2030: 0.020
+        2035: 0.096
+        2040: 0.173
+        2045: 0.229
+        2050: 0.286
+    land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.003
+        2030: 0.206
+        2035: 0.326
+        2040: 0.445
+        2045: 0.488
+        2050: 0.531
+    land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.997
+        2030: 0.774
+        2035: 0.578
+        2040: 0.382
+        2045: 0.283
+        2050: 0.183
+  industry:
+    St_primary_fraction:
+        2020: 0.7
+        2025: 0.7
+        2030: 0.7
+        2035: 0.7
+        2040: 0.7
+        2045: 0.7
+        2050: 0.7
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0
+        2035: 0
+        2040: 0
+        2045: 0
+        2050: 0
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0
+        2035: 0
+        2040: 0
+        2045: 0
+        2050: 0
+    HVC_NSC_fraction:
+      2020: 1.00
+      2025: 0.975
+      2030: 0.90
+      2035: 0.659
+      2040: 0.43
+      2045: 0.21
+      2050: 0.00
+    HVC_NSC_CC_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.05
+      2035: 0.266
+      2040: 0.47
+      2045: 0.67
+      2050: 0.85
+    HVC_MTO_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.00
+      2040: 0.00
+      2045: 0.00
+      2050: 0.00
+    HVC_mechanical_recycling_fraction:
+      2020: 0.00
+      2025: 0.025
+      2030: 0.05
+      2035: 0.07
+      2040: 0.09
+      2045: 0.11
+      2050: 0.135
+    HVC_chemical_recycling_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.005
+      2040: 0.01
+      2045: 0.01
+      2050: 0.015
+
+# =================
+# | Sensitivities |
+# =================
+
+pure_opt:  # based on central scenario defined above
+  solving:
+    constraints:
+      CCL: false
+
+mol_import:  # based on molecules scenario defined above
+  costs:
+    costs_dir: data/costs/mol_import
+  sector:
+    land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0
+        2030: 0.020
+        2035: 0.096
+        2040: 0.173
+        2045: 0.229
+        2050: 0.286
+    land_transport_electric_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.003
+        2030: 0.206
+        2035: 0.326
+        2040: 0.445
+        2045: 0.488
+        2050: 0.531
+    land_transport_ice_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
+        2020: 0.997
+        2030: 0.774
+        2035: 0.578
+        2040: 0.382
+        2045: 0.283
+        2050: 0.183
+  industry:
+    St_primary_fraction:
+        2020: 0.7
+        2025: 0.7
+        2030: 0.7
+        2035: 0.7
+        2040: 0.7
+        2045: 0.7
+        2050: 0.7
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.01
+        2035: 0.05
+        2040: 0.2
+        2045: 0.525
+        2050: 1
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.04
+        2035: 0.15
+        2040: 0.2
+        2045: 0.175
+        2050: 0
+    HVC_NSC_fraction:
+      2020: 1.00
+      2025: 0.96
+      2030: 0.871
+      2035: 0.62
+      2040: 0.396
+      2045: 0.19
+      2050: 0.00
+    HVC_NSC_CC_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.046
+      2035: 0.08
+      2040: 0.131
+      2045: 0.18
+      2050: 0.225
+    HVC_MTO_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.18
+      2040: 0.307
+      2045: 0.42
+      2050: 0.525
+    HVC_mechanical_recycling_fraction:
+      2020: 0.00
+      2025: 0.04
+      2030: 0.064
+      2035: 0.08
+      2040: 0.097
+      2045: 0.11
+      2050: 0.125
+    HVC_chemical_recycling_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.019
+      2035: 0.04
+      2040: 0.069
+      2045: 0.10
+      2050: 0.125
+
+nuc_extension:  # based on central scenario defined above
+  solving:
+    agg_p_nom_limits:
+      file: data/agg_p_nom_minmax_ext.csv
+
+nuc_cost:  # based on central scenario defined above
+  costs:
+    costs_dir: data/costs/nuc_cost
+
+storage_cost:  # based on electrification scenario defined above
+  costs:
+    costs_dir: data/costs/storage_cost
+  sector:
+    land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
+        2020: 0
+        2030: 0
+        2035: 0
+        2040: 0
+        2045: 0
+        2050: 0
+    land_transport_electric_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
+        2020: 0.003
+        2030: 0.220
+        2035: 0.411
+        2040: 0.602
+        2045: 0.697
+        2050: 0.792
+    land_transport_ice_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
+        2020: 0.997
+        2030: 0.780
+        2035: 0.589
+        2040: 0.398
+        2045: 0.303
+        2050: 0.208
+  industry:
+    St_primary_fraction:
+        2020: 0.7
+        2025: 0.7
+        2030: 0.5
+        2035: 0.3
+        2040: 0.3
+        2045: 0.3
+        2050: 0.3
+    DRI_H2_fraction:
+        2020: 0
+        2025: 0
+        2030: 0.05
+        2035: 0.25
+        2040: 0.5
+        2045: 0.75
+        2050: 1
+    DRI_CH4_fraction:
+        2020: 0
+        2025: 0
+        2030: 0
+        2035: 0
+        2040: 0
+        2045: 0
+        2050: 0
+    HVC_NSC_fraction:
+      2020: 1.00
+      2025: 0.97
+      2030: 0.93
+      2035: 0.90
+      2040: 0.87
+      2045: 0.83
+      2050: 0.80
+    HVC_NSC_CC_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.00
+      2040: 0.00
+      2045: 0.00
+      2050: 0.00
+    HVC_MTO_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.00
+      2035: 0.00
+      2040: 0.00
+      2045: 0.00
+      2050: 0.00
+    HVC_mechanical_recycling_fraction:
+      2020: 0.00
+      2025: 0.03
+      2030: 0.06
+      2035: 0.09
+      2040: 0.11
+      2045: 0.14
+      2050: 0.16
+    HVC_chemical_recycling_fraction:
+      2020: 0.00
+      2025: 0.00
+      2030: 0.01
+      2035: 0.01
+      2040: 0.02
+      2045: 0.03
+      2050: 0.04

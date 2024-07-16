@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -12,13 +13,15 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Power production installed capacities")
-st.markdown("The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+st.markdown(
+    "The power production capacities installed per country, technologies and year. Power production units are units able to supply electricity.")
+
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_df(scenario):
     return (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "power_capacities.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "power_capacities.csv"),
             header=0,
         )
     )
@@ -30,18 +33,20 @@ df = data.copy()
 
 st.header("Installed capacities per country")
 
-all = ['EU27 + TYNDP']
+all = ['ENTSO-E area']
 country = st.selectbox('Choose your country:', all + list(df.country.unique()))
-if not ('EU27 + TYNDP' in country):
+if not ('ENTSO-E area' in country):
     df = df.query("country in @country")
+else:
+    df = df.query("country != 'FL'")
 
 df = (
     df.drop(columns=['country'])
     .groupby(['sector'])
     .sum(numeric_only=True)
     .rename(index={"sector": "Technologies"})
-    
 )
+df.index.name = "Capacity [GW]"
 
 fig = px.bar(
     df,
@@ -61,6 +66,12 @@ st.plotly_chart(
     , use_container_width=True
 )
 
+st.dataframe(df
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True
+             )
+
 st.divider()
 
 st.header("Split of capacities per country")
@@ -72,26 +83,45 @@ df_bar = (df_bar
           .query("sector == @technology")
           .drop(columns=['sector'])
           .set_index('country')
-          # .T
           .rename_axis("Investment year")
           )
+df_bar.index.name = "Capacity [GW]"
+
+df_map = (
+    df_bar
+    .join(get_buses())
+    .reset_index()
+    .rename(columns={"Capacity [GW]": "country"})
+    .melt(id_vars=["country", "lat", "lon"], value_name="Capacity [GW]", var_name="year")
+)
+fig_map = px.scatter_mapbox(
+    df_map,
+    lat="lat",
+    lon="lon",
+    size="Capacity [GW]",
+    mapbox_style="carto-positron",
+    zoom=2.6,
+    height=700,
+    hover_name="country",
+    animation_frame="year",
+    title=f"{technology.capitalize()} installed capacities [GW]",
+    hover_data={"Capacity [GW]": ":.2f"}
+)
+fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
+fig_map.update_layout(updatemenus=[{"y": 0.07}])
+st.plotly_chart(fig_map, use_container_width=True)
+
 fig_bar = px.bar(
     df_bar,
-    title=f"{technology.capitalize()} installed capacities [GW]",
     barmode="group",
-
 )
 
 fig_bar.update_yaxes(title_text='Installed capacities [GW]')
 fig_bar.update_xaxes(title_text='Countries')
-fig_bar.update_traces(hovertemplate="%{y:,.1f}",
-                      )
+fig_bar.update_traces(hovertemplate="%{y:,.1f}", )
 fig_bar.update_layout(hovermode="x unified",
                       legend_title_text='Technologies')
+st.plotly_chart(fig_bar
+                , use_container_width=True)
 
-col1, col2 = st.columns([0.35, 0.6])
-with col1:
-    st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), width=500)
-with col2:
-    st.plotly_chart(fig_bar
-                    , use_container_width=True)
+st.dataframe(df_bar.style.format(precision=2, thousands=",", decimal='.'), use_container_width=True)

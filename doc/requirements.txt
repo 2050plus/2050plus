@@ -12,7 +12,7 @@ pypsa
 powerplantmatching>=0.5.5
 atlite>=0.2.9
 dask[distributed]
-matplotlib>3.5.1,<3.6
+#matplotlib>3.5.1,<3.6
 tabula-py
 
 # cartopy

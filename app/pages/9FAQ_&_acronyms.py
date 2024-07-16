@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import streamlit as st
-from st_common import network_path
-from st_common import scenario_dict
 from st_common import st_page_config
 from st_common import st_side_bar
 
@@ -83,7 +81,7 @@ with st.expander("**Description of technologies**"):
 with st.expander("**Description of carriers**"):
     carriers = {
         "centralized heat": "Heat supplied by large-scale district heating networks in urban areas with dense heat"
-                     "population",
+                            "population",
         "decentralized heat": "Heat supplied to buildings not using district heating",
         "electricity": "Electricity",
         "service rural heat": "Heat supplied to services buildings in rural areas with low population density."
@@ -107,40 +105,49 @@ with st.expander("**Description of carriers**"):
     carriers = {k.capitalize(): v for k, v in carriers.items()}
     for key, value in sorted(carriers.items()):
         st.write(f"**{key}** {value}")
-        
-#%%    
-        
+
+# %%
+
 with st.expander("**Description of energy assets cost segments**"):
     carriers = {
-        "Storage" : ["hydrogen storage underground", 'hydrogen storage overground', "Pumped Hydro Storage", "hydro dams", "gas stores",
-                     "CO2 stores", "coal stores", "lignite stores", "methanol stores", "oil stores", "(de)central water tank stores", "(home) batteries",
-                     "ammonia stores", "uranium stores"], 
-        "Transmission" : ["AC lines", "DC lines", "new hydrogen pipelines", "retrofitted hydrogen pipelines", "gas pipelines", "new gas pipelines", "CO2 pipelines", "solid biomass transport cost"],
-        "Distribution" : ['electricity distribution grid', 'gas distribution grid'],
-        "Energy production": ["offshore wind AC connected", "offshore wind DC connected", "onshore wind", "utility-scale solar PV", "rooftop solar PV",
-                              "(de)central solar thermal", "run-of-the-river", "CCGT", "CCGT with CC", "hydrogen CCGT", "OCGT", "OCGT with CC", "hydrogen OCGT",
-                              "DAC", "fischer-Tropsch", "electrolysis", "fuel cell","Haber-Bosch", "Steam Methane Reforming", "Steam Methane Reforming with CC", "methanation", "ammonia cracker", "(home) battery charger/discharger",
-                              "biogas purification", "biogas purification with CC",  "oil synthesis from solid biomass", "gas synthetis from solid biomass", 
-                              "methanolisation", "oil powerplant", "coal powerplant", 'lignite powerplant', "nuclear", "nuclear SMR", "HELMETH process", "Allam cycle",
-                              "(de)central oil boiler", "(de)central gas boiler", "(de)central solid biomass boiler", "ground heat pump", "air heat pump", 
-                              "water tank charger/discharger", "solid biomass CHP", "solid biomass CHP with CC", "gas CHP" , "gas CHP with CC",  "resitive heater", 
-                              "decentral micro gas CHP",'CC on industry gas processes', 'CC on industry process emissions', 'CC on industry solid biomass processes',                 
-                              "gas imports", "coal imports", "lignite imports", "solid biomass extraction", "biogas production", "oil imports", "uranium imports",
-                              ],        
+        "Storage": ["hydrogen storage underground", 'hydrogen storage overground', "Pumped Hydro Storage", "hydro dams",
+                    "gas stores",
+                    "CO2 stores", "coal stores", "lignite stores", "methanol stores", "oil stores",
+                    "(de)central water tank stores", "(home) batteries",
+                    "ammonia stores", "uranium stores"],
+        "Transmission": ["AC lines", "DC lines", "new hydrogen pipelines", "retrofitted hydrogen pipelines",
+                         "gas pipelines", "new gas pipelines", "CO2 pipelines", "solid biomass transport cost"],
+        "Distribution": ['electricity distribution grid', 'gas distribution grid'],
+        "Energy production": ["offshore wind AC connected", "offshore wind DC connected", "onshore wind",
+                              "utility-scale solar PV", "rooftop solar PV",
+                              "(de)central solar thermal", "run-of-the-river", "CCGT", "CCGT with CC", "hydrogen CCGT",
+                              "OCGT", "OCGT with CC", "hydrogen OCGT",
+                              "DAC", "fischer-Tropsch", "electrolysis", "fuel cell", "Haber-Bosch",
+                              "Steam Methane Reforming", "Steam Methane Reforming with CC", "methanation",
+                              "ammonia cracker", "(home) battery charger/discharger",
+                              "biogas purification", "biogas purification with CC", "oil synthesis from solid biomass",
+                              "gas synthetis from solid biomass",
+                              "methanolisation", "oil powerplant", "coal powerplant", 'lignite powerplant', "nuclear",
+                              "nuclear SMR", "HELMETH process", "Allam cycle",
+                              "(de)central oil boiler", "(de)central gas boiler", "(de)central solid biomass boiler",
+                              "ground heat pump", "air heat pump",
+                              "water tank charger/discharger", "solid biomass CHP", "solid biomass CHP with CC",
+                              "gas CHP", "gas CHP with CC", "resitive heater",
+                              "decentral micro gas CHP", 'CC on industry gas processes',
+                              'CC on industry process emissions', 'CC on industry solid biomass processes',
+                              "gas imports", "coal imports", "lignite imports", "solid biomass extraction",
+                              "biogas production", "oil imports", "uranium imports",
+                              ],
     }
-    
+
     carriers = {k.capitalize(): v for k, v in carriers.items()}
     for key, value in sorted(carriers.items()):
         st.write(f"**{key}** contains the {key.lower()} units costs, namely :")
-        for v in value :
+        for v in value:
             st.write(f"- {v}")
-                     
-                     
-    st.write(f"**Net Imports** category focuses on net import costs per country and per carrier. Already taken into account in the Energy production \'fuel\' category.")
 
-        
-        
-        
-        
-        
-        
+    st.write(
+        f"**Net Imports** category focuses on net import costs per country and per carrier. Already taken into account in the Energy production \'fuel\' category.")
+
+with st.expander("**Known issues**"):
+    st.write("* *Decentral heat production* value (in tab *Consumption Profiles*) contains both values of *central* and *decentral heat production*.")

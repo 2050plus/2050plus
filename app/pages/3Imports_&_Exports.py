@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -12,14 +13,14 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Imports and exports per carrier")
-st.markdown("The energy imports and exports between countries in the system, for all carriers, countries and years.")
+st.markdown("The energy imports and exports between countries in the system, for all carriers and countries. A negative value means that the area is exporting.")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
 def get_data(scenario):
     df = (
         pd.read_csv(
-            Path(network_path, scenario_dict[scenario]["path"], "graph_extraction_st", "imports_exports.csv"),
+            Path(network_path, scenario_dict[scenario]["path"], "imports_exports.csv"),
             header=0
         )
     )
@@ -29,44 +30,47 @@ def get_data(scenario):
 df = get_data(scenario)
 
 
-def query_imp_exp(df, carriers, country, year, imports_exports):
+def query_imp_exp(df, carriers, country, imports_exports, year=None):
     df_imp_exp = (
         df.query(""
                  "carriers == @carriers & "
-                 "year == @year & "
                  "imports_exports == @imports_exports"
                  )
-        .drop(["carriers", "year", "imports_exports"], axis=1)
-        .set_index('countries')
+        .drop(["carriers", "imports_exports"], axis=1)
+        .set_index(["year", "countries"])
         [country]
     )
+    if year:
+        df_imp_exp = df_imp_exp.loc[year]
     return df_imp_exp
 
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 with col1:
-    country = st.selectbox('Choose your country:', df["countries"].unique(), index=3)
+    country = st.selectbox('Choose your country:', df["countries"].unique(), index=12)
 with col2:
     carrier = st.selectbox('Choose your carrier:', df['carriers'].unique())
-with col3:
-    year = st.selectbox('Choose your year:', df["year"].unique())
-df_imp_exp = (
-    pd.concat([query_imp_exp(df, carrier, country, year, 'imports'),
-               -1 * query_imp_exp(df, carrier, country, year, 'exports')],
-              axis=1, keys=['imports', 'exports'])
-)
-df_imp_exp.rename(mapper=lambda x: x.capitalize(), axis=1, inplace=True)
+
+df_imp_x = query_imp_exp(df, carrier, country, 'imports').reset_index()
+df_imp_x = df_imp_x[df_imp_x[country] != 0]
+df_imp_x = df_imp_x.pivot_table(index="countries", values=country, columns="year")
+df_imp_x.index.name = 'Annual import volume [TWh]'
+
+df_exp_x = (-1 * query_imp_exp(df, carrier, country, 'exports')).reset_index()
+df_exp_x = df_exp_x[df_exp_x[country] != 0]
+df_exp_x = df_exp_x.pivot_table(index="countries", values=country, columns="year")
+df_exp_x.index.name = 'Annual export volume [TWh]'
 
 fig = px.bar(
-    df_imp_exp,
+    pd.concat([df_imp_x.T, df_exp_x.T]),
     title=f"Imports / Exports for {country} for {carrier} [TWh]",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
-fig.update_yaxes(title_text='Annual exchange volume [TWh]')
-fig.update_xaxes(title_text='Countries')
-fig.update_layout(hovermode="x unified",
+fig.update_yaxes(title_text='Annual exchange volume [TWh]', zeroline=True, zerolinewidth=3, zerolinecolor='black')
+fig.update_xaxes(title_text='')
+fig.update_layout(hovermode="closest",
                   legend_title_text='Exchange')
 
 st.plotly_chart(
@@ -74,11 +78,62 @@ st.plotly_chart(
     , use_container_width=True
 )
 
-df_imp_exp_ = df_imp_exp.drop(df_imp_exp.query('Imports == 0 and Exports ==0').index)
-df_imp_exp_.rename(mapper=lambda x: x + " [TWh]", axis=1, inplace=True)
+buses = get_buses()
+df_map = (
+    pd.concat([df_imp_x.T, df_exp_x.T])
+    .groupby("year").sum().T
+    .join(buses)
+    .reset_index()
+    .rename(columns={'index': "country"})
+    .melt(id_vars=["country", "lat", "lon"], value_name="Exchange [GW]", var_name="year")
+)
+df_map["Exchange abs [GW]"] = abs(df_map["Exchange [GW]"])
+df_map["Balance"] = df_map["Exchange [GW]"].apply(lambda x: "Export" if x < 0 else "Import")
+fig_map = px.scatter_mapbox(
+    df_map,
+    lat="lat",
+    lon="lon",
+    size="Exchange abs [GW]",
+    color="Exchange [GW]",
+    color_continuous_scale="RdYlBu",
+    color_continuous_midpoint=0,
+    mapbox_style="carto-positron",
+    zoom=4,
+    height=700,
+    hover_name="country",
+    animation_frame="year",
+    title=f"Net balance of imports and exports for {country} for {carrier} [TWh]",
+    hover_data={"Exchange [GW]": ":.2f", "Exchange abs [GW]": None},
+)
+fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
+fig_map.update_layout(updatemenus=[{"y": 0.07}])
+fig_map.add_scattermapbox(
+    lat=[buses.loc[country, "lat"]],
+    lon=[buses.loc[country, "lon"]],
+    name=country,
+    hovertext=country,
+    hovertemplate='',
+    marker_color="lightgreen",
+    marker_size=10,
+)
+st.plotly_chart(fig_map, use_container_width=True)
 
-st.subheader(f"Annual {carrier} exchange volumes of {country} for {year} ")
+total_imp = (df_imp_x.sum())
+try:
+    df_imp_x.loc['Total'] = total_imp
+except ValueError:
+    pass
+st.dataframe(df_imp_x
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True)
 
-st.table(df_imp_exp_
-         .style
-         .format(precision=2, thousands=",", decimal='.'))
+total_exp = (df_exp_x.sum())
+try:
+    df_exp_x.loc['Total'] = total_exp
+except ValueError:
+    pass
+st.dataframe(df_exp_x
+             .style
+             .format(precision=2, thousands=",", decimal='.'),
+             use_container_width=True)

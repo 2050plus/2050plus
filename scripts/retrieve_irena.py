@@ -83,13 +83,13 @@ if __name__ == "__main__":
     set_scenario_config(snakemake)
 
     irena_raw = pd.read_csv(
-        "https://pxweb.irena.org:443/sq/99e64b12-fe03-4a7b-92ea-a22cc3713b92",
+        "https://pxweb.irena.org:443/sq/9655d79b-6abd-4185-9465-088c67956760",
         skiprows=2,
-        index_col=[0, 1, 3],
+        index_col=[0, 1, 4],
         encoding="latin-1",
     )
 
-    var = "Installed electricity capacity (MW)"
+    var = "Electricity statistics"
     irena = irena_raw[var].unstack(level=2).reset_index(level=1).replace(0, "")
 
     irena = irena[irena.index.isin(REGIONS)]

@@ -54,6 +54,12 @@ Link:
     index:
       "5582": 26.39 # new length of combined links (sum)
       "13589": 509.0 # new length of combined links (sum)
+  under_construction:
+    index:
+      "14801": false # ALEGrO BE-DE
+      "14802": false # IT-ME
+      "14803": false # COBRA cable DK-NL
+      "14848": false # Nordlink DE-NO
 Line:
   bus1:
     index:
