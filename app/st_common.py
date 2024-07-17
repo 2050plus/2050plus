@@ -11,11 +11,26 @@ scenario_dict = {
     "Central": {
         "path": "20240619/graph_extraction_st/central",
     },
+    "*Central - Nuclear extension": {
+        "path": "20240709/graph_extraction_st/nuc_extension",
+    },
+    "*Central - Nuclear cost": {
+        "path": "20240709/graph_extraction_st/nuc_cost",
+    },
+    "*Central - Pure Optimisation": {
+        "path": "20240709/graph_extraction_st/pure_opt",
+    },
     "Electrification": {
         "path": "20240619/graph_extraction_st/electrification",
     },
+    "*Electrification - Storage cost": {
+        "path": "20240709/graph_extraction_st/storage_cost",
+    },
     "Molecules": {
         "path": "20240619/graph_extraction_st/molecules",
+    },
+    "*Molecules - Molecules import": {
+        "path": "20240709/graph_extraction_st/mol_import",
     },
     "LSC (Least Structural Changes)": {
         "path": "20240619/graph_extraction_st/lsc",
@@ -65,4 +80,5 @@ def st_side_bar():
             scenario_dict.keys(),
             index=0
         )
+        st.markdown("\* Currently under active development")
     return scenario

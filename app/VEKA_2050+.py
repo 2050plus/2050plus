@@ -22,11 +22,18 @@ st.markdown(
     - **RES Profiles**: The same visualization as consumption for the supply side: 3-hourly production RES profiles by carrier and year. All countries are available.
     - **Imports & Exports**: Energy imports and exports between countries in the system, for all carriers, countries and years.
     - **Balancing**: (Under construction)
-    - **Costs**: (Under construction)
+    - **Costs**: The total yearly cost of the modelled system per segments and year. 
     
     The following scenarios are available:
-    - Central
-    - Electrification
-    - Molecule
+    - Central, including the following sensitivities:
+        - *Nuclear extension
+        - *Nuclear cost
+        - *Pure optimisation
+    - Electrification, including the following sensitivity:
+        - *Storage cost
+    - Molecules, including the following sensitivity:
+        - *Molecules import
     - LSC (Least Structural Changes)
+    
+    \* Currently under active development
 """)
