@@ -58,10 +58,12 @@ types = [prod, cons]
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     carrier1 = st.selectbox('Choose your top carrier:', get_data_supply(scenario, year, selected_area).columns.unique(0).sort_values(), index=5)
+unit1 = "GW" if "co2" not in carrier1.lower() else "Mt"
 with col2:
     type1 = st.selectbox('Choose your top type:', types, index=0)
 with col3:
     carrier2 = st.selectbox('Choose your bottom carrier:', get_data_load(scenario, year, selected_area).columns.unique(0).sort_values(), index=5)
+unit2 = "GW" if "co2" not in carrier2.lower() else "Mt"
 with col4:
     type2 = st.selectbox('Choose your bottom type:', types, index=1)
 
@@ -92,8 +94,8 @@ for trace in range(len(fig2["data"])):
 # Create a 1x2 subplot
 this_figure = sp.make_subplots(rows=2, cols=1, shared_xaxes=True, shared_yaxes=True,
                                subplot_titles=[
-                                   f"System {type1.lower()} profile for {carrier1} [GW]",
-                                   f"System {type2.lower()} profile for {carrier2} [GW]",
+                                   f"System {type1.lower()} profile for {carrier1} [{unit1}]",
+                                   f"System {type2.lower()} profile for {carrier2} [{unit2}]",
                                ])
 
 # Get the Express fig broken down as traces and add the traces to the proper plot within in the subplot
@@ -109,13 +111,13 @@ this_figure.update_layout(hovermode="x unified",
 this_figure.update_traces(hovertemplate="%{y:,.0f}",
                           line=dict(width=0.1),
                           row=1, col=1)
-this_figure.update_yaxes(title_text=f'{type1} [GW]',
+this_figure.update_yaxes(title_text=f'{type1} [{unit1}]',
                          row=1, col=1)
 
 this_figure.update_traces(hovertemplate="%{y:,.0f}",
                           line=dict(width=0.1),
                           row=2, col=1)
-this_figure.update_yaxes(title_text=f'{type2} [GW]',
+this_figure.update_yaxes(title_text=f'{type2} [{unit2}]',
                          row=2, col=1)
 this_figure.update_xaxes(title_text='Timesteps',
                          row=2, col=1)

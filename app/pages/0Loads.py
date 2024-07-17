@@ -45,13 +45,14 @@ else:
     )
 
 carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(), index=1)
+unit = "TWh" if "co2" not in carrier.lower() else "Mt"
 df_ca = df_ca.query("carrier==@carrier").drop("carrier", axis=1)
 
 df_ca = df_ca.groupby(by="sector").sum().sort_values(by="2050", ascending=False)
 
 df_ca_tot = pd.DataFrame(df_ca.sum().rename("Total")).T
 df_ca = pd.concat([df_ca, df_ca_tot])
-df_ca.index.name = "Annual load [TWh]"
+df_ca.index.name = f"Annual load [{unit}]"
 
 df_map = (
     df_raw
@@ -81,14 +82,14 @@ st.plotly_chart(fig_map, use_container_width=True)
 
 fig = px.bar(
     df_ca,
-    title=f"Load in {country} for {carrier} [TWh]",
+    title=f"Load in {country} for {carrier} [{unit}]",
     barmode="group",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified")
-fig.update_yaxes(title_text='Consumption [TWh]')
+fig.update_yaxes(title_text=f'Consumption [{unit}]')
 fig.update_xaxes(title_text='Sectors')
 fig.update_layout(legend_title_text='Years')
 
@@ -136,18 +137,18 @@ df_se = df_se.groupby(by="carrier").sum().sort_values(by="2050", ascending=False
 
 df_se_tot = pd.DataFrame(df_se.sum().rename("Total")).T
 df_se = pd.concat([df_se, df_se_tot])
-df_se.index.name = "Annual load [TWh]"
+df_se.index.name = f"Annual load [{unit}]"
 
 fig = px.bar(
     df_se,
-    title=f"Load in {country} for {sector} [TWh]",
+    title=f"Load in {country} for {sector} [{unit}]",
     barmode="group",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified")
-fig.update_yaxes(title_text='Consumption [TWh]')
+fig.update_yaxes(title_text=f'Consumption [{unit}]')
 fig.update_xaxes(title_text='Carriers')
 fig.update_layout(legend_title_text='Years')
 

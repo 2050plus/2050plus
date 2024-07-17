@@ -46,6 +46,8 @@ dfx.index.name = 'Annual production [TWh]'
 
 with col2:
     carrier = st.selectbox('Choose your carrier:', dfx.index.unique(0).sort_values(), index=6)
+unit_twh = "TWh" if "co2" not in carrier.lower() else "Mt"
+unit_gw = "GW" if "co2" not in carrier.lower() else "Mt"
 dfx = dfx.loc[carrier]
 
 
@@ -53,18 +55,18 @@ st.subheader(f"Annual {carrier} production per sector")
 
 total = (dfx.sum())
 dfx.loc['Total'] = total
-dfx.index.name = "Annual production [TWh]"
+dfx.index.name = f"Annual production [{unit_twh}]"
 
 fig = px.bar(
     dfx,
-    title=f"Production in {selected_area} for {carrier} [TWh]",
+    title=f"Production in {selected_area} for {carrier} [{unit_twh}]",
     barmode="group",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified")
-fig.update_yaxes(title_text='Production [TWh]')
+fig.update_yaxes(title_text=f'Production [{unit_twh}]')
 fig.update_xaxes(title_text='Sectors')
 fig.update_layout(legend_title_text='Years')
 
@@ -95,14 +97,14 @@ df = data[carrier]
 
 fig = px.area(
     df,
-    title=f"System production profile for {carrier} [GW]",
+    title=f"System production profile for {carrier} [{unit_gw}]",
 )
 fig.update_traces(hovertemplate="%{y:,.0f}",
                   line=dict(width=0.1))
 fig.update_layout(legend_traceorder="reversed",
                   hovermode="x unified",
                   legend_title_text='Technologies')
-fig.update_yaxes(title_text='Production [GW]')
+fig.update_yaxes(title_text=f'Production [{unit_gw}]')
 fig.update_xaxes(title_text='Timesteps')
 
 st.plotly_chart(
