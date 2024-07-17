@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from st_common import network_path
+from st_common import get_buses
 from st_common import scenario_dict
 from st_common import st_page_config
 from st_common import st_side_bar
@@ -37,6 +38,29 @@ carrier = st.multiselect('Choose your carrier:', list(df.columns.unique()), defa
 df = df.loc[:, carrier]
 carrier_list = ' & '.join(list(map(str.capitalize, carrier)))
 df.index.name = "Potential [GW]"
+
+df_map = (
+    df
+    .rename_axis(index={"Potential [GW]": "country"})
+    .sum(axis=1)
+    .to_frame(name="Potential [GW]")
+    .join(get_buses())
+    .reset_index()
+)
+
+fig_map = px.scatter_mapbox(
+    df_map,
+    lat="lat",
+    lon="lon",
+    size="Potential [GW]",
+    mapbox_style="carto-positron",
+    zoom=2.6,
+    height=700,
+    hover_name="country",
+    title=f"Cumulated potentials ({carrier_list}) [GW]",
+    hover_data={"Potential [GW]": ":.2f"}
+)
+st.plotly_chart(fig_map, use_container_width=True)
 
 fig = px.bar(
     df,

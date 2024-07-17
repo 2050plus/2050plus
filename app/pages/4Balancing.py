@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from st_common import get_buses
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -95,10 +96,33 @@ df2 = (df2
        )
 df2.index.name = "Energy output [GWh]"
 
+df_map = (
+    df2
+    .join(get_buses())
+    .reset_index()
+    .rename(columns={"Energy output [GWh]": "country"})
+    .melt(id_vars=["country", "lat", "lon"], value_name="Energy output [GWh]", var_name="year")
+)
+fig_map = px.scatter_mapbox(
+    df_map,
+    lat="lat",
+    lon="lon",
+    size="Energy output [GWh]",
+    mapbox_style="carto-positron",
+    zoom=2.6,
+    height=700,
+    hover_name="country",
+    animation_frame="year",
+    title="Energy output [GWh]",
+    hover_data={"Energy output [GWh]": ":.2f"}
+)
+fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8, "y": 0.07}])
+fig_map.update_layout(updatemenus=[{"y": 0.07}])
+st.plotly_chart(fig_map, use_container_width=True)
+
 fig_bar = px.bar(
     df2,
     height=500,
-    title="Energy output [GWh]",
     barmode="group"
 )
 
