@@ -46,13 +46,13 @@ def compute_scenario_data(run, scenario):
     config["imp_exp_carriers"] = ["elec", "gas", "H2"]
 
     # Extract data
-    n, n_ext = extract_data(config, )
+    n, n_ext, context = extract_data(config, )
 
     # Transform data
     transform_data(config, n, n_ext)
 
     # Load data
-    load_data_st(config)
+    load_data_st(config, context)
 
     logger.info(f"Done for {scenario} ({run})")
 

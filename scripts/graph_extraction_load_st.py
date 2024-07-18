@@ -294,7 +294,7 @@ def load_buses(config):
 
 
 # %% Load main
-def load_data_st(config):
+def load_data_st(config, context):
     logger.info(f"Exporting data to streamlit")
 
     outputs = [
@@ -339,3 +339,10 @@ def load_data_st(config):
                 v.to_csv(Path(dir, sheet_name + ".csv"), index=False)
         else:
             logging.warning(f"Given output for {output} is not mapped out to output file.")
+
+    logger.info("Exporting contextual data")
+
+    for k, v in context.items():
+        v.to_csv(Path(dir.parent, f"{k}.csv"), index=False)
+
+

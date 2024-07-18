@@ -71,6 +71,7 @@ def load_config(config_file, analysis_path, dir_export, scenario=''):
         "analysis_path": analysis_path,
         "resources_path": Path(analysis_path, "resources", run),
         "results_path": Path(analysis_path, "results", run),
+        "data_path": Path("data"),
     }
 
     years = config["scenario"]["planning_horizons"]

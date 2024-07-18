@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+from pathlib import Path
 
+import pandas as pd
+import pycountry as pyc
 import streamlit as st
 from st_common import st_page_config
 from st_common import st_side_bar
+from st_common import scenario_dict
+from st_common import network_path
 
 st_page_config(layout="wide")
 # TODO : check if scenario is relevant
@@ -29,6 +34,45 @@ with st.expander("**Acronyms**"):
     acronyms = {k.upper(): v.capitalize() for k, v in acronyms.items()}
     for key, value in sorted(acronyms.items()):
         st.write(f"**{key}**: {value}")
+
+with st.expander("**Description of carriers**"):
+    carriers = {
+        "centralized heat": "Heat supplied by large-scale district heating networks in urban areas with dense heat"
+                            "population",
+        "decentralized heat": "Heat supplied to buildings not using district heating",
+        "electricity": "Electricity",
+        "service rural heat": "Heat supplied to services buildings in rural areas with low population density."
+                              " Heat demand from agriculture sector is also included here.",
+        "oil": "Liquid fuel (oil) of fossil or synthetic origin (Fischer-Tropsch)",
+        "H2": "Hydrogen (Steam Methane Reforming or Electrolyser)",
+        "solid biomass": "Solid biomass",
+        "gas": "Methane of fossil or synthetic origin (Sabatier)",
+        "residential rural heat": "Heat supplied to residential buildings in rural areas with low population density",
+        "residential urban decentral heat": "Heat supplied to residential buildings in urban areas not using district "
+                                            "heating",
+        "services urban decentral heat": "Heat supplied to services buildings in urban areas not using district "
+                                         "heating",
+        "urban central heat": "Heat supplied by large-scale district heating networks in urban areas with dense heat"
+                              "population",
+        "methanol": "Methanol produced from hydrogen and carbon dioxide using electricity (Methanolisation). Historical"
+                    " methanol demand is accounted as electricity (0.167 MWh/t) and methane (10.25 MWh/t) demand.",
+        "ammonia": "Ammonia (Haber-Bosch)",
+
+    }
+    carriers = {k.capitalize(): v for k, v in carriers.items()}
+    for key, value in sorted(carriers.items()):
+        st.write(f"**{key}** {value}")
+
+with st.expander("**Description of energy assets cost segments**"):
+    st.markdown(
+        "To simplify the cost structure of the graphs, outputs are aggregated using a mapping table. This table is presented here bellow. The *cost_segment* column is the one used to display the graphs.")
+    st.dataframe(
+        pd.read_csv(Path(network_path, Path(scenario_dict["Central"]["path"]).parent, "cost_mapping.csv")),
+        hide_index=True,
+        use_container_width=True
+    )
+    st.markdown(
+        f"**Net Imports** category focuses on net import costs per country and per carrier. Already taken into account in the Energy production \'fuel\' category.")
 
 with st.expander("**Description of technologies**"):
     st.markdown("Here is a short description of the technologies used:")
@@ -78,76 +122,23 @@ with st.expander("**Description of technologies**"):
     for key, value in sorted(technos.items()):
         st.write(f"**{key}**: {value}")
 
-with st.expander("**Description of carriers**"):
-    carriers = {
-        "centralized heat": "Heat supplied by large-scale district heating networks in urban areas with dense heat"
-                            "population",
-        "decentralized heat": "Heat supplied to buildings not using district heating",
-        "electricity": "Electricity",
-        "service rural heat": "Heat supplied to services buildings in rural areas with low population density."
-                              " Heat demand from agriculture sector is also included here.",
-        "oil": "Liquid fuel (oil) of fossil or synthetic origin (Fischer-Tropsch)",
-        "H2": "Hydrogen (Steam Methane Reforming or Electrolyser)",
-        "solid biomass": "Solid biomass",
-        "gas": "Methane of fossil or synthetic origin (Sabatier)",
-        "residential rural heat": "Heat supplied to residential buildings in rural areas with low population density",
-        "residential urban decentral heat": "Heat supplied to residential buildings in urban areas not using district "
-                                            "heating",
-        "services urban decentral heat": "Heat supplied to services buildings in urban areas not using district "
-                                         "heating",
-        "urban central heat": "Heat supplied by large-scale district heating networks in urban areas with dense heat"
-                              "population",
-        "methanol": "Methanol produced from hydrogen and carbon dioxide using electricity (Methanolisation). Historical"
-                    " methanol demand is accounted as electricity (0.167 MWh/t) and methane (10.25 MWh/t) demand.",
-        "ammonia": "Ammonia (Haber-Bosch)",
+with st.expander("**Countries considered**"):
+    countries = ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU',
+                 'IE', 'IT', 'LT', 'LU', 'LV', 'ME', 'MK', 'NL', 'NO', 'PL', 'PT', 'RO', 'RS', 'SE', 'SI', 'SK']
+    countries_name = [pyc.countries.get(alpha_2=c).name for c in countries]
+    st.markdown("The countries considered in this model are the following:")
+    for c in sorted(countries_name):
+        st.markdown(f"* {c}")
 
-    }
-    carriers = {k.capitalize(): v for k, v in carriers.items()}
-    for key, value in sorted(carriers.items()):
-        st.write(f"**{key}** {value}")
-
-# %%
-
-with st.expander("**Description of energy assets cost segments**"):
-    carriers = {
-        "Storage": ["hydrogen storage underground", 'hydrogen storage overground', "Pumped Hydro Storage", "hydro dams",
-                    "gas stores",
-                    "CO2 stores", "coal stores", "lignite stores", "methanol stores", "oil stores",
-                    "(de)central water tank stores", "(home) batteries",
-                    "ammonia stores", "uranium stores"],
-        "Transmission": ["AC lines", "DC lines", "new hydrogen pipelines", "retrofitted hydrogen pipelines",
-                         "gas pipelines", "new gas pipelines", "CO2 pipelines", "solid biomass transport cost"],
-        "Distribution": ['electricity distribution grid', 'gas distribution grid'],
-        "Energy production": ["offshore wind AC connected", "offshore wind DC connected", "onshore wind",
-                              "utility-scale solar PV", "rooftop solar PV",
-                              "(de)central solar thermal", "run-of-the-river", "CCGT", "CCGT with CC", "hydrogen CCGT",
-                              "OCGT", "OCGT with CC", "hydrogen OCGT",
-                              "DAC", "fischer-Tropsch", "electrolysis", "fuel cell", "Haber-Bosch",
-                              "Steam Methane Reforming", "Steam Methane Reforming with CC", "methanation",
-                              "ammonia cracker", "(home) battery charger/discharger",
-                              "biogas purification", "biogas purification with CC", "oil synthesis from solid biomass",
-                              "gas synthetis from solid biomass",
-                              "methanolisation", "oil powerplant", "coal powerplant", 'lignite powerplant', "nuclear",
-                              "nuclear SMR", "HELMETH process", "Allam cycle",
-                              "(de)central oil boiler", "(de)central gas boiler", "(de)central solid biomass boiler",
-                              "ground heat pump", "air heat pump",
-                              "water tank charger/discharger", "solid biomass CHP", "solid biomass CHP with CC",
-                              "gas CHP", "gas CHP with CC", "resitive heater",
-                              "decentral micro gas CHP", 'CC on industry gas processes',
-                              'CC on industry process emissions', 'CC on industry solid biomass processes',
-                              "gas imports", "coal imports", "lignite imports", "solid biomass extraction",
-                              "biogas production", "oil imports", "uranium imports",
-                              ],
-    }
-
-    carriers = {k.capitalize(): v for k, v in carriers.items()}
-    for key, value in sorted(carriers.items()):
-        st.write(f"**{key}** contains the {key.lower()} units costs, namely :")
-        for v in value:
-            st.write(f"- {v}")
-
+with st.expander("**Mapping of sectors**"):
     st.write(
-        f"**Net Imports** category focuses on net import costs per country and per carrier. Already taken into account in the Energy production \'fuel\' category.")
+        "To simplify the graphs, outputs are aggregated using a mapping table. This table is presented here bellow. The *sector* column is the one used to display the graphs.")
+    st.dataframe(
+        pd.read_csv(Path(network_path, Path(scenario_dict["Central"]["path"]).parent, "sector_mapping.csv")),
+        hide_index=True,
+        use_container_width=True
+    )
 
 with st.expander("**Known issues**"):
-    st.write("* *Decentral heat production* value (in tab *Consumption Profiles*) contains both values of *central* and *decentral heat production*.")
+    st.write(
+        "* *Decentral heat production* value (in tab *Consumption Profiles*) contains both values of *central* and *decentral heat production*.")

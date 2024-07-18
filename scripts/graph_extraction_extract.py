@@ -234,4 +234,8 @@ def extract_data(config):
     n_ext = n.copy()
     n_ext['hist'] = n_bf.copy()
 
-    return n, n_ext
+    context = {}
+    context["sector_mapping"] = pd.read_csv(Path(config["path"]["data_path"], "sector_mapping.csv"))
+    context["cost_mapping"] = pd.read_csv(Path(config["path"]["data_path"], "cost_mapping.csv"))
+
+    return n, n_ext, context
