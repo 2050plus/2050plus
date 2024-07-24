@@ -13,6 +13,7 @@
     veka_overview
     veka_configurations
     veka_model
+    veka_starter
 
 .. toctree::
    :hidden:

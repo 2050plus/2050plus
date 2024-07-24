@@ -21,6 +21,7 @@ Energie Studie 2050+ for VEKA
     veka_overview
     veka_configurations
     veka_model
+    veka_starter
 
 Getting Started
 ===============================

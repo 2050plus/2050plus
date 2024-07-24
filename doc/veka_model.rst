@@ -3,7 +3,7 @@
 
   SPDX-License-Identifier: CC-BY-4.0
 
-.. _veka_configurations:
+.. _veka_modifications:
 
 ##########################################
 Model modifications
