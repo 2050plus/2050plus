@@ -62,7 +62,7 @@ def main():
 
     runs = scenarios + sensitivities
 
-    reference = {"scenario": "reference", "year": 2020, "run": "20240717"}
+    reference = {"scenario": "reference", "year": 2023, "run": "20240717"}
 
     Parallel(n_jobs=4)(delayed(compute_scenario_data)(config_file, r, s, reference) for r, s in runs)
 

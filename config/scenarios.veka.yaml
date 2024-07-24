@@ -40,6 +40,7 @@ electrification:
       lignite: coal
     land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
+        2025: 0
         2030: 0
         2035: 0
         2040: 0
@@ -327,13 +328,13 @@ lsc:
       2050: 0.015
 
 reference:
-#  scenario:
-#    ll:  # Need to change it in main configuration file (snakemake limitation)
-#    - v1.0
-#    planning_horizons:  # Need to change it in main configuration file (snakemake limitation)
-#    - 2023
+  scenario:
+    ll:
+    - v1.0
+    planning_horizons:  # Need to change it in main configuration file (snakemake limitation)
+    - 2023
   electricity:
-    powerplants_filter: ((DateOut >= 2020 or DateOut != DateOut) and DateIn < 2020 and ~(Country == 'BE' and Fueltype == 'Nuclear'))
+    powerplants_filter: ((DateOut >= 2023 or DateOut != DateOut) and DateIn < 2023 and ~(Country == 'BE' and Fueltype == 'Nuclear'))
   links:
     file_tyndp: data/links_tyndp_ref.csv
     file_parameter_corrections: data/parameter_corrections_ref.yaml
@@ -364,6 +365,7 @@ reference:
     biogas_upgrading_cc: false
   costs:
     costs_dir: data/costs/reference
+    year: 2023
   solving:
     constraints:
       CCL: false

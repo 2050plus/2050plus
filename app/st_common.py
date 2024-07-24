@@ -40,7 +40,7 @@ CLIP_VALUE_TWH = 1e-1
 COSTS_AREA = {"ENTSO-E area": "tot", "EU27": "eu27", "BE": "be", "FL": "fl", "DE": "de", "FR": "fr", "GB": "gb",
               "LU": "lu", "NL": "nl"}
 PROFILES_AREA = ["ENTSO-E area", "BE", "FL"]
-YEARS = ["2020", "2030", "2035", "2040", "2045", "2050"]
+YEARS = ["2023", "2030", "2035", "2040", "2045", "2050"]
 
 
 def st_page_config(layout=None):
@@ -80,5 +80,5 @@ def st_side_bar():
             scenario_dict.keys(),
             index=0
         )
-        st.markdown("\* Sensitivities and 2020 data are currently under active development")
+        st.markdown("\* Sensitivities and 2023 data are currently under active development")
     return scenario

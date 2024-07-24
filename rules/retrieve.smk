@@ -101,9 +101,9 @@ if config["enable"].get("copy_cost_data", True):
 
     rule copy_costs_data:
         input:
-            config["costs"]["costs_dir"] + "/costs_{year}.csv",
+            lambda w: config_provider("costs", "costs_dir")(w) + "/costs_{year}.csv",
         output:
-            resources("costs_{year}.csv")
+            resources("costs_{year}.csv"),
         log:
             logs("copy_cost_data_{year}.log"),
         resources:

@@ -81,7 +81,7 @@ def load_config(config_file, run, scenario='', reference=None):
         config["path"]["results_ref"] = Path(analysis_path.parent, reference["run"], "results", reference["scenario"])
         config["path"]["resources_ref"] = Path(analysis_path.parent, reference["run"], "resources", reference["scenario"])
         config["reference"] = reference
-        config["scenario"]["planning_horizons_ext"] = [2020] + config["scenario"]["planning_horizons"]
+        config["scenario"]["planning_horizons_ext"] = [reference["year"]] + config["scenario"]["planning_horizons"]
     else:
         config["reference"] = None
         config["scenario"]["planning_horizons_ext"] = config["scenario"]["planning_horizons"]
