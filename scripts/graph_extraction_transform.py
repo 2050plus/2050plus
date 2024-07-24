@@ -155,7 +155,7 @@ def extract_inst_capa_elec_node(config, n, carriers_renamer):
     inst_capa_elec_node = []
 
     sector_mapping = pd.read_csv(
-        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
+        Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
         header=0).dropna()
     sector_mapping = sector_mapping.reset_index()
     sector_mapping["carrier"] = sector_mapping["carrier"].map(lambda x: carriers_renamer.get(x, x))
@@ -393,8 +393,9 @@ def extract_nodal_costs(config, n):
             return [n.df(c).location, n.df(c).carrier, n.df(c).build_year.astype(int), n.df(c).lifetime]
 
     # Prepare costs for
-    costs = prepare_costs(Path(config["path"]["resources_path"], "costs_" + config["years_str"][0] + ".csv"),
-                          config["costs"], 1 / 3)
+    min_year = config["years_str"][0]
+    min_path = config["path"]["resources_ref"] if config["reference"] else config["path"]["resources"]
+    costs = prepare_costs(Path(min_path, "costs_" + min_year + ".csv"), config["costs"], 1 / 3)
 
     gas_distribution_old = costs.query('index.str.contains("gas distribution")').eval("investment*FOM/100*1/3").mean()
     gas_distribution = costs.query('index.str.contains("electricity distribution")').fixed.mean() * config["sector"][
@@ -414,7 +415,8 @@ def extract_nodal_costs(config, n):
                 df["distribution_cost"] = 0.0
                 ind_gas_distri = (df.query('(carrier.str.contains("gas boiler") or carrier.str.contains("micro CHP"))' \
                                            ' and not(carrier.str.contains("urban central"))')).index
-                ind_old = df.query("build_year<2030").index
+                first_planning_horizon = config['scenario']['planning_horizons'][0]
+                ind_old = df.query("build_year<@first_planning_horizon").index
                 df.loc[ind_gas_distri.intersection(ind_old), "distribution_cost"] = gas_distribution_old
                 df.loc[ind_gas_distri.difference(ind_old), "distribution_cost"] = gas_distribution
                 df["capital"] -= df["distribution_cost"] * df.capacities
@@ -456,7 +458,7 @@ def extract_nodal_costs(config, n):
     df_comp.insert(0, column="units", value="Euro")
 
     cost_mapping = pd.read_csv(
-        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "cost_mapping.csv"), index_col=[0, 1],
+        Path(config["path"]["analysis"].resolve().parents[1], "data", "cost_mapping.csv"), index_col=[0, 1],
         header=0).dropna()
     df_comp = (
         df_comp.merge(cost_mapping, left_on=["carrier", "type"], right_index=True, how="left")
@@ -511,7 +513,7 @@ def extract_nodal_supply_energy(config, n):
     df["units"] = "TWh"
 
     sector_mapping = pd.read_csv(
-        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
+        Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
         header=0).dropna()
     df = df.merge(sector_mapping, left_on=["carrier", "component", "item"], right_index=True, how="left")
     return df
@@ -524,7 +526,7 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
     df = pd.DataFrame(columns=columns, dtype=float)
 
     sector_mapping = pd.read_csv(
-        Path(config["path"]["analysis_path"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
+        Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
         header=0).dropna()
     sector_mapping = sector_mapping.reset_index()
     sector_mapping["carrier"] = sector_mapping["carrier"].map(lambda x: carriers_renamer.get(x, x))
@@ -554,7 +556,7 @@ def extract_temporal_supply_energy(config, n, carriers=None, carriers_renamer=No
         df["node"] = df["node"].map(renamer_to_country)
         # Filter on annual total
         df = df.dropna().loc[(df.groupby(["node", "carrier", "component", "item"])
-                              [config["scenario"]["planning_horizons"]]
+                              [config["scenario"]["planning_horizons_ext"]]
                               .filter(lambda x: (x.sum(axis=0) > 1e2).any())
                               ).index].set_index(idx)
 
@@ -594,12 +596,12 @@ def _extract_graphs(config, n, storage_function, storage_horizon, both=False, un
     if color_shift:
         pass
     else:
-        color_shift = dict(zip(config["scenario"]["planning_horizons"],
-                               ["C" + str(i) for i in range(len(config["scenario"]["planning_horizons"]))]))
+        color_shift = dict(zip(config["scenario"]["planning_horizons_ext"],
+                               ["C" + str(i) for i in range(len(config["scenario"]["planning_horizons_ext"]))]))
     fig = plt.figure(figsize=(14, 8))
 
     def plotting(ax, title, data, y, unit):
-        data.index = pd.to_datetime(pd.DatetimeIndex(data.index.values).strftime("2030-%m-%d-%H"))
+        data.index = pd.to_datetime(pd.DatetimeIndex(data.index.values).strftime(f"{y}-%m-%d-%H"))
         ax.plot(data, label=y, color=color_shift.get(y))
         ax.set_title(title)
         ax.spines["top"].set_visible(False)
@@ -640,7 +642,7 @@ def extract_graphs(config, n, color_shift=None):
     if color_shift:
         pass
     else:
-        color_shift = dict(zip(config["scenario"]["planning_horizons"], ["C0", "C2", "C1"]))
+        color_shift = dict(zip(config["scenario"]["planning_horizons_ext"], ["C0", "C2", "C1"]))
 
     storage_function = {"hydro": "get_state_of_charge_t", "PHS": "get_state_of_charge_t"}
     storage_horizon = {"hydro": "LT", "PHS": "ST", "H2": "LT",
@@ -723,7 +725,7 @@ def transform_data(config, n, n_ext, color_shift=None):
     buses = extract_geo_buses(n)
 
     # Figures to extract
-    n_sto, n_h2 = extract_graphs(config, n, color_shift)
+    # n_sto, n_h2 = extract_graphs(config, n, color_shift)
 
     # Define outputs and export them
     outputs = {
@@ -757,8 +759,8 @@ def transform_data(config, n, n_ext, color_shift=None):
     }
 
     figures = {
-        "storage_unit": n_sto,
-        "h2_production": n_h2,
+        # "storage_unit": n_sto,
+        # "h2_production": n_h2,
     }
 
     export_csvs_figures(config["path"]["csvs"], outputs, figures)

@@ -141,7 +141,7 @@ html_theme = "sphinx_book_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "repository_url": "https://github.com/pypsa/pypsa-eur",
+    "repository_url": "https://github.com/Climact/2050plus-climact",
     "use_repository_button": True,
     "show_navbar_depth": 1,
 }

@@ -50,19 +50,25 @@ col1, col2 = st.columns(2)
 with col1:
     selected_area = st.selectbox('Choose area :', PROFILES_AREA)
 with col2:
-    year = st.selectbox('Choose the year:', YEARS)
+    year = st.selectbox('Choose the year:', YEARS, index=len(YEARS) - 1)
 
 prod = "Production"
 cons = "Consumption"
 types = [prod, cons]
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    carrier1 = st.selectbox('Choose your top carrier:', get_data_supply(scenario, year, selected_area).columns.unique(0).sort_values(), index=5)
+    carrier1 = st.selectbox('Choose your top carrier:',
+                            get_data_supply(scenario, year, selected_area).columns.unique(0).sort_values(),
+                            index=get_data_supply(scenario, year, selected_area).columns.unique(0).sort_values()
+                            .get_loc("Electricity"))
 unit1 = "GW" if "co2" not in carrier1.lower() else "Mt"
 with col2:
     type1 = st.selectbox('Choose your top type:', types, index=0)
 with col3:
-    carrier2 = st.selectbox('Choose your bottom carrier:', get_data_load(scenario, year, selected_area).columns.unique(0).sort_values(), index=5)
+    carrier2 = st.selectbox('Choose your bottom carrier:',
+                            get_data_load(scenario, year, selected_area).columns.unique(0).sort_values(),
+                            index=get_data_load(scenario, year, selected_area).columns.unique(0).sort_values()
+                            .get_loc("Electricity"),)
 unit2 = "GW" if "co2" not in carrier2.lower() else "Mt"
 with col4:
     type2 = st.selectbox('Choose your bottom type:', types, index=1)

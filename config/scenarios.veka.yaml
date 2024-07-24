@@ -15,12 +15,29 @@
 # | Scenarios |
 # =============
 
-central: {}
+central:
+  sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
 
 electrification:
   costs:
     costs_dir: data/costs/electrification
   sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
     land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
         2030: 0
@@ -112,6 +129,14 @@ molecules:
   costs:
     costs_dir: data/costs/molecules
   sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
         2030: 0.020
@@ -206,6 +231,14 @@ lsc:
   costs:
     costs_dir: data/costs/lsc
   sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
         2030: 0.020
@@ -293,6 +326,48 @@ lsc:
       2045: 0.01
       2050: 0.015
 
+reference:
+#  scenario:
+#    ll:  # Need to change it in main configuration file (snakemake limitation)
+#    - v1.0
+#    planning_horizons:  # Need to change it in main configuration file (snakemake limitation)
+#    - 2023
+  electricity:
+    powerplants_filter: ((DateOut >= 2020 or DateOut != DateOut) and DateIn < 2020 and ~(Country == 'BE' and Fueltype == 'Nuclear'))
+  links:
+    file_tyndp: data/links_tyndp_ref.csv
+    file_parameter_corrections: data/parameter_corrections_ref.yaml
+  biomass:
+    year: 2020
+  sector:
+    overdimension_individual_heating: 1
+    tes:
+      central: true
+      decentral: false
+    micro_chp: false
+    coal_cc: false
+    dac: false
+    allam_cycle: false
+    hydrogen_fuel_cell: false
+    hydrogen_turbine: false
+    CC_turbine: false
+    SMR_cc: false
+    use_fischer_tropsch_waste_heat: false
+    use_haber_bosch_waste_heat: false
+    use_methanolisation_waste_heat: false
+    use_methanation_waste_heat: false
+    use_fuel_cell_waste_heat: false
+    use_electrolysis_waste_heat: false
+    H2_network: false
+    H2_retrofit: false
+    H2_import: false
+    biogas_upgrading_cc: false
+  costs:
+    costs_dir: data/costs/reference
+  solving:
+    constraints:
+      CCL: false
+
 # =================
 # | Sensitivities |
 # =================
@@ -301,11 +376,28 @@ pure_opt:  # based on central scenario defined above
   solving:
     constraints:
       CCL: false
+  sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
 
 mol_import:  # based on molecules scenario defined above
   costs:
     costs_dir: data/costs/mol_import
   sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
     land_transport_fuel_cell_share: # total demand -4% in 2030, -26% in 2040, -34% in 2050
         2020: 0
         2030: 0.020
@@ -397,15 +489,41 @@ nuc_extension:  # based on central scenario defined above
   solving:
     agg_p_nom_limits:
       file: data/agg_p_nom_minmax_ext.csv
+  sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
 
 nuc_cost:  # based on central scenario defined above
   costs:
     costs_dir: data/costs/nuc_cost
+  sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
 
 storage_cost:  # based on electrification scenario defined above
   costs:
     costs_dir: data/costs/storage_cost
   sector:
+    conventional_generation:
+      OCGT: gas
+      CCGT: gas
+      nuclear: uranium
+      nuclear (SMR): uranium
+      oil: oil
+      coal: coal
+      lignite: coal
     land_transport_fuel_cell_share: # total demand -5% in 2030, -27% in 2040, -40% in 2050
         2020: 0
         2030: 0

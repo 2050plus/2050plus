@@ -34,6 +34,8 @@ st.markdown(
     - Molecules, including the following sensitivity:
         - *Molecules import
     - LSC (Least Structural Changes)
+
+    \*The graphs show 2020 as the historical reference point. These data are not historical data as such, but rather a proxy created via PyPSA-Eur to give orders of magnitudes reference points.
     
-    \* Currently under active development
+    \* = Currently under active development
 """)

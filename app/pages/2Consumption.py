@@ -46,7 +46,8 @@ dfx = pd.concat(dfx, axis=1).fillna(0).sort_values(by=y, ascending=False)
 dfx.index.name = 'Annual consumption [TWh]'
 
 with col2:
-    carrier = st.selectbox('Choose your carrier:', dfx.index.unique(0).sort_values(), index=6)
+    carrier = st.selectbox('Choose your carrier:', dfx.index.unique(0).sort_values(),
+                           index=dfx.index.unique(0).sort_values().get_loc("Electricity"))
 unit_twh = "TWh" if "co2" not in carrier.lower() else "Mt"
 unit_gw = "GW" if "co2" not in carrier.lower() else "Mt"
 dfx = dfx.loc[carrier]
@@ -91,7 +92,7 @@ st.subheader(f"Consumption profiles per carrier")
 st.markdown(
     "The load 3-hourly profiles for every carrier, year and subsector. You can zoom on these interactive graphs for specific time windows and you can also select/deselect various categories if you want.")
 
-year = st.selectbox('Choose the year:', YEARS)
+year = st.selectbox('Choose the year:', YEARS, index=len(YEARS) - 1)
 data = get_data(scenario, year, selected_area)
 
 df = data[carrier]

@@ -35,7 +35,7 @@ def get_df(scenario, year):
 
 col1, col2 = st.columns(2)
 with col1:
-    year = st.selectbox('Choose the year:', YEARS)
+    year = st.selectbox('Choose the year:', YEARS, index= len(YEARS) - 1)
 df = get_df(scenario, year)
 
 with col2:

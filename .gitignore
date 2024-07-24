@@ -81,5 +81,7 @@ merger-todos.md
 !/data/sector_mapping.csv
 !/data/vlaio/
 !/data/agg_p_nom_minmax_ext.csv
+!/data/links_tyndp_ref.csv
+!/data/parameter_corrections_ref.yaml
 .idea/
 .DS_Store

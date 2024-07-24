@@ -21,7 +21,7 @@ remote:
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
   prefix: "VEKA3"
-  name: "all"
+  name: "central"    # Need to change planning horizons and ll for reference scenario (snakemake limitation)
   scenarios:
     enable: true
     file: config/scenarios.veka.yaml
@@ -39,6 +39,8 @@ scenario:
   - 181
   ll:
   - v3.0
+#  ll:   # for reference scenario (snakemake limitation)
+#  - v1.0
   clusters:
   - 39m
   opts:
@@ -51,6 +53,8 @@ scenario:
   - 2040
   - 2045
   - 2050
+#  planning_horizons:  # for reference scenario (snakemake limitation)
+#  - 2023
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#countries
 countries: ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'ME', 'MK', 'NL', 'NO', 'PL', 'PT', 'RO', 'RS', 'SE', 'SI', 'SK']
@@ -277,6 +281,8 @@ links:
   p_nom_max: .inf
   max_extension: 30000 #MW
   include_tyndp: true
+  file_tyndp: data/links_tyndp.csv
+  file_parameter_corrections: data/parameter_corrections.yaml
   under_construction: 'zero' # 'zero': set capacity to zero, 'remove': remove, 'keep': with full capacity
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#transformers
@@ -485,7 +491,9 @@ sector:
     annualise_cost: true
     tax_weighting: false
     construction_index: true
-  tes: true
+  tes:
+    central: true
+    decentral: true
   tes_tau:
     decentral: 1
     central: 10
@@ -580,14 +588,7 @@ sector:
   biomass_spatial: true
   biomass_transport: true
   biogas_upgrading_cc: true
-  conventional_generation:
-    OCGT: gas
-    CCGT: gas
-    nuclear: uranium
-    nuclear (SMR): uranium
-    oil: oil
-    coal: coal
-    lignite: coal
+  conventional_generation: {}
   biomass_to_liquid: true
   biosng: true
   limit_max_growth:

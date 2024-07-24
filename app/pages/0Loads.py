@@ -44,11 +44,13 @@ else:
         .reset_index().copy()
     )
 
-carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(), index=1)
+carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(),
+                       index=pd.Index(df_ca["carrier"].drop_duplicates()).get_loc("Electricity"))
 unit = "TWh" if "co2" not in carrier.lower() else "Mt"
 df_ca = df_ca.query("carrier==@carrier").drop("carrier", axis=1)
 
-df_ca = df_ca.groupby(by="sector").sum().sort_values(by="2050", ascending=False)
+max_year = max([c for c in df_ca.columns if c.isnumeric()])
+df_ca = df_ca.groupby(by="sector").sum().sort_values(by=max_year, ascending=False)
 
 df_ca_tot = pd.DataFrame(df_ca.sum().rename("Total")).T
 df_ca = pd.concat([df_ca, df_ca_tot])
@@ -130,10 +132,12 @@ df_heat = (
 )
 df_se = pd.concat([df_se, df_ind, df_heat])
 
-sector = st.selectbox('Choose your sector:', df_se["sector"].unique(), index=8)
+sector = st.selectbox('Choose your sector:', df_se["sector"].unique(),
+                      index=pd.Index(df_se["sector"].drop_duplicates()).get_loc("Industry (with and without CC)"))
 df_se = df_se.query("sector==@sector").drop("sector", axis=1)
 
-df_se = df_se.groupby(by="carrier").sum().sort_values(by="2050", ascending=False)
+max_year = max([c for c in df_se.columns if c.isnumeric()])
+df_se = df_se.groupby(by="carrier").sum().sort_values(by=max_year, ascending=False)
 
 df_se_tot = pd.DataFrame(df_se.sum().rename("Total")).T
 df_se = pd.concat([df_se, df_se_tot])

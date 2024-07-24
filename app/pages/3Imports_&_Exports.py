@@ -13,7 +13,8 @@ st_page_config(layout="wide")
 scenario = st_side_bar()
 
 st.title("Imports and exports per carrier")
-st.markdown("The energy imports and exports between countries in the system, for all carriers and countries. A negative value means that the area is exporting.")
+st.markdown(
+    "The energy imports and exports between countries in the system, for all carriers and countries. A negative value means that the area is exporting.")
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
@@ -61,8 +62,10 @@ df_exp_x = df_exp_x[df_exp_x[country] != 0]
 df_exp_x = df_exp_x.pivot_table(index="countries", values=country, columns="year")
 df_exp_x.index.name = 'Annual export volume [TWh]'
 
+df_bar = pd.concat([df_imp_x.T, df_exp_x.T])
+
 fig = px.bar(
-    pd.concat([df_imp_x.T, df_exp_x.T]),
+    df_bar,
     title=f"Imports / Exports for {country} for {carrier} [TWh]",
     text_auto=".2s"
 )
@@ -71,7 +74,13 @@ fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_yaxes(title_text='Annual exchange volume [TWh]', zeroline=True, zerolinewidth=3, zerolinecolor='black')
 fig.update_xaxes(title_text='')
 fig.update_layout(hovermode="closest",
-                  legend_title_text='Exchange')
+                  legend_title_text='Exchange',
+                  xaxis=dict(
+                      tickmode='array',
+                      tickvals=df_bar.index.unique().sort_values(),
+                      ticktext=df_bar.index.unique().sort_values(),
+                  )
+                  )
 
 st.plotly_chart(
     fig

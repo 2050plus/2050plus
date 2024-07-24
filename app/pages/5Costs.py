@@ -90,7 +90,7 @@ df_cost_years = df_cost_years.set_index("cost_segment")
 
 col1, col2 = st.columns([4, 4])
 with col1:
-    selected_year = st.selectbox("Choose year :", list(df_cost_years.year.unique()))
+    selected_year = st.selectbox("Choose year :", list(df_cost_years.year.unique()), index=len(list(df_cost_years.year.unique())) - 1)
     df_cost_years = df_cost_years.query("year in @selected_year")
 with col2:
     selected_area = st.selectbox("Choose area  :", list(COSTS_AREA))
@@ -178,7 +178,7 @@ col1, col2, col3 = st.columns([0.2, 0.2, .5])
 with col1:
     carrier = st.selectbox("Choose areas to compare:", list(df_t_.carrier.unique()), index=1)
 with col2:
-    year = st.selectbox("Choose year to select:", list(df_t_.year.unique()))
+    year = st.selectbox("Choose year to select:", list(df_t_.year.unique()), index=len(list(df_t_.year.unique())) - 1)
 with col3:
     countries_to_display = st.multiselect("Choose your carrier:", list(df.countries.unique()),
                                           default=["GB", "FL", "FR", "LU", "DE", "NL"])

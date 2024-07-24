@@ -1357,7 +1357,7 @@ def add_storage_and_grids(n, costs):
         n.generators.loc[gas_i, "p_nom_extendable"] = False
         n.generators.loc[gas_i, "p_nom"] = p_nom
 
-        if options.get("H2_imports", True):
+        if options.get("H2_import", True):
             logger.info("Add hydrogen imports at LNG terminal locations.")
             
             h2_import_nodes = gas_input_nodes.query("lng>0").index
@@ -1945,7 +1945,13 @@ def add_heat(n, costs):
                 lifetime=costs.at[costs_name, "lifetime"],
             )
 
-        if options["tes"]:
+        tes = (
+                options["tes"].get("central", True)
+                if "urban central" in name 
+                else options["tes"].get("decentral", True)
+               )
+        
+        if tes:
             n.add("Carrier", name + " water tanks")
 
             n.madd(

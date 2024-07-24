@@ -277,6 +277,8 @@ links:
   p_nom_max: .inf
   max_extension: 30000 #MW
   include_tyndp: true
+  file_tyndp: data/links_tyndp.csv
+  file_parameter_corrections: data/parameter_corrections.yaml
   under_construction: 'zero' # 'zero': set capacity to zero, 'remove': remove, 'keep': with full capacity
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#transformers
@@ -486,7 +488,9 @@ sector:
     annualise_cost: true
     tax_weighting: false
     construction_index: true
-  tes: true
+  tes:
+    central: true
+    decentral: true
   tes_tau:
     decentral: 3
     central: 180
@@ -574,8 +578,9 @@ sector:
   biomass_spatial: false
   biomass_transport: false
   biogas_upgrading_cc: false
-  conventional_generation:
-    OCGT: gas
+  conventional_generation: {}
+#  conventional_generation:
+#    OCGT: gas
   biomass_to_liquid: false
   biosng: false
   limit_max_growth:

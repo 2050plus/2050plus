@@ -195,12 +195,12 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
     )
 
     if cost_segment:
-        net_cost = pd.DataFrame([], columns=config["imp_exp_carriers"], index=config["scenario"]["planning_horizons"])
+        net_cost = pd.DataFrame([], columns=config["imp_exp_carriers"], index=config["scenario"]["planning_horizons_ext"])
         if cost_segment != "Net_Imports":
             df = df.query('cost_segment in @cost_segment')
 
         if cost_segment == "Energy production" or cost_segment == "Net_Imports":
-            for y in config["scenario"]["planning_horizons"]:
+            for y in config["scenario"]["planning_horizons_ext"]:
                 for ca in config["imp_exp_carriers"]:
                     imp = _load_imp_exp(config, export=False, countries=countries, carriers=ca, years=[y]).set_index(
                         'countries') * 1e6  # MWh
@@ -273,7 +273,10 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)
-        imp_exp.append(df_carrier.rename(y))
+        if not df_carrier.empty:
+            imp_exp.append(df_carrier.rename(y))
+    if len(imp_exp) == 0:
+        return pd.DataFrame(columns=["countries"])
     imp_exp = pd.concat(imp_exp, axis=1)
     imp_exp.index.rename('countries',inplace=True)
     return (
