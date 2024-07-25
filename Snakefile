@@ -16,8 +16,7 @@ from scripts._helpers import path_provider, copy_default_files, get_scenarios, g
 copy_default_files(workflow)
 
 
-configfile: "config/config.default.yaml"
-configfile: "config/config.yaml"
+configfile: "config/config.veka.yaml"
 
 
 run = config["run"]
