@@ -909,7 +909,7 @@ OCGT_CC,efficiency,0.399,per unit,Ugent rev 1,Assumed to be 10 % smaller than OC
 OCGT_CC,investment,1127417.3,EUR/MW,Ugent rev 3,ELIA Blueprint Study 2024
 OCGT_CC,lifetime,25,years,Ugent rev 3,Assumed to be the same as OCGT
 electricity distribution grid,discount rate,0.03,p.u.,EnergyVille (2023) PATHS 2050,
-hydrogen,fuel,78.77,EUR/MWh,EnergyVille (2023) PATHS 2050,
+hydrogen,fuel,105,EUR/MWh,Based on various empirical data collected by Liebreich Associates,
 coal_cc,efficiency,0.297,per unit,Lazard s Levelized Cost of Energy Analysis - Version 13.0 - 10%,
 gas distribution grid,FOM,2,%/year,Old PyPSA assumptions,
 gas distribution grid,investment,500,EUR/kW,Old PyPSA assumptions,
