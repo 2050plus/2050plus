@@ -393,7 +393,7 @@ sector:
   cluster_heat_buses: true
   heat_demand_cutout: default
   bev_dsm_restriction_value: 0.75
-  bev_dsm_restriction_time: 7
+  bev_dsm_restriction_time: 8
   transport_heating_deadband_upper: 20.
   transport_heating_deadband_lower: 15.
   ICE_lower_degree_factor: 0.375
