@@ -346,6 +346,7 @@ reference:
       central: true
       decentral: false
     micro_chp: false
+    methanation: false
     coal_cc: false
     dac: false
     allam_cycle: false
@@ -353,6 +354,7 @@ reference:
     hydrogen_turbine: false
     CC_turbine: false
     SMR_cc: false
+    co2network: false
     use_fischer_tropsch_waste_heat: false
     use_haber_bosch_waste_heat: false
     use_methanolisation_waste_heat: false
