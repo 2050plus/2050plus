@@ -8,32 +8,32 @@ base_path = Path(__file__).parent
 swoosh = Image.open(Path(base_path, "assets", "img", "swoosh.png"))
 network_path = Path(base_path, "assets", "data")
 scenario_dict = {
-    "Central": {
+    "Mix": {
         "path": "20240619/graph_extraction_st/central",
     },
-    "*Central - Nuclear extension": {
+    "*Mix - Nuclear extension": {
         "path": "20240709/graph_extraction_st/nuc_extension",
     },
-    "*Central - Nuclear cost": {
-        "path": "20240709/graph_extraction_st/nuc_cost",
+    "*Mix - Nuclear cost": {
+        "path": "20240725/graph_extraction_st/nuc_cost",
     },
-    "*Central - Pure Optimisation": {
+    "*Mix - Pure Optimisation": {
         "path": "20240709/graph_extraction_st/pure_opt",
     },
     "Electrification": {
-        "path": "20240619/graph_extraction_st/electrification",
+        "path": "20240725/graph_extraction_st/electrification",
     },
     "*Electrification - Storage cost": {
-        "path": "20240709/graph_extraction_st/storage_cost",
+        "path": "20240725/graph_extraction_st/storage_cost",
     },
     "Molecules": {
-        "path": "20240619/graph_extraction_st/molecules",
+        "path": "20240725/graph_extraction_st/molecules",
     },
     "*Molecules - Molecules import": {
-        "path": "20240709/graph_extraction_st/mol_import",
+        "path": "20240725/graph_extraction_st/mol_import",
     },
     "LSC (Least Structural Changes)": {
-        "path": "20240619/graph_extraction_st/lsc",
+        "path": "20240725/graph_extraction_st/lsc",
     },
 }
 CLIP_VALUE_TWH = 1e-1
@@ -41,6 +41,13 @@ COSTS_AREA = {"ENTSO-E area": "tot", "EU27": "eu27", "BE": "be", "FL": "fl", "DE
               "LU": "lu", "NL": "nl"}
 PROFILES_AREA = ["ENTSO-E area", "BE", "FL"]
 YEARS = ["2023", "2030", "2035", "2040", "2045", "2050"]
+
+
+def get_years(scenario):
+    if "20240725" in scenario_dict[scenario]["path"]:
+        return YEARS
+    else:
+        return ["2020"] + YEARS[1:]
 
 
 def st_page_config(layout=None):
@@ -61,7 +68,7 @@ def st_page_config(layout=None):
 
 @st.cache_data
 def get_buses():
-    return pd.read_csv(Path(network_path, scenario_dict["Central"]["path"], "buses.csv"), index_col=0)
+    return pd.read_csv(Path(network_path, scenario_dict["Mix"]["path"], "buses.csv"), index_col=0)
 
 
 # @st.cache_data

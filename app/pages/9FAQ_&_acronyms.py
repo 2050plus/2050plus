@@ -67,7 +67,7 @@ with st.expander("**Description of energy assets cost segments**"):
     st.markdown(
         "To simplify the cost structure of the graphs, outputs are aggregated using a mapping table. This table is presented here bellow. The *cost_segment* column is the one used to display the graphs.")
     st.dataframe(
-        pd.read_csv(Path(network_path, Path(scenario_dict["Central"]["path"]).parent, "cost_mapping.csv")),
+        pd.read_csv(Path(network_path, Path(scenario_dict["Mix"]["path"]).parent, "cost_mapping.csv")),
         hide_index=True,
         use_container_width=True
     )
@@ -134,7 +134,7 @@ with st.expander("**Mapping of sectors**"):
     st.write(
         "To simplify the graphs, outputs are aggregated using a mapping table. This table is presented here bellow. The *sector* column is the one used to display the graphs.")
     st.dataframe(
-        pd.read_csv(Path(network_path, Path(scenario_dict["Central"]["path"]).parent, "sector_mapping.csv")),
+        pd.read_csv(Path(network_path, Path(scenario_dict["Mix"]["path"]).parent, "sector_mapping.csv")),
         hide_index=True,
         use_container_width=True
     )

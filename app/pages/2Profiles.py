@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.subplots as sp
 import streamlit as st
 from st_common import PROFILES_AREA
-from st_common import YEARS
+from st_common import get_years
 from st_common import network_path
 from st_common import scenario_dict
 from st_common import st_page_config
@@ -13,6 +13,8 @@ from st_common import st_side_bar
 
 st_page_config(layout="wide")
 scenario = st_side_bar()
+
+YEARS = get_years(scenario)
 
 st.title("Production and consumption profiles")
 st.markdown(

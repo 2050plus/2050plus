@@ -25,7 +25,7 @@ st.markdown(
     - **Costs**: The total yearly cost of the modelled system per segments and year. 
     
     The following scenarios are available:
-    - Central, including the following sensitivities:
+    - Mix, including the following sensitivities:
         - *Nuclear extension
         - *Nuclear cost
         - *Pure optimisation
