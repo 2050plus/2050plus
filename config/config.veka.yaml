@@ -504,6 +504,7 @@ sector:
   micro_chp: true
   solar_thermal: true
   solar_cf_correction: 0.788457  # =  >>> 1/1.2683
+  solar_rooftop_extendable: true
   marginal_cost_storage: 0. #1e-4
   methanation: true
   coal_cc: true

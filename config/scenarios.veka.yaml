@@ -334,6 +334,8 @@ reference:
     planning_horizons:  # Need to change it in main configuration file (snakemake limitation)
     - 2023
   electricity:
+    extendable_carriers:
+      Generator: []
     powerplants_filter: ((DateOut >= 2023 or DateOut != DateOut) and DateIn < 2023 and ~(Country == 'BE' and Fueltype == 'Nuclear'))
   links:
     file_tyndp: data/links_tyndp_ref.csv
@@ -346,6 +348,7 @@ reference:
       central: true
       decentral: false
     micro_chp: false
+    solar_rooftop_extendable: false
     methanation: false
     coal_cc: false
     dac: false
@@ -365,6 +368,8 @@ reference:
     H2_retrofit: false
     H2_import: false
     biogas_upgrading_cc: false
+    conventional_generation:
+      OCGT: gas
   costs:
     costs_dir: data/costs/reference
     year: 2023
