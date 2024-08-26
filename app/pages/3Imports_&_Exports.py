@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -32,23 +33,36 @@ df = get_data(scenario)
 
 
 def query_imp_exp(df, carriers, country, imports_exports, year=None):
-    df_imp_exp = (
-        df.query(""
-                 "carriers == @carriers & "
-                 "imports_exports == @imports_exports"
-                 )
-        .drop(["carriers", "imports_exports"], axis=1)
-        .set_index(["year", "countries"])
-        [country]
-    )
-    if year:
-        df_imp_exp = df_imp_exp.loc[year]
+    if country != "BE":
+        df_imp_exp = (
+            df.query(""
+                     "carriers == @carriers & "
+                     "imports_exports == @imports_exports"
+                     )
+            .drop(["carriers", "imports_exports"], axis=1)
+            .set_index(["year", "countries"])
+            [country]
+        )
+        if year:
+            df_imp_exp = df_imp_exp.loc[year]
+    else:
+        df_imp_exp = []
+        regions = ["WL", "FL", "BX"]
+        for c in regions:
+            df_imp_exp.append(query_imp_exp(df, carriers, c, imports_exports, year))
+        df_imp_exp = (
+            pd.concat(df_imp_exp, axis=1)
+            .query("countries not in @regions")
+            .sum(axis=1)
+            .rename("BE")
+        )
+        print("ok")
     return df_imp_exp
 
 
 col1, col2 = st.columns(2)
 with col1:
-    country = st.selectbox('Choose your country:', df["countries"].unique(), index=12)
+    country = st.selectbox('Choose your country:', np.sort(np.append(df.countries.unique(), "BE")), index=3)
 with col2:
     carrier = st.selectbox('Choose your carrier:', df['carriers'].unique())
 
