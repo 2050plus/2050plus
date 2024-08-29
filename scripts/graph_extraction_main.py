@@ -54,7 +54,7 @@ def compute_scenario_data(config_file, run, scenario, reference):
 
 
 def main():
-    config_file = "config/config.veka.yaml"
+    config_file = "config/config.veka.yaml"  # Do not forget to configure scenario name in config file
 
     scenarios = list(zip(repeat("20240619"), ["central", "electrification", "molecules", "lsc"]))
     sensitivities = list(

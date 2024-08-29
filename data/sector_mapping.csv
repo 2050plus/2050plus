@@ -26,7 +26,7 @@ AC,links,H2 pipeline2,Compression losses
 AC,links,Haber-Bosch0,Ammonia production
 AC,links,lignite1,Coal/Lignite
 AC,links,methanolisation2,Methanol production
-AC,links,nuclear (SMR)1,Nuclear
+AC,links,nuclear (SMR)1,Nuclear SMR
 AC,links,nuclear1,Nuclear
 AC,links,OCGT CC1,Gas CC
 AC,links,OCGT H21,Hydrogen turbines
@@ -162,7 +162,7 @@ H2,links,Sabatier0,Methane production
 H2,links,SMR CC1,Steam Methane Reforming CC
 H2,links,SMR1,Steam Methane Reforming
 H2,loads,H2 for industry,Industry
-H2,stores,H2,Storage 
+H2,stores,H2,Storage
 home battery,links,home battery charger1,
 home battery,links,home battery discharger0,
 home battery,stores,home battery,
@@ -275,7 +275,7 @@ urban central heat,links,urban central resistive heater1,Resistive heater
 urban central heat,links,urban central solid biomass CHP CC2,Biomass CHP CC
 urban central heat,links,urban central solid biomass CHP2,Biomass CHP
 urban central heat,links,urban central water tanks charger0,Storage charging
-urban central heat,links,urban central water tanks discharger1,Storage 
+urban central heat,links,urban central water tanks discharger1,Storage
 urban central heat,loads,low-temperature heat for industry,Industry
 urban central heat,loads,urban central heat,Residential / Services heat consumption
 urban central water tanks,links,urban central water tanks charger1,
@@ -297,3 +297,5 @@ urban decentral water tanks,links,urban decentral water tanks charger1,
 urban decentral water tanks,links,urban decentral water tanks discharger0,
 urban decentral water tanks,stores,urban decentral water tanks,
 H2,loads,land transport fuel cell,Transport
+AC,links,H2 pipeline retrofitted2,Compression losses
+AC,links,gas pipeline new2,Compression losses

@@ -959,6 +959,8 @@ plotting:
     solar rooftop: '#ffea80'
     # gas
     OCGT: '#e0986c'
+    OCGT CC: '#e0986c'
+    OCGT H2: '#e0986c'
     OCGT marginal: '#e0986c'
     OCGT-heat: '#e0986c'
     gas boiler: '#db6a25'
@@ -975,6 +977,8 @@ plotting:
     biogas to gas: '#e36311'
     biogas to gas CC: '#e51245'
     CCGT: '#a85522'
+    CCGT CC: '#a85522'
+    CCGT H2: '#a85522'
     CCGT marginal: '#a85522'
     allam: '#B98F76'
     gas for industry co2 to atmosphere: '#692e0a'

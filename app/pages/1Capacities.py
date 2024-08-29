@@ -77,13 +77,14 @@ st.divider()
 st.header("Split of capacities per country")
 
 df_bar = data.copy()
-technology = st.selectbox('Choose your technology:', list(df_bar.sector.unique()))
+technology = st.selectbox('Choose your technology:', list(df_bar.sector.sort_values().unique()))
 
 df_bar = (df_bar
           .query("sector == @technology")
           .drop(columns=['sector'])
           .set_index('country')
           .rename_axis("Investment year")
+          .fillna(0)
           )
 df_bar.index.name = "Capacity [GW]"
 

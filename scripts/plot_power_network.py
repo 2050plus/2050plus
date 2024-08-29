@@ -67,12 +67,13 @@ def load_projection(plotting_params):
 
 
 def plot_map(
-    n,
+    n_,
     components=["links", "stores", "storage_units", "generators"],
     bus_size_factor=2e10,
     transmission=False,
     with_legend=True,
 ):
+    n = n_.copy()
     tech_colors = snakemake.params.plotting["tech_colors"]
 
     assign_location(n)
@@ -148,7 +149,7 @@ def plot_map(
     ac_color = "rosybrown"
     dc_color = "darkseagreen"
 
-    title = "added grid"
+    title = "Added grid"
 
     if snakemake.wildcards["ll"] == "v1.0":
         # should be zero
@@ -159,14 +160,14 @@ def plot_map(
             link_widths = n.links.p_nom_opt
             linewidth_factor = 2e3
             line_lower_threshold = 0.0
-            title = "current grid"
+            title = "Current grid"
     else:
         line_widths = n.lines.s_nom_opt - n.lines.s_nom_min
         link_widths = n.links.p_nom_opt - n.links.p_nom_min
         if transmission:
             line_widths = n.lines.s_nom_opt
             link_widths = n.links.p_nom_opt
-            title = "total grid"
+            title = "Total grid"
 
     line_widths = line_widths.clip(line_lower_threshold, line_upper_threshold)
     link_widths = link_widths.clip(line_lower_threshold, line_upper_threshold)
@@ -198,7 +199,7 @@ def plot_map(
         labelspacing=0.8,
         frameon=False,
         handletextpad=0,
-        title="system cost",
+        title="System cost",
     )
 
     add_legend_circles(
@@ -248,12 +249,13 @@ def plot_map(
 
 
 def plot_capacity(
-    n,
-    components=["links", "stores", "storage_units", "generators"],
+    n_,
+    components=["links", "storage_units", "generators"],
     bus_size_factor=8e4,
     transmission=False,
     with_legend=True,
 ):
+    n = n_.copy()
     # This function mainly do the same as plot_map do but for another metric (here capacities).
     tech_colors = snakemake.params.plotting["tech_colors"]
 
@@ -269,33 +271,45 @@ def plot_capacity(
         if df_c.empty:
             continue
 
-        balance_exclude = ["H2 Electrolysis", "H2 Fuel Cell", "battery charger", "battery discharger",
-                           "home battery charger", "home battery discharger", "Haber-Bosch", "Sabatier",
-                           "ammonia cracker", "helmeth", "SMR", "SMR CC", "V2G", "solid biomass",
-                           "solid biomass transport"]
-        carriers_links = ["coal", "lignite", "oil"]  # same carrier name than link
-        carriers = carriers_links + ["gas", "uranium", "biomass"]  # different carrier name than link
-        transmissions = ["DC", "gas pipeline", "gas pipeline new", "CO2 pipeline", "H2 pipeline",
-                         "H2 pipeline retrofitted", "electricity distribution grid"]
-        balance_carriers_exclude = balance_exclude + carriers + transmissions
-        df_c = df_c[~df_c.carrier.isin(balance_carriers_exclude)]
-        carriers_links = ["coal", "lignite", "oil"]  # same carrier name than link
         if comp == "links":
-            df_links = getattr(n, comp)
-            df_c = pd.concat([df_c, df_links[df_links.carrier.isin(carriers_links)]])
-        df_c["nice_group"] = df_c.carrier.map(rename_techs_tyndp)
-        bname = "bus" if comp != "links" else "bus1"
-        df_c[bname] = df_c[bname].replace({" low voltage": "", " gas": "", " solid biomass": ""}, regex=True)
+            def grouper(n, c, **kwargs):
+                return n.statistics.groupers.get_bus_and_carrier(n, c, port=1, **kwargs)
 
-        attr = "e_nom_opt" if comp == "stores" else "p_nom_opt"
+            capa_c = (
+                n.statistics.optimal_capacity(
+                    comps="Link",
+                    groupby=grouper,
+                    nice_names=False,
+                )
+                .unstack()
+                .query("bus in @n.buses.index")
+                .dropna(axis=1, how="all")
+                .drop(columns=["electricity distribution grid", "DC", "battery discharger"])
+            )
 
-        capa_c = (
-            df_c[attr]
-            .groupby([df_c.bus if comp != "links" else df_c[bname], df_c.nice_group])
-            .sum()
-            .unstack()
-            .fillna(0.0)
-        )
+        else:
+            df_c["nice_group"] = df_c.carrier.map(rename_techs_tyndp)
+            bname = "bus" if comp != "links" else "bus1"
+            df_c[bname] = df_c[bname].replace({" low voltage": "", " gas": "", " solid biomass": ""}, regex=True)
+
+            attr = "e_nom_opt" if comp == "stores" else "p_nom_opt"
+
+            capa_c = (
+                df_c[attr]
+                .groupby([df_c.bus if comp != "links" else df_c[bname], df_c.nice_group])
+                .sum()
+                .unstack()
+                .fillna(0.0)
+            )
+
+            if comp == "generators":
+                capa_c = (
+                    capa_c.query("bus in @n.buses.index")
+                    .replace(0, None)
+                    .dropna(how="all", axis=1)
+                    .drop(columns="gas")
+                )
+
         capacity = pd.concat([capacity, capa_c], axis=1)
 
         logger.debug(f"{comp}, {capacity}")
@@ -352,14 +366,14 @@ def plot_capacity(
             link_widths = n.links.p_nom_opt
             linewidth_factor = 2e3
             line_lower_threshold = 0.0
-            title = "current grid"
+            title = "Current grid"
     else:
         line_widths = n.lines.s_nom_opt - n.lines.s_nom_min
         link_widths = n.links.p_nom_opt - n.links.p_nom_min
         if transmission:
             line_widths = n.lines.s_nom_opt
             link_widths = n.links.p_nom_opt
-            title = "total grid"
+            title = "Total grid"
 
     line_widths = line_widths.clip(line_lower_threshold, line_upper_threshold)
     link_widths = link_widths.clip(line_lower_threshold, line_upper_threshold)
@@ -381,7 +395,7 @@ def plot_capacity(
         **map_opts,
     )
 
-    sizes = [20, 10, 5]
+    sizes = [200, 100, 50]
     labels = [f"{s} GW" for s in sizes]
     sizes = [s / bus_size_factor * 1e3 for s in sizes]
 
@@ -391,17 +405,18 @@ def plot_capacity(
         labelspacing=0.8,
         frameon=False,
         handletextpad=0,
-        title="system capacities",
+        title="System capacities",
     )
 
-    add_legend_circles(
-        ax,
-        sizes,
-        labels,
-        srid=n.srid,
-        patch_kw=dict(facecolor="lightgrey"),
-        legend_kw=legend_kw,
-    )
+    if with_legend:
+        add_legend_circles(
+            ax,
+            sizes,
+            labels,
+            srid=n.srid,
+            patch_kw=dict(facecolor="lightgrey"),
+            legend_kw=legend_kw,
+        )
 
     sizes = [10, 5]
     labels = [f"{s} GW" for s in sizes]
@@ -417,9 +432,10 @@ def plot_capacity(
         title=title,
     )
 
-    add_legend_lines(
-        ax, sizes, labels, patch_kw=dict(color="lightgrey"), legend_kw=legend_kw
-    )
+    if with_legend:
+        add_legend_lines(
+            ax, sizes, labels, patch_kw=dict(color="lightgrey"), legend_kw=legend_kw
+        )
 
     legend_kw = dict(
         bbox_to_anchor=(1.52, 1.04),
@@ -467,5 +483,5 @@ if __name__ == "__main__":
 
     proj = load_projection(snakemake.params.plotting)
 
-    plot_map(n)
-    plot_capacity(n)
+    plot_map(n, transmission=True)
+    plot_capacity(n, transmission=True, bus_size_factor=2e5)
