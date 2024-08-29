@@ -13,11 +13,9 @@ See also :
 """
 import logging
 from itertools import repeat
-from pathlib import Path
 
 from joblib import Parallel
 from joblib import delayed
-from tqdm import tqdm
 
 from scripts.graph_extraction_extract import extract_data
 from scripts.graph_extraction_load_st import load_data_st
@@ -56,13 +54,13 @@ def compute_scenario_data(config_file, run, scenario, reference):
 def main():
     config_file = "config/config.veka.yaml"  # Do not forget to configure scenario name in config file
 
-    scenarios = list(zip(repeat("20240619"), ["central", "electrification", "molecules", "lsc"]))
+    scenarios = list(zip(repeat("20240814"), ["central", "electrification", "molecules", "lsc"]))
     sensitivities = list(
-        zip(repeat("20240709"), ["mol_import", "nuc_cost", "nuc_extension", "storage_cost", "pure_opt"]))
+        zip(repeat("20240814"), ["mol_import", "nuc_cost", "nuc_extension", "storage_cost", "pure_opt"]))
 
     runs = scenarios + sensitivities
 
-    reference = {"scenario": "reference", "year": 2023, "run": "20240717"}
+    reference = {"scenario": "reference", "year": 2023, "run": "20240814"}
 
     Parallel(n_jobs=4)(delayed(compute_scenario_data)(config_file, r, s, reference) for r, s in runs)
 

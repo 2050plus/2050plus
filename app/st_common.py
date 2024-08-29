@@ -9,31 +9,31 @@ swoosh = Image.open(Path(base_path, "assets", "img", "swoosh.png"))
 network_path = Path(base_path, "assets", "data")
 scenario_dict = {
     "Mix": {
-        "path": "20240619/graph_extraction_st/central",
+        "path": "20240814/graph_extraction_st/central",
     },
-    "*Mix - Nuclear extension": {
-        "path": "20240709/graph_extraction_st/nuc_extension",
+    "Mix - Nuclear extension": {
+        "path": "20240814/graph_extraction_st/nuc_extension",
     },
-    "*Mix - Nuclear cost": {
-        "path": "20240725/graph_extraction_st/nuc_cost",
+    "Mix - Nuclear cost": {
+        "path": "20240814/graph_extraction_st/nuc_cost",
     },
-    "*Mix - Pure Optimisation": {
-        "path": "20240709/graph_extraction_st/pure_opt",
+    "Mix - Pure Optimisation": {
+        "path": "20240814/graph_extraction_st/pure_opt",
     },
     "Electrification": {
-        "path": "20240725/graph_extraction_st/electrification",
+        "path": "20240814/graph_extraction_st/electrification",
     },
-    "*Electrification - Storage cost": {
-        "path": "20240725/graph_extraction_st/storage_cost",
+    "Electrification - Storage cost": {
+        "path": "20240814/graph_extraction_st/storage_cost",
     },
     "Molecules": {
-        "path": "20240725/graph_extraction_st/molecules",
+        "path": "20240814/graph_extraction_st/molecules",
     },
-    "*Molecules - Molecules import": {
-        "path": "20240725/graph_extraction_st/mol_import",
+    "Molecules - Molecules import": {
+        "path": "20240814/graph_extraction_st/mol_import",
     },
     "LSC (Least Structural Changes)": {
-        "path": "20240725/graph_extraction_st/lsc",
+        "path": "20240814/graph_extraction_st/lsc",
     },
 }
 CLIP_VALUE_TWH = 1e-1
@@ -44,10 +44,10 @@ YEARS = ["2023", "2030", "2035", "2040", "2045", "2050"]
 
 
 def get_years(scenario):
-    if "20240725" in scenario_dict[scenario]["path"]:
-        return YEARS
-    else:
-        return ["2020"] + YEARS[1:]
+    """
+    Getter allowing to modify set of years depending on the scenario
+    """
+    return YEARS
 
 
 def st_page_config(layout=None):
@@ -87,5 +87,4 @@ def st_side_bar():
             scenario_dict.keys(),
             index=0
         )
-        st.markdown("\* Sensitivities and 2023 data are currently under active development")
     return scenario
