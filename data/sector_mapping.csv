@@ -26,7 +26,7 @@ AC,links,H2 pipeline2,Compression losses
 AC,links,Haber-Bosch0,Ammonia production
 AC,links,lignite1,Coal/Lignite
 AC,links,methanolisation2,Methanol production
-AC,links,nuclear (SMR)1,Nuclear SMR
+AC,links,nuclear (SMR)1,Nuclear
 AC,links,nuclear1,Nuclear
 AC,links,OCGT CC1,Gas CC
 AC,links,OCGT H21,Hydrogen turbines

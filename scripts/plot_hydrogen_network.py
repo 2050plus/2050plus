@@ -59,9 +59,9 @@ def plot_h2_map(n, regions):
     regions["H2"] = regions["H2"].where(regions["H2"] > 0.1)
 
     bus_size_factor = 1e5
-    linewidth_factor = 7e3
+    linewidth_factor = 3e3
     # MW below which not drawn
-    line_lower_threshold = 750
+    line_lower_threshold = 0
 
     # Drop non-electric buses so they don't clutter the plot
     n.buses.drop(n.buses.index[n.buses.carrier != "AC"], inplace=True)
@@ -205,7 +205,7 @@ def plot_h2_map(n, regions):
         legend_kw=legend_kw,
     )
 
-    sizes = [30, 10]
+    sizes = [20, 10]
     labels = [f"{s} GW" for s in sizes]
     scale = 1e3 / linewidth_factor
     sizes = [s * scale for s in sizes]

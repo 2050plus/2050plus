@@ -155,6 +155,14 @@ def load_balancing_supply(config):
     return pd.read_csv(Path(config["path"]["csvs"], "balancing_supply_countries.csv"))
 
 
+def load_curtailment(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "curtailment.csv"))
+
+
+def load_cfs(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "cfs.csv"))
+
+
 # generic function for calling costs
 def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=None):
     """
@@ -314,6 +322,8 @@ def load_data_st(config, context):
         "power_capacities",
         "balancing_capacities",
         "balancing_supply",
+        "curtailment",
+        "cfs",
 
         # Costs
         "costs_segments",

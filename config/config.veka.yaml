@@ -20,8 +20,8 @@ remote:
 
 # docs in https://pypsa-eur.readthedocs.io/en/latest/configuration.html#run
 run:
-  prefix: "VEKA3"
-  name: "central"    # Need to change planning horizons for reference scenario (snakemake limitation)
+  prefix: "20240814"
+  name: "all"    # Need to change planning horizons for reference scenario (snakemake limitation)
   scenarios:
     enable: true
     file: config/scenarios.veka.yaml

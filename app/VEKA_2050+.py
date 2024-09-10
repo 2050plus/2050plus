@@ -20,6 +20,7 @@ st.markdown(
     - **Production**: The same visualization as consumption for the supply side: yearly production and 3-hourly production profiles by carrier, year and subsector.
     - **Profiles**: The same visualization of 3-hourly profiles is presented. This view enables the comparison of profiles and leads to a better understanding of the dynamics.
     - **RES Profiles**: The same visualization as consumption for the supply side: 3-hourly production RES profiles by carrier and year. All countries are available.
+    - **Curtailment**: The curtailment and capacity factors per technology, year and country.
     - **Imports & Exports**: Energy imports and exports between countries in the system, for all carriers, countries and years.
     - **Balancing**: (Under construction)
     - **Costs**: The total yearly cost of the modelled system per segments and year. 

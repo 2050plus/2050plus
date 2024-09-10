@@ -80,11 +80,11 @@ def get_buses():
 #                          )
 
 
-def st_side_bar():
+def st_side_bar(index=0):
     with st.sidebar:
         scenario = st.selectbox(
             "Select your scenario",
             scenario_dict.keys(),
-            index=0
+            index=index
         )
     return scenario

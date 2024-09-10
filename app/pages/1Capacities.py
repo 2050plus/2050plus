@@ -59,7 +59,7 @@ fig.update_yaxes(title_text='Installed capacities [GW]')
 fig.update_xaxes(title_text='Technologies')
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified",
-                  legend_title_text='Technologies')
+                  legend_title_text='Years')
 
 st.plotly_chart(
     fig
@@ -77,6 +77,23 @@ st.divider()
 st.header("Split of capacities per country")
 
 df_bar = data.copy()
+df_bar_wind = (
+    df_bar
+    .query("sector.str.contains('wind')")
+    .groupby(by="country").sum(numeric_only=True)
+    .assign(sector="Wind (all)")
+    .set_index("sector", append=True)
+    .reset_index()
+)
+df_bar_vres = (
+    df_bar
+    .query("sector.str.contains('Solar|wind')")
+    .groupby(by="country").sum(numeric_only=True)
+    .assign(sector="Wind and Solar")
+    .set_index("sector", append=True)
+    .reset_index()
+)
+df_bar = pd.concat([df_bar, df_bar_wind, df_bar_vres])
 technology = st.selectbox('Choose your technology:', list(df_bar.sector.sort_values().unique()))
 
 df_bar = (df_bar
@@ -121,7 +138,7 @@ fig_bar.update_yaxes(title_text='Installed capacities [GW]')
 fig_bar.update_xaxes(title_text='Countries')
 fig_bar.update_traces(hovertemplate="%{y:,.1f}", )
 fig_bar.update_layout(hovermode="x unified",
-                      legend_title_text='Technologies')
+                      legend_title_text='Years')
 st.plotly_chart(fig_bar
                 , use_container_width=True)
 

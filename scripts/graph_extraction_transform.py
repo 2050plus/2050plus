@@ -11,7 +11,9 @@ import re
 from pathlib import Path
 
 import matplotlib as mpl
+import numpy as np
 import pandas as pd
+import pypsa.statistics
 from matplotlib import pyplot as plt
 from scripts.graph_extraction_utils import CLIP_VALUE_TWH
 from scripts.graph_extraction_utils import ELEC_RENAMER
@@ -154,16 +156,19 @@ def extract_res_potential(n):
 def extract_inst_capa_elec_node(config, n, carriers_renamer):
     inst_capa_elec_node = []
 
-    sector_mapping = pd.read_csv(
-        Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"), index_col=[0, 1, 2],
-        header=0).dropna()
-    sector_mapping = sector_mapping.reset_index()
-    sector_mapping["carrier"] = sector_mapping["carrier"].map(lambda x: carriers_renamer.get(x, x))
-    sector_mapping.loc[sector_mapping.query("component == 'links'").index, "item"] = sector_mapping.loc[
-        sector_mapping.query("component == 'links'").index, "item"].apply(lambda x: x[:-1])
-    sector_mapping.component = sector_mapping.component.apply(
-        {"generators": "Generator", "storage_units": "StorageUnit", "links": "Link"}.get)
-    sector_mapping = sector_mapping.query("carrier=='elec'").groupby(["carrier", "component", "item"]).first()
+    sector_mapping = (
+        pd.read_csv(
+            Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"),
+            index_col=[0, 1, 2],
+            header=0
+        )
+        .dropna()
+        .rename(carriers_renamer, level="carrier")
+        .rename({"generators": "Generator", "storage_units": "StorageUnit", "links": "Link"}, level="component")
+        .rename(lambda x: re.sub(r'\d$', '', x), level="item")
+        .query("carrier=='elec'")
+        .groupby(["carrier", "component", "item"]).first()  # Avoid duplicates
+    )
 
     for y, ni in n.items():
         stats = ni.statistics
@@ -213,6 +218,171 @@ def extract_balancing_data(method, n):
     balancing_data = pd.concat(balancing_data, axis=1)
 
     return balancing_data
+
+
+def extract_curtailment(config, n):
+    """
+    Extract curtailment in MWh and % of available production. Due to a bug in version 0.27.1 of PyPSA, we
+    redefine the function in Statistics. This is fixed starting from 0.29.0.
+    See https://github.com/PyPSA/PyPSA/blob/v0.29.0/pypsa/statistics.py#L1029
+    """
+
+    from pypsa.statistics import pass_empty_series_if_keyerror, port_mask, get_ports, reduce,\
+        get_weightings, aggregate_timeseries, aggregate_components
+
+    bus_carrier = ["AC", "low voltage"]
+    comps = "Generator"
+    aggregate_time = "sum"
+    aggregate_groups = "sum"
+    nice_names = False
+
+    @pass_empty_series_if_keyerror
+    def func_curtailment(n, c):
+        p = (n.get_switchable_as_dense(c, "p_max_pu") * n.df(c).p_nom_opt - n.pnl(c).p).clip(lower=0)
+        if bus_carrier is not None:
+            masks = [
+                port_mask(n, c, port=port, bus_carrier=bus_carrier)
+                for port in get_ports(n, c)
+            ]
+            mask = reduce(np.logical_or, masks)
+            p = p.loc[:, mask.astype(bool)]
+
+        weights = get_weightings(n, c)
+        return aggregate_timeseries(p, weights, agg=aggregate_time)
+
+    @pass_empty_series_if_keyerror
+    def func_avail(n, c):
+        p = (n.get_switchable_as_dense(c, "p_max_pu") * n.df(c).p_nom_opt).clip(lower=0)
+        if bus_carrier is not None:
+            masks = [
+                port_mask(n, c, port=port, bus_carrier=bus_carrier)
+                for port in get_ports(n, c)
+            ]
+            mask = reduce(np.logical_or, masks)
+            p = p.loc[:, mask.astype(bool)]
+
+        weights = get_weightings(n, c)
+        return aggregate_timeseries(p, weights, agg=aggregate_time)
+
+    curtailment = []
+    for y, ni in n.items():
+        df_curtailment_mwh = aggregate_components(
+            ni,
+            func_curtailment,
+            comps=comps,
+            agg=aggregate_groups,
+            groupby=ni.statistics.groupers.get_country_and_carrier,
+            nice_names=nice_names,
+        )
+        df_curtailment_mwh.attrs["name"] = "Curtailment"
+        df_curtailment_mwh.attrs["unit"] = "MWh"
+        df_avail = aggregate_components(
+            ni,
+            func_avail,
+            comps=comps,
+            agg=aggregate_groups,
+            groupby=ni.statistics.groupers.get_country_and_carrier,
+            nice_names=nice_names,
+        )
+        df_avail.attrs["name"] = "Available"
+        df_avail.attrs["unit"] = "MWh"
+
+        df_curtailment_mwh = df_curtailment_mwh.to_frame(name="Curtailment").assign(year=y)
+        df_avail = df_avail.to_frame(name="Available")
+
+        curt_i = df_curtailment_mwh.join(df_avail, how="left")
+        curtailment.append(curt_i)
+
+    curtailment = pd.concat(curtailment)
+
+    sector_mapping = (
+        pd.read_csv(
+            Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"),
+            index_col=[0, 1, 2],
+            header=0)
+        .dropna()
+        .droplevel([0, 1])
+    )
+    curtailment = (
+        curtailment.merge(sector_mapping, left_on="carrier", right_index=True, how="left")
+        .groupby(by=["country", "sector", "year"])
+        .sum()
+    )
+
+    return curtailment
+
+
+def extract_capacity_factors(config, n):
+    """
+    Extract capacity factors. Due to a bug in version 0.27.1 of PyPSA, we
+    redefine the function in Statistics. This is fixed starting from 0.28.0.
+    See https://github.com/PyPSA/PyPSA/blob/v0.28.0/pypsa/statistics.py#L1077
+    """
+    from pypsa.statistics import pass_empty_series_if_keyerror, port_mask, get_ports, reduce, \
+        get_weightings, aggregate_timeseries, aggregate_components, get_operation
+
+    comps = ["Generator", "Link", "StorageUnit", "Store"]
+    aggregate_time = 'mean'
+    aggregate_groups = 'sum'
+    bus_carrier = ["AC", "low voltage"]
+    nice_names = False
+
+    @pass_empty_series_if_keyerror
+    def func(n, c):
+        p = get_operation(n, c).abs()
+        if bus_carrier is not None:
+            masks = [
+                port_mask(n, c, port=port, bus_carrier=bus_carrier)
+                for port in get_ports(n, c)
+            ]
+            mask = reduce(np.logical_or, masks)
+            p = p.loc[:, mask.astype(bool)]
+
+        weights = get_weightings(n, c)
+        return aggregate_timeseries(p, weights, agg=aggregate_time)
+
+    cfs = []
+    for y, ni in n.items():
+        groupby = ni.statistics.groupers.get_country_and_carrier
+        df = aggregate_components(
+            ni,
+            func,
+            comps=comps,
+            agg=aggregate_groups,
+            groupby=groupby,
+            nice_names=nice_names,
+        )
+        capacity = ni.statistics.optimal_capacity(
+            comps=comps, aggregate_groups=aggregate_groups, groupby=groupby, nice_names=nice_names
+        )
+        df = df.div(capacity.reindex(df.index), axis=0).to_frame(name="cfs").assign(year=y)
+        df.attrs["name"] = "Capacity Factor"
+        df.attrs["unit"] = "p.u."
+
+        cfs.append(df)
+
+    cfs = pd.concat(cfs)
+
+    sector_mapping = (
+        pd.read_csv(
+            Path(config["path"]["analysis"].resolve().parents[1], "data", "sector_mapping.csv"),
+            index_col=[0, 1, 2],
+            header=0)
+        .dropna()
+        .rename(index={"generators": "Generator", "links": "Link", "storage_units": "StorageUnit",
+                       "stores": "Store"}, level="component")
+        .rename(lambda x: re.sub(r'\d$', '', x), level="item")
+        .loc[["AC", "low voltage"]]
+        .droplevel(0)
+    )
+
+    cfs = (
+        cfs.merge(sector_mapping, left_on=["component", "carrier"], right_index=True, how="left")
+        .groupby(by=["country", "sector", "year"])
+        .mean()
+    )
+
+    return cfs
 
 
 def extract_electricity_network(n):
@@ -702,8 +872,10 @@ def transform_data(config, n, n_ext, color_shift=None):
     n_balancing_capa = extract_balancing_data("optimal_capacity", n)
     n_balancing_supply = extract_balancing_data("supply", n)
     n_power_capa = extract_inst_capa_elec_node(config, n, carriers_renamer)
+    curtailment = extract_curtailment(config, n)
+    cfs = extract_capacity_factors(config, n)
 
-    # # DataFrames to extract
+    # DataFrames to extract
     temporal_res_supply = extract_res_temporal_energy(config, n)
     n_res_pot = extract_res_potential(n)
     ACDC_grid, ACDC_countries, el_imp_exp = extract_transmission(n_ext)
@@ -753,6 +925,8 @@ def transform_data(config, n, n_ext, color_shift=None):
         "marginal_prices_countries": marginal_prices,
         "marginal_prices_t_countries": marginal_prices_t,
         "temporal_res_supply": temporal_res_supply,
+        "curtailment": curtailment,
+        "cfs": cfs,
 
         # geo
         "buses": buses,
