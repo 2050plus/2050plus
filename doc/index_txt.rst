@@ -49,6 +49,8 @@ This version of PyPSA-Eur is an extended version designed by Climact for the *Fl
 
 .. seealso:: Detailed chapter about modifications made by Climact : :ref:`Energie Studie 2050+ for VEKA<veka_overview>`
 
+.. seealso:: Web interface to explore the data `online <https://climact-veka-2050plus.streamlit.app/>`_
+
 Electricity System
 ==================
 
