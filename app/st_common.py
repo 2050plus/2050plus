@@ -80,11 +80,21 @@ def get_buses():
 #                          )
 
 
-def st_side_bar(index=0):
+def st_side_bar(index=0, show_compare=True):
     with st.sidebar:
         scenario = st.selectbox(
             "Select your scenario",
             scenario_dict.keys(),
             index=index
         )
-    return scenario
+
+        if show_compare:
+            compare = st.selectbox(
+                "Compare with",
+                ["-"] + list(scenario_dict.keys()),
+                index=0,
+                help="Data from this scenario will be subtracted from the selected scenario."
+            )
+        else:
+            compare = '-'
+    return scenario, compare

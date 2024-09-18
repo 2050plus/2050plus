@@ -11,7 +11,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 YEARS = get_years(scenario)
 
@@ -39,6 +39,9 @@ with col1:
 dfx = []
 for y in YEARS:
     dfi = get_data(scenario, y, selected_area)
+    if compare != '-':
+        df_compare = get_data(compare, y, selected_area)
+        dfi = (dfi - df_compare)
     dfi = ((dfi.sum() / 1e3
             * 8760 / len(dfi.axes[0]))
            .to_frame(name=y))
@@ -95,6 +98,9 @@ st.markdown(
 
 year = st.selectbox('Choose the year:', YEARS, index=len(YEARS) - 1)
 data = get_data(scenario, year, selected_area)
+if compare != '-':
+    df_compare = get_data(compare, year, selected_area)
+    data = (data - df_compare)
 
 df = data[carrier]
 

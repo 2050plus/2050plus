@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Loads per carrier and sector")
 st.markdown("The total yearly load per energy carrier, year, country and subsector.")
@@ -28,6 +28,13 @@ def get_data(scenario):
 
 
 df_raw = get_data(scenario)
+if compare != '-':
+    df_compare = get_data(compare)
+    idx = ["sector", "node", "carrier"]
+    df_raw = (
+        (df_raw.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 all = "ENTSO-E area"
 country = st.selectbox('Choose your country:', [all] + list(df_raw["node"].unique()))
 
@@ -64,12 +71,13 @@ df_map = (
     .reset_index()
     .rename(columns={"node": "country"})
     .melt(id_vars=["country", "lat", "lon"], value_name="Load [TWh]", var_name="year")
+    .assign(absolute_size=lambda x: x["Load [TWh]"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="Load [TWh]",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,

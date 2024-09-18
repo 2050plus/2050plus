@@ -11,7 +11,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Imports and exports per carrier")
 st.markdown(
@@ -30,6 +30,13 @@ def get_data(scenario):
 
 
 df = get_data(scenario)
+if compare != '-':
+    df_compare = get_data(compare)
+    idx = ["imports_exports", "countries", "year", "carriers"]
+    df = (
+        (df.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 
 def query_imp_exp(df, carriers, country, imports_exports, year=None):

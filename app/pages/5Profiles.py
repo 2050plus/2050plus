@@ -12,7 +12,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar(show_compare=False)
 
 YEARS = get_years(scenario)
 

@@ -11,7 +11,7 @@ from st_common import st_side_bar
 
 st_page_config(layout="wide")
 # TODO : check if scenario is relevant
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Balancing capacities")
 st.markdown(
@@ -26,7 +26,7 @@ with st.expander("**Why balancing the network is important ?**"):
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
-def get_df(scenario, mode):
+def get_data(scenario, mode):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"],
@@ -37,7 +37,14 @@ def get_df(scenario, mode):
 
 
 # %%
-data = get_df(scenario, "capacities")
+data = get_data(scenario, "capacities")
+if compare != '-':
+    df_compare = get_data(compare, "capacities")
+    idx = ["country", "carrier"]
+    data = (
+        (data.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 df = data.copy()
 consumption = {'BEV charger', 'air heat pump', 'battery charger', 'ground heat pump', 'home battery charger',
                'water tanks charger'}
@@ -84,7 +91,14 @@ st.plotly_chart(fig, use_container_width=True)
 # %%
 st.header("Annual energy output per technology")
 
-data2 = get_df(scenario, "supply")
+data2 = get_data(scenario, "supply")
+if compare != '-':
+    df_compare = get_data(compare, "supply")
+    idx = ["country", "carrier"]
+    data2 = (
+        (data2.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 df2 = data2.copy()
 
 technology = st.selectbox('Choose your technology:', list(df2.carrier.unique()))
@@ -93,6 +107,7 @@ df2 = (df2
        .query("carrier == @technology")
        .drop(columns=['carrier'])
        .set_index('country')
+        .fillna(0)
        )
 df2.index.name = "Energy output [GWh]"
 
@@ -102,12 +117,13 @@ df_map = (
     .reset_index()
     .rename(columns={"Energy output [GWh]": "country"})
     .melt(id_vars=["country", "lat", "lon"], value_name="Energy output [GWh]", var_name="year")
+    .assign(absolute_size=lambda x: x["Energy output [GWh]"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="Energy output [GWh]",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,

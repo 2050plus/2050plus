@@ -11,7 +11,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 FORMATTER = {"total": "Total", "capital": "CAPEX", "marginal": "OPEX", "elec": "Electricity",
              "gas": "Methane", "H2": "Hydrogen"}
@@ -37,7 +37,15 @@ st.header("Cost by unit segment")
 st.markdown("* ENTSO-E area includes all modeled countries, so imports and exports = 0.\n"
             "* A negative value means that the area is exporting and thus making a profit.")
 
-df_cost_segments = get_data(scenario, "costs_segments.csv").set_index("config")
+df_cost_segments = get_data(scenario, "costs_segments.csv")
+if compare != '-':
+    df_compare = get_data(compare, "costs_segments.csv")
+    idx = ["config", "cost_segment", "cost/carrier"]
+    df_cost_segments = (
+        (df_cost_segments.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
+df_cost_segments = df_cost_segments.set_index("config")
 col1, col2 = st.columns([4, 4])
 with col1:
     selected_cost_segment = st.selectbox("Choose your segment :",
@@ -83,6 +91,13 @@ st.dataframe(df_cost_segments.style.format(precision=2, thousands=",", decimal='
 # %% Cost year
 st.header("Cost by year")
 df_cost_years = get_data(scenario, "costs_years.csv")
+if compare != '-':
+    df_compare = get_data(compare, "costs_years.csv")
+    idx = ["config", "cost_segment"]
+    df_cost_years = (
+        (df_cost_years.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 df_cost_years[["year", "area"]] = df_cost_years["config"].str.split('_', expand=True)
 df_cost_years = df_cost_years.drop(columns=["config"])
@@ -133,6 +148,13 @@ st.markdown(
 st.subheader("Compare two areas over years")
 
 df = get_data(scenario, "marginal_prices.csv")
+if compare != '-':
+    df_compare = get_data(compare, "marginal_prices.csv")
+    idx = ["countries", "carrier"]
+    df = (
+        (df.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 col1, col2 = st.columns([4, 4])
 with col1:
@@ -173,6 +195,13 @@ with col2:
 st.subheader("Compare variability through Europe")
 
 df_t_ = get_data(scenario, "marginal_prices_t.csv")
+if compare != '-':
+    df_compare = get_data(compare, "marginal_prices_t.csv")
+    idx = ["countries", "carrier", "year"]
+    df_t_ = (
+        (df_t_.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 col1, col2, col3 = st.columns([0.2, 0.2, .5])
 with col1:
@@ -207,13 +236,14 @@ df_map = (
     .rename_axis(index="snapshot")
     .melt(value_name="LMP [€/MWh]", var_name="country", ignore_index=False)
     .merge(get_buses(), left_on="country", right_index=True)
+    .assign(absolute_size=lambda x: x["LMP [€/MWh]"].abs())
 )
 df_map.index = pd.DatetimeIndex(df_map.index).strftime(f"{year}-%m-%d")
 fig_map = px.scatter_mapbox(
     df_map.reset_index(),
     lat="lat",
     lon="lon",
-    size="LMP [€/MWh]",
+    size="absolute_size",
     color="LMP [€/MWh]",
     color_continuous_scale="bluered",
     range_color=[0, 100],

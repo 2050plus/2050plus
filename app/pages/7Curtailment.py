@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Curtailment and capacity factors")
 st.markdown("Curtailment and capacity factors per technology, year and country. Electricity units are only.")
@@ -28,6 +28,13 @@ def get_data(scenario, type):
 
 
 df_raw_curt = get_data(scenario, "curtailment")
+if compare != '-':
+    df_compare = get_data(compare, "curtailment")
+    idx = ["country", "sector", "year"]
+    df_raw_curt = (
+        (df_raw_curt.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 all = "ENTSO-E area"
 country = st.selectbox('Choose your country:', [all] + list(df_raw_curt["country"].unique()))
@@ -77,7 +84,7 @@ st.dataframe(df_tech.rename_axis(f"Curtailment [{unit}]")
              use_container_width=True
              )
 
-st.header("Curtailment on map")
+st.header("Local curtailment")
 
 techs = sorted(df_raw_curt.sector.unique())
 tech = st.selectbox('Choose your technology (only for map):', techs, index=techs.index("Solar"))
@@ -93,12 +100,13 @@ df_map = (
     .groupby(["country", "year"]).sum(numeric_only=True)
     .join(get_buses())
     .reset_index()
+    .assign(absolute_size=lambda x: x["Curtailment"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="Curtailment",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,
@@ -111,12 +119,34 @@ fig_map.update_layout(sliders=[{"currentvalue": {"prefix": "Year: "}, "len": 0.8
 fig_map.update_layout(updatemenus=[{"y": 0.07}])
 st.plotly_chart(fig_map, use_container_width=True)
 
+fig = px.box(df_map, x="year", y="Curtailment", hover_data=["country"])
+
+fig.update_traces(hovertemplate="Country: %{customdata[0]}<br>"+
+                                "Value: %{y:.4s}", line=dict(width=1))
+fig.update_yaxes(title_text=f"Local curtailment [{unit}]")
+fig.update_layout(hovermode="closest",
+                  xaxis=dict(
+                      tickmode='array',
+                      tickvals=sorted(df_map.year.unique()),
+                      ticktext=sorted(df_map.year.unique()),
+                  )
+                  )
+
+st.plotly_chart(fig)
+
 st.divider()
 
 # %%
 st.header("Capacity factors per country")
 
 df_raw_cfs = get_data(scenario, "cfs")
+if compare != '-':
+    df_compare = get_data(compare, "cfs")
+    idx = ["country", "sector", "year"]
+    df_raw_cfs = (
+        (df_raw_cfs.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 
 if country != all:
     df_tech = df_raw_cfs.query("country==@country").drop("country", axis=1).copy()
@@ -130,8 +160,8 @@ else:
 df_tech["cfs"] = df_tech["cfs"].mul(100)  # %
 
 techs = st.multiselect('Choose your technologies:', list(df_tech.sector.unique()),
-                       default=[i for i in ["Solar", "Offwind", "Onwind", "Gas", "Gas CC", "Gas CHP", "Gas CHP CC",
-                                            "Oil", "Coal/Lignite", "Fuel Cell", "Nuclear", "Hydroelectricity"]
+                       default=[i for i in ["Solar", "Offwind", "Onwind", "Gas", "Biomass CHP", "Coal/Lignite",
+                                            "Nuclear", "Hydroelectricity"]
                                 if i in list(df_tech.sector.unique())])
 df_tech = df_tech.query("sector in @techs")
 
@@ -139,13 +169,13 @@ df_tech = df_tech.pivot(index="sector", columns="year", values="cfs")
 
 fig = px.bar(
     df_tech,
-    title=f"Curtailment in {country} [{unit}]",
+    title=f"Capacity factors in {country} [%]",
     barmode="group",
     text_auto=".2s" if unit != "%" else ".2f"
 )
 
 fig.update_layout(hovermode="x unified", legend_title_text="Years")
-fig.update_yaxes(title_text='Capcity factors [%]')
+fig.update_yaxes(title_text='Capacity factors [%]')
 fig.update_xaxes(title_text='Technologies')
 fig.update_traces(hovertemplate="%{y:,.2f}")
 fig.update_layout(hovermode="x unified")
@@ -161,7 +191,7 @@ st.dataframe(df_tech.rename_axis("Capacity factor [%]")
              use_container_width=True
              )
 
-st.header("Capacity factors on map")
+st.header("Local capacity factors")
 
 techs = sorted(df_raw_cfs.sector.unique())
 tech = st.selectbox('Choose your technology (only for map):', techs, index=techs.index("Gas"))
@@ -172,12 +202,14 @@ df_map = (
     .groupby(["country", "year"]).sum(numeric_only=True)
     .join(get_buses())
     .reset_index()
+    .assign(cfs=lambda x: x["cfs"] * 100)
+    .assign(absolute_size=lambda x: x["cfs"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="cfs",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,

@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar(show_compare=False)
 
 st.title("Renewable production potentials")
 st.markdown(
@@ -18,7 +18,7 @@ st.markdown(
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
-def get_df(scenario):
+def get_data(scenario):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"], "res_potentials.csv"),
@@ -28,7 +28,7 @@ def get_df(scenario):
 
 
 # %%
-data = get_df(scenario)
+data = get_data(scenario)
 df = data.copy()
 
 st.header("Potentials per carrier")

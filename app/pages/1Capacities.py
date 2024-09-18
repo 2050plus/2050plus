@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Power production installed capacities")
 st.markdown(
@@ -18,7 +18,7 @@ st.markdown(
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
-def get_df(scenario):
+def get_data(scenario):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"], "power_capacities.csv"),
@@ -28,7 +28,14 @@ def get_df(scenario):
 
 
 # %%
-data = get_df(scenario)
+data = get_data(scenario)
+if compare != '-':
+    df_compare = get_data(compare)
+    idx = ["country", "sector",]
+    data = (
+        (data.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 df = data.copy()
 
 st.header("Installed capacities per country")
@@ -111,12 +118,13 @@ df_map = (
     .reset_index()
     .rename(columns={"Capacity [GW]": "country"})
     .melt(id_vars=["country", "lat", "lon"], value_name="Capacity [GW]", var_name="year")
+    .assign(absolute_size=lambda x: x["Capacity [GW]"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="Capacity [GW]",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,

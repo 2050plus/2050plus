@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar(show_compare=False)
 
 YEARS = get_years(scenario)
 
@@ -20,7 +20,7 @@ st.markdown(
 
 
 @st.cache_data(show_spinner="Retrieving data ...")
-def get_df(scenario, year):
+def get_data(scenario, year):
     return (
         pd.read_csv(
             Path(network_path, scenario_dict[scenario]["path"], "res_temporal_" + year + ".csv"),
@@ -38,7 +38,7 @@ def get_df(scenario, year):
 col1, col2 = st.columns(2)
 with col1:
     year = st.selectbox('Choose the year:', YEARS, index= len(YEARS) - 1)
-df = get_df(scenario, year)
+df = get_data(scenario, year)
 
 with col2:
     country = st.selectbox('Choose your country:', ['ENTSO-E area'] + list(df["country"].unique()))
