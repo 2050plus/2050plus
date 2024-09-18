@@ -13,6 +13,8 @@ To start using the model and its dependencies, multiple scripts and tool should 
 
 1. Get the model
     * Clone the git repository from `GitHub <https://github.com/2050plus/2050plus>`_.
+    * Install your environment using `envs` folder (latest data were produced with `envs/environment.aws_r6a.12xlarge.yaml`). A detailed installation guide is available in the `PyPSA-Eur documentation <https://pypsa-eur.readthedocs.io/en/latest/installation.html>`_.
+    * Optimisation has been done using Gurobi (commercial solver). HiGHS is a good open source alternative. Other alternatives are listed in the `PyPSA-Eur documentation <https://pypsa-eur.readthedocs.io/en/latest/installation.html#install-a-solver>`_.
 
 2. Run the model
     * Use snakemake using the following command
