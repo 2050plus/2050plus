@@ -41,6 +41,7 @@ To start using the model and its dependencies, multiple scripts and tool should 
     .. code:: bash
 
         streamlit run app/VEKA_2050+.py
+    * Since Streamlit can also be run as a container, we have added `app/Dockerfile_demo` as an example.
 
 5. The documentation is shared online through `Readthedocs <https://2050plus-climact.readthedocs.io/en/latest/>`_.
     * Pushing new updates on the `main-v10` branch on GitHub will also automatically update the page.

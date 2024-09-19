@@ -6,11 +6,11 @@ from st_common import st_side_bar
 st_page_config(layout="wide")
 st_side_bar()
 
-st.title("VEKA 2050+ results explorers")
+st.title("Energie Studie 2050+ results explorers")
 
 st.markdown(
     """
-    This notebook allows you to the explore the results of `VEKA 2050+` using a set of scenarios. Please refer to documentation for further [details](https://2050plus-climact.readthedocs.io/en/latest/).
+    This notebook allows you to the explore the results of `Energie Studie 2050+` using a set of scenarios. Please refer to documentation for further [details](https://2050plus-climact.readthedocs.io/en/latest/).
     
     The following informations are available:
     - **Loads**: The total yearly load per energy carrier, year, country and subsector.

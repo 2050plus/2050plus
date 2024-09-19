@@ -8,7 +8,7 @@
 .. toctree::
     :hidden:
     :maxdepth: 1
-    :caption: Energie Studie 2050+ for VEKA
+    :caption: Energie Studie 2050+
 
     veka_overview
     veka_configurations

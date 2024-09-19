@@ -54,7 +54,7 @@ def st_page_config(layout=None):
     if layout is None:
         layout = "centered"
     st.set_page_config(
-        page_title="VEKA 2050+",
+        page_title="Energie Studie 2050+",
         page_icon=swoosh,
         layout=layout,
         initial_sidebar_state="expanded",

@@ -263,7 +263,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc_pdf, "PyPSA-Eur.tex", "PyPSA-Eur Documentation for VEKA", author_pdf, "manual"),
+    (master_doc_pdf, "PyPSA-Eur.tex", "PyPSA-Eur Documentation of Energie Studie 2050+", author_pdf, "manual"),
 ]
 
 
@@ -272,7 +272,7 @@ rinoh_documents = [
     (
         master_doc_pdf,  # top-level file (index.rst)
         "PyPSA-Eur",  # output (target.pdf)
-        "PyPSA-Eur Documentation for VEKA",  # document title
+        "PyPSA-Eur Documentation of Energie Studie 2050+",  # document title
         author_pdf,
     )
 ]  # document author
@@ -340,4 +340,6 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"https://docs.python.org/": None}
+intersphinx_mapping = {
+    "https://docs.python.org/": ("https://docs.python.org/3", None),
+}
