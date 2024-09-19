@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY . .
+
+# Set environment variable for python code to find sources
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+RUN pip install -r requirements.txt
+
+EXPOSE 80
+
+CMD streamlit run apps/main_app.py --server.port=80 --server.address=0.0.0.0

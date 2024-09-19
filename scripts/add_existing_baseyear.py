@@ -69,6 +69,15 @@ def add_existing_renewables(df_agg, costs):
         df.columns = df.columns.astype(int)
         df.index = cc.convert(df.index, to="iso2")
 
+        # Improve existing solar capacity data for Belgium using Observatoire Photovoltaïque (2023, Energie Commune)
+        # https://energiecommune.be/statistique/observatoire-photovoltaique/
+        if carrier == "solar":
+           s = pd.Series([0, 0, 0, 0, 0, 0, 0, 0, 112.41, 670.92, 1107.44, 2175.49, 2869.62, 3139, 3244.61, 3354.28,
+                          3534.68, 3872.22, 4313.24, 5042.2, 6317.31, 7008.5, 8104.45, 9897.49],
+                         index=[2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013,
+                                2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023])
+           df.loc["BE", s.index] = s
+
         # calculate yearly differences
         df.insert(loc=0, value=0.0, column="1999")
         df = df.diff(axis=1).drop("1999", axis=1).clip(lower=0)
@@ -87,9 +96,15 @@ def add_existing_renewables(df_agg, costs):
             ]
             cfs = n.generators_t.p_max_pu[gens].mean()
             cfs_key = cfs / cfs.sum()
-            nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.groupby(
-                n.generators.loc[gens, "bus"]
-            ).sum()
+            if country != "BE":
+                nodal_fraction.loc[n.generators.loc[gens, "bus"]] = cfs_key.groupby(
+                    n.generators.loc[gens, "bus"]
+                ).sum()
+            else:
+                # Computing shares of Belgium from Observatoire Photovoltaïque (2023, Energie Commune)
+                # https://energiecommune.be/statistique/observatoire-photovoltaique/
+                installed_cap = pd.Series({"BE1 0": 7447.37, "BE1 1": 266.37, "BE1 2": 2183.75})
+                nodal_fraction.loc[n.generators.loc[gens, "bus"]] = installed_cap.div(installed_cap.sum())
 
         nodal_df = df.loc[n.buses.loc[elec_buses, "country"]]
         nodal_df.index = elec_buses

@@ -10,17 +10,18 @@ Introduction
 
     index_txt
 
-Energie Studie 2050+ for VEKA
-===============================
+Energie Studie 2050+ for VEKA and VLAIO
+========================================
 
 .. toctree::
     :hidden:
     :maxdepth: 1
-    :caption: Energie Studie 2050+ for VEKA
+    :caption: Energie Studie 2050+
 
     veka_overview
     veka_configurations
     veka_model
+    veka_starter
 
 Getting Started
 ===============================

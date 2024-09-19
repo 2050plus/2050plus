@@ -60,20 +60,33 @@ COST_SEGMENTS = {'prod': 'Production', 'bal': 'Balancing', 'tran': 'Transport', 
 logger = logging.getLogger(__name__)
 
 
-def load_config(config_file, analysis_path, dir_export, scenario=''):
+def load_config(config_file, run, scenario='', reference=None):
     logger.info("Loading configuration")
+
+    analysis_path = Path("analysis", run)
+    dir_export = "graph_data"
 
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
 
     run = config["run"]["name"] if not scenario else scenario
     config["path"] = {
-        "analysis_path": analysis_path,
-        "resources_path": Path(analysis_path, "resources", run),
-        "results_path": Path(analysis_path, "results", run),
+        "analysis": analysis_path,
+        "resources": Path(analysis_path, "resources", run),
+        "results": Path(analysis_path, "results", run),
+        "data": Path("data"),
     }
 
-    years = config["scenario"]["planning_horizons"]
+    if reference:
+        config["path"]["results_ref"] = Path(analysis_path.parent, reference["run"], "results", reference["scenario"])
+        config["path"]["resources_ref"] = Path(analysis_path.parent, reference["run"], "resources", reference["scenario"])
+        config["reference"] = reference
+        config["scenario"]["planning_horizons_ext"] = [reference["year"]] + config["scenario"]["planning_horizons"]
+    else:
+        config["reference"] = None
+        config["scenario"]["planning_horizons_ext"] = config["scenario"]["planning_horizons"]
+
+    years = config["scenario"]["planning_horizons_ext"]
     config["years_str"] = list(map(str, years))
     simpl = config["scenario"]["simpl"][0]
     cluster = config["scenario"]["clusters"][0]
@@ -84,8 +97,8 @@ def load_config(config_file, analysis_path, dir_export, scenario=''):
 
     config["n_name"] = f"elec_s{simpl}_{cluster}_l{ll}_{opts}_{sector_opts}_"
     config["path"]["csvs"] = Path(analysis_path, dir_export, f"{scenario}_{config['n_name']}")
-    config["path"]["streamlit"] = Path(config["path"]["analysis_path"], "graph_extraction_st", scenario)
-    config["path"]["excel"] = Path(config["path"]["analysis_path"], "graph_extraction_xl", scenario)
+    config["path"]["streamlit"] = Path(config["path"]["analysis"], "graph_extraction_st", scenario)
+    config["path"]["excel"] = Path(config["path"]["analysis"], "graph_extraction_xl", scenario)
 
     # Todo : type cast all references to year into str or int
     config["excel_columns"] = {"all_years": ["carrier", "hist"] + config["years_str"],
@@ -115,12 +128,15 @@ def query_imp_exp(df, carriers, countries, year, imports_exports):
         .drop(["carriers", "year", "imports_exports"], axis=1)
         .set_index('countries')
     )
-    
+
+    if df_imp_exp.empty:
+        return df_imp_exp
+
     if countries is not None:
         country_list = df_imp_exp.columns.intersection(countries)
     else:
         country_list = df_imp_exp.columns.intersection(df.countries.unique())
-                   
+
     if countries is not None:
         df_imp_exp = (df_imp_exp
         .loc[df_imp_exp.index.symmetric_difference(country_list), country_list]
@@ -131,7 +147,7 @@ def query_imp_exp(df, carriers, countries, year, imports_exports):
 
 bus_map = {"BE1 0": None, "BE1 1": "BX", "BE1 2": "WL", "FL1 0": "FL",
            "BE1 0 H2": None, "BE1 1 H2": "BX", "BE1 2 H2": "WL", "FL1 0 H2": "FL",
-           "BE1 0 gas": None, "BE1 1 gas": "BX", "BE1 2 gas": "WL", "FL1 0 gas": "FL",}
+           "BE1 0 gas": None, "BE1 1 gas": "BX", "BE1 2 gas": "WL", "FL1 0 gas": "FL", }
 rx = re.compile("BE1 [0-2].*")
 
 

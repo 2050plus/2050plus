@@ -199,8 +199,21 @@ def extract_data(config):
     logger.info("Extracting data")
 
     n = {}
+
+    if config["reference"]:
+        y = config["reference"]["year"]
+        run_name = Path(config["path"]["results_ref"],
+                        "postnetworks", config["n_name"].replace("lv3.0", "lv1.0") + f"{y}.nc")
+        n[y] = pypsa.Network(run_name)
+        assign_carriers(n[y])
+        assign_locations(n[y])
+        assign_countries(n[y])
+        assign_coordinates(n[y])
+        change_p_nom_opt_carrier(n[y])
+        distinguish_FL(n[y])
+
     for y in config["scenario"]["planning_horizons"]:
-        run_name = Path(config["path"]["results_path"], "postnetworks", config["n_name"] + f"{y}.nc")
+        run_name = Path(config["path"]["results"], "postnetworks", config["n_name"] + f"{y}.nc")
         n[y] = pypsa.Network(run_name)
         assign_carriers(n[y])
         assign_locations(n[y])
@@ -211,14 +224,16 @@ def extract_data(config):
 
     # get historical capacities
     n_bf = pypsa.Network(
-        Path(config["path"]["results_path"], "prenetworks-brownfield", config["n_name"] + f"{2030}.nc"))
+        Path(config["path"]["results"], "prenetworks-brownfield", config["n_name"] + f"{config['scenario']['planning_horizons'][0]}.nc"))
     assign_countries(n_bf)
     assign_carriers(n_bf)
     assign_locations(n_bf)
     assign_coordinates(n_bf)
     distinguish_FL(n_bf)
 
-    year_hist = 2026
+    steps = (config['scenario']['planning_horizons'][1] - config['scenario']['planning_horizons'][0] - 1)\
+        if len(config['scenario']['planning_horizons']) > 1 else 4  # Assume 5Y time steps
+    year_hist = config['scenario']['planning_horizons'][0] - steps
     n_bf.generators = n_bf.generators.query(f'build_year < {year_hist}')
     n_bf.links = n_bf.links.query(f'build_year < {year_hist}')
     n_bf.storage_units = n_bf.storage_units.query(f'build_year < {year_hist}')
@@ -234,4 +249,8 @@ def extract_data(config):
     n_ext = n.copy()
     n_ext['hist'] = n_bf.copy()
 
-    return n, n_ext
+    context = {}
+    context["sector_mapping"] = pd.read_csv(Path(config["path"]["data"], "sector_mapping.csv"))
+    context["cost_mapping"] = pd.read_csv(Path(config["path"]["data"], "cost_mapping.csv"))
+
+    return n, n_ext, context

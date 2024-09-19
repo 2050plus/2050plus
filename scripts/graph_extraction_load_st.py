@@ -155,6 +155,14 @@ def load_balancing_supply(config):
     return pd.read_csv(Path(config["path"]["csvs"], "balancing_supply_countries.csv"))
 
 
+def load_curtailment(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "curtailment.csv"))
+
+
+def load_cfs(config):
+    return pd.read_csv(Path(config["path"]["csvs"], "cfs.csv"))
+
+
 # generic function for calling costs
 def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=None):
     """
@@ -195,12 +203,12 @@ def _load_costs_year_segment(config, year=None, _countries=None, cost_segment=No
     )
 
     if cost_segment:
-        net_cost = pd.DataFrame([], columns=config["imp_exp_carriers"], index=config["scenario"]["planning_horizons"])
+        net_cost = pd.DataFrame([], columns=config["imp_exp_carriers"], index=config["scenario"]["planning_horizons_ext"])
         if cost_segment != "Net_Imports":
             df = df.query('cost_segment in @cost_segment')
 
         if cost_segment == "Energy production" or cost_segment == "Net_Imports":
-            for y in config["scenario"]["planning_horizons"]:
+            for y in config["scenario"]["planning_horizons_ext"]:
                 for ca in config["imp_exp_carriers"]:
                     imp = _load_imp_exp(config, export=False, countries=countries, carriers=ca, years=[y]).set_index(
                         'countries') * 1e6  # MWh
@@ -273,7 +281,10 @@ def _load_imp_exp(config, export=True, countries=None, carriers=None, years=None
     for y in years:
         imports_exports = 'exports' if export else 'imports'
         df_carrier = query_imp_exp(df.copy(), carriers, countries, y, imports_exports)
-        imp_exp.append(df_carrier.rename(y))
+        if not df_carrier.empty:
+            imp_exp.append(df_carrier.rename(y))
+    if len(imp_exp) == 0:
+        return pd.DataFrame(columns=["countries"])
     imp_exp = pd.concat(imp_exp, axis=1)
     imp_exp.index.rename('countries',inplace=True)
     return (
@@ -294,7 +305,7 @@ def load_buses(config):
 
 
 # %% Load main
-def load_data_st(config):
+def load_data_st(config, context):
     logger.info(f"Exporting data to streamlit")
 
     outputs = [
@@ -311,6 +322,8 @@ def load_data_st(config):
         "power_capacities",
         "balancing_capacities",
         "balancing_supply",
+        "curtailment",
+        "cfs",
 
         # Costs
         "costs_segments",
@@ -339,3 +352,10 @@ def load_data_st(config):
                 v.to_csv(Path(dir, sheet_name + ".csv"), index=False)
         else:
             logging.warning(f"Given output for {output} is not mapped out to output file.")
+
+    logger.info("Exporting contextual data")
+
+    for k, v in context.items():
+        v.to_csv(Path(dir.parent, f"{k}.csv"), index=False)
+
+

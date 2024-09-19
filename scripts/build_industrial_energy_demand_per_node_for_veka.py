@@ -3,8 +3,8 @@
 #
 # SPDX-License-Identifier: MIT
 """
-Build industrial energy demand per model region taking into account VEKA specific needs. This is a custom rule
-designed for VEKA 2050+ project.
+Build industrial energy demand per model region taking into account VEKA and VLAIO specific needs. This is a custom rule
+designed for the Energie Studie 2050+ project.
 """
 import logging
 
