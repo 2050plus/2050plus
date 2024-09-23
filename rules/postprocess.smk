@@ -144,10 +144,11 @@ rule make_summary:
         scenario=config_provider("scenario"),
         RDIR=RDIR,
     input:
-        networks=expand(
+        networks= lambda w:
+        expand(
             RESULTS
             + "postnetworks/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}_{planning_horizons}.nc",
-            **config["scenario"],
+            **config_provider("scenario")(w),
             allow_missing=True,
         ),
         costs=lambda w: (
@@ -159,15 +160,17 @@ rule make_summary:
                 )
             )
         ),
-        ac_plot=expand(
+        ac_plot=lambda w:
+        expand(
             resources("maps/power-network-s{simpl}-{clusters}.pdf"),
-            **config["scenario"],
+            **config_provider("scenario")(w),
             allow_missing=True,
         ),
-        costs_plot=expand(
+        costs_plot=lambda w:
+        expand(
             RESULTS
             + "maps/elec_s{simpl}_{clusters}_l{ll}_{opts}_{sector_opts}-costs-all_{planning_horizons}.pdf",
-            **config["scenario"],
+            **config_provider("scenario")(w),
             allow_missing=True,
         ),
         h2_plot=lambda w: expand(
@@ -177,7 +180,7 @@ rule make_summary:
                 if config_provider("sector", "H2_network")(w)
                 else []
             ),
-            **config["scenario"],
+            **config_provider("scenario")(w),
             allow_missing=True,
         ),
         ch4_plot=lambda w: expand(
@@ -187,7 +190,7 @@ rule make_summary:
                 if config_provider("sector", "gas_network")(w)
                 else []
             ),
-            **config["scenario"],
+            **config_provider("scenario")(w),
             allow_missing=True,
         ),
     output:

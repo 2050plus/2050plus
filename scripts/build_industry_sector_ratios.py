@@ -508,7 +508,7 @@ def chemicals_industry():
     # Values copied from NSC previously
     sector = "HVC (NSC CC)"
     index_emissions = [i for i in index if "emission" in i]
-    df.loc["elec", sector] += params["HVC_NSC_CC_energy_increase"]
+    df.loc["elec", sector] *= params["HVC_NSC_CC_energy_increase"]
     df.loc[index_emissions, sector] = df.loc[index_emissions, "HVC (NSC)"] * params["HVC_NSC_CC_emission_factor"]
 
     # HVC mechanical recycling

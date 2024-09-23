@@ -706,18 +706,16 @@ def base_network(
     eg_lines,
     eg_links,
     links_p_nom,
-    links_tyndp,
     europe_shape,
     country_shapes,
     offshore_shapes,
-    parameter_corrections,
     config,
 ):
     buses = _load_buses_from_eg(eg_buses, europe_shape, config["electricity"])
 
     links = _load_links_from_eg(buses, eg_links)
     if config["links"].get("include_tyndp"):
-        buses, links = _add_links_from_tyndp(buses, links, links_tyndp, europe_shape)
+        buses, links = _add_links_from_tyndp(buses, links, config["links"].get("file_tyndp"), europe_shape)
 
     converters = _load_converters_from_eg(buses, eg_converters)
 
@@ -747,7 +745,7 @@ def base_network(
 
     _set_lines_s_nom_from_linetypes(n)
 
-    _apply_parameter_corrections(n, parameter_corrections)
+    _apply_parameter_corrections(n, config["links"].get("file_parameter_corrections"))
 
     n = _remove_unconnected_components(n)
 
@@ -777,11 +775,9 @@ if __name__ == "__main__":
         snakemake.input.eg_lines,
         snakemake.input.eg_links,
         snakemake.input.links_p_nom,
-        snakemake.input.links_tyndp,
         snakemake.input.europe_shape,
         snakemake.input.country_shapes,
         snakemake.input.offshore_shapes,
-        snakemake.input.parameter_corrections,
         snakemake.config,
     )
 

@@ -42,12 +42,14 @@ transmission network level that covers the full ENTSO-E area. It covers demand
 and supply for all energy sectors. From version v0.8.0, PyPSA-Eur includes all
 the features from PyPSA-Eur-Sec, which is now deprecated.
 
-Energie Studie 2050+ for VEKA
-=============================
+Energie Studie 2050+ for VEKA and VLAIO
+=======================================
 
-This version of PyPSA-Eur is an extended version designed by Climact for the *Flemish Energy and Climate Agency* (VEKA, Belgium) in the context of the *Energie Studie 2050+* (see :ref:`Energie Studie 2050+ for VEKA<veka_overview>` for further details).
+This version of PyPSA-Eur is an extended version designed by Climact for the *Flemish Energy and Climate Agency* (VEKA, Belgium) and the *Flanders Innovation & Entrepreneurship* (VLAIO, Belgium) in the context of the *Energie Studie 2050+* (see :ref:`Energie Studie 2050+ for VEKA and VLAIO<veka_overview>` for further details).
 
-.. seealso:: Detailed chapter about modifications made by Climact : :ref:`Energie Studie 2050+ for VEKA<veka_overview>`
+.. seealso:: Detailed chapter about modifications made by Climact : :ref:`Energie Studie 2050+ for VEKA and VLAIO<veka_overview>`
+
+.. seealso:: Web interface to explore the data `online <https://climact-veka-2050plus.streamlit.app/>`_
 
 Electricity System
 ==================

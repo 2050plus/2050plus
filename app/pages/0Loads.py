@@ -10,7 +10,7 @@ from st_common import st_page_config
 from st_common import st_side_bar
 
 st_page_config(layout="wide")
-scenario = st_side_bar()
+scenario, compare = st_side_bar()
 
 st.title("Loads per carrier and sector")
 st.markdown("The total yearly load per energy carrier, year, country and subsector.")
@@ -28,6 +28,13 @@ def get_data(scenario):
 
 
 df_raw = get_data(scenario)
+if compare != '-':
+    df_compare = get_data(compare)
+    idx = ["sector", "node", "carrier"]
+    df_raw = (
+        (df_raw.set_index(idx) - df_compare.set_index(idx))
+        .reset_index()
+    )
 all = "ENTSO-E area"
 country = st.selectbox('Choose your country:', [all] + list(df_raw["node"].unique()))
 
@@ -44,14 +51,17 @@ else:
         .reset_index().copy()
     )
 
-carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(), index=1)
+carrier = st.selectbox('Choose your carrier:', df_ca["carrier"].unique(),
+                       index=pd.Index(df_ca["carrier"].drop_duplicates()).get_loc("Electricity"))
+unit = "TWh" if "co2" not in carrier.lower() else "Mt"
 df_ca = df_ca.query("carrier==@carrier").drop("carrier", axis=1)
 
-df_ca = df_ca.groupby(by="sector").sum().sort_values(by="2050", ascending=False)
+max_year = max([c for c in df_ca.columns if c.isnumeric()])
+df_ca = df_ca.groupby(by="sector").sum().sort_values(by=max_year, ascending=False)
 
 df_ca_tot = pd.DataFrame(df_ca.sum().rename("Total")).T
 df_ca = pd.concat([df_ca, df_ca_tot])
-df_ca.index.name = "Annual load [TWh]"
+df_ca.index.name = f"Annual load [{unit}]"
 
 df_map = (
     df_raw
@@ -61,12 +71,13 @@ df_map = (
     .reset_index()
     .rename(columns={"node": "country"})
     .melt(id_vars=["country", "lat", "lon"], value_name="Load [TWh]", var_name="year")
+    .assign(absolute_size=lambda x: x["Load [TWh]"].abs())
 )
 fig_map = px.scatter_mapbox(
     df_map,
     lat="lat",
     lon="lon",
-    size="Load [TWh]",
+    size="absolute_size",
     mapbox_style="carto-positron",
     zoom=2.6,
     height=700,
@@ -81,14 +92,14 @@ st.plotly_chart(fig_map, use_container_width=True)
 
 fig = px.bar(
     df_ca,
-    title=f"Load in {country} for {carrier} [TWh]",
+    title=f"Load in {country} for {carrier} [{unit}]",
     barmode="group",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified")
-fig.update_yaxes(title_text='Consumption [TWh]')
+fig.update_yaxes(title_text=f'Consumption [{unit}]')
 fig.update_xaxes(title_text='Sectors')
 fig.update_layout(legend_title_text='Years')
 
@@ -129,25 +140,27 @@ df_heat = (
 )
 df_se = pd.concat([df_se, df_ind, df_heat])
 
-sector = st.selectbox('Choose your sector:', df_se["sector"].unique(), index=8)
+sector = st.selectbox('Choose your sector:', df_se["sector"].unique(),
+                      index=pd.Index(df_se["sector"].drop_duplicates()).get_loc("Industry (with and without CC)"))
 df_se = df_se.query("sector==@sector").drop("sector", axis=1)
 
-df_se = df_se.groupby(by="carrier").sum().sort_values(by="2050", ascending=False)
+max_year = max([c for c in df_se.columns if c.isnumeric()])
+df_se = df_se.groupby(by="carrier").sum().sort_values(by=max_year, ascending=False)
 
 df_se_tot = pd.DataFrame(df_se.sum().rename("Total")).T
 df_se = pd.concat([df_se, df_se_tot])
-df_se.index.name = "Annual load [TWh]"
+df_se.index.name = f"Annual load [{unit}]"
 
 fig = px.bar(
     df_se,
-    title=f"Load in {country} for {sector} [TWh]",
+    title=f"Load in {country} for {sector} [{unit}]",
     barmode="group",
     text_auto=".2s"
 )
 
 fig.update_traces(hovertemplate="%{y:,.0f}")
 fig.update_layout(hovermode="x unified")
-fig.update_yaxes(title_text='Consumption [TWh]')
+fig.update_yaxes(title_text=f'Consumption [{unit}]')
 fig.update_xaxes(title_text='Carriers')
 fig.update_layout(legend_title_text='Years')
 

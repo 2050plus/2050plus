@@ -12,6 +12,8 @@ Overview
 
 This chapter aims to give a broad overview of the use of PyPSA-Eur in the context of the *Energie Studie 2050+* for the *Flemish Energy and Climate Agency* (VEKA, Belgium).
 
+.. seealso:: Web interface to explore the data `online <https://climact-veka-2050plus.streamlit.app/>`_
+
 High level description
 ===========================
 
